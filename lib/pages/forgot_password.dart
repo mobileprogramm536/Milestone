@@ -53,8 +53,6 @@ class _forgotPasswordState extends State<forgotPassword> {
               SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
-                  // TODO: Implement the function
-
                   Navigator.pushNamed(context, '/codeVerificationScreen');
                 },
                 style: ElevatedButton.styleFrom(
