@@ -41,6 +41,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+  cloud_firestore:
+    dependency: "direct main"
+    description:
+      name: cloud_firestore
+      sha256: "1f2702398b5d46de52d0c8038511a8e81ed2d12a3e79ff55b75cb9df5228ecdb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.4.5"
+  cloud_firestore_platform_interface:
+    dependency: transitive
+    description:
+      name: cloud_firestore_platform_interface
+      sha256: "31eed2661b1ac3e3c70731e4030919d3274cc64552915ecf0925599ac7076e96"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.4.4"
+  cloud_firestore_web:
+    dependency: transitive
+    description:
+      name: cloud_firestore_web
+      sha256: a8c7a0afa9e5580d2fc252182e8dfe199079959d0b7faca27f14d980e1627ab4
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.3.3"
   collection:
     dependency: transitive
     description:
@@ -121,6 +145,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.18.1"
+  firebase_storage:
+    dependency: "direct main"
+    description:
+      name: firebase_storage
+      sha256: cc756e2330489b3adff4ccb91ea3cb4a06bebf59ff99d17ccf9bfb7541925def
+      url: "https://pub.dev"
+    source: hosted
+    version: "12.3.5"
+  firebase_storage_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_storage_platform_interface
+      sha256: "9a7aee6f8e3b0eebfcd50abf7e04f37da39cb8e4ea74a899cca85dea28726e7e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.32"
+  firebase_storage_web:
+    dependency: transitive
+    description:
+      name: firebase_storage_web
+      sha256: "7659aa6143ab18a8bd2e3ea01a9c23ed66ab6eeba13bbac8ef0183925025b5dd"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.10.4"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -144,6 +192,38 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  google_api_availability:
+    dependency: "direct main"
+    description:
+      name: google_api_availability
+      sha256: "3e9548cfd991d983d11425a2436d5bd957d048c279cc9e145ffe3f36fd847385"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.0"
+  google_api_availability_android:
+    dependency: transitive
+    description:
+      name: google_api_availability_android
+      sha256: d95429ae78083585c312de2c6578085e7d53d100a94656d691bce0bb0ce435be
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
+  google_api_availability_platform_interface:
+    dependency: transitive
+    description:
+      name: google_api_availability_platform_interface
+      sha256: "65b7da62fe5b582bb3d508628ad827d36d890710ea274766a992a56fa5420da6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
+  http:
+    dependency: transitive
+    description:
+      name: http
+      sha256: b9c29a161230ee03d3ccf545097fccd9b87a5264228c5d348202e0f0c28f9010
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.2"
   http_parser:
     dependency: transitive
     description:
