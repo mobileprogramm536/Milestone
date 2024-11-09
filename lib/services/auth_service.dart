@@ -5,29 +5,41 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final userCollection = FirebaseFirestore.instance.collection("users");
 
-  Future<void> registerUser({
+  Future<String?> registerUser({
     required String name,
     required String email,
     required String password,
   }) async {
     try {
-      // Firebase Authentication ile kullanıcıyı kaydet
+      // Firestore’da aynı e-posta veya kullanıcı adını kontrol et
+      final existingUsers =
+          await userCollection.where("email", isEqualTo: email).get();
+      if (existingUsers.docs.isNotEmpty) {
+        return "Bu e-posta zaten kullanımda.";
+      }
+
+      final existingUsernames =
+          await userCollection.where("name", isEqualTo: name).get();
+      if (existingUsernames.docs.isNotEmpty) {
+        return "Bu kullanıcı adı zaten kullanımda.";
+      }
+
+      // Firebase Auth ile kullanıcıyı kaydet
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      // Kullanıcı kaydedildikten sonra Firestore'a ek bilgiler ekleyin
+      // Firestore’a ek bilgiler ekle
       await userCollection.doc(userCredential.user!.uid).set({
         "name": name,
         "email": email,
-        // Şifreyi Firestore'da saklamamak daha güvenlidir
       });
 
-      print("Kayıt başarılı: Kullanıcı ID -> ${userCredential.user!.uid}");
+      return null; // Başarılı bir kayıt dönerse null döndürür
     } catch (e) {
-      print("Kayıt sırasında hata oluştu: $e");
+      return "Kayıt sırasında hata oluştu: $e";
     }
   }
 }
