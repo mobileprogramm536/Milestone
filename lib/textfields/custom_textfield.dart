@@ -11,17 +11,19 @@ class CustomTextField extends StatelessWidget {
   final double iconSize;
   final EdgeInsetsGeometry padding;
   final BorderRadiusGeometry borderRadius;
+  final TextEditingController controller;
 
   CustomTextField({
     required this.hintText,
     required this.icon,
     this.obscureText = false,
-    this.height = 80.0,
+    this.height = 60.0,
     this.width = 330,
     this.fontSize = 16.0,
     this.iconSize = 24.0,
-    this.padding = const EdgeInsets.symmetric(horizontal: 16.0),
+    this.padding = const EdgeInsets.symmetric(horizontal: 0.0),
     this.borderRadius = const BorderRadius.all(Radius.circular(8.0)),
+    required this.controller,
   });
 
   @override
@@ -35,9 +37,11 @@ class CustomTextField extends StatelessWidget {
         borderRadius: borderRadius,
       ),
       child: TextField(
+        controller: controller,
         cursorColor: AppColors.white1,
         obscureText: obscureText,
         decoration: InputDecoration(
+          floatingLabelBehavior: FloatingLabelBehavior.auto,
           hintText: hintText,
           hintStyle: TextStyle(color: AppColors.white1, fontSize: fontSize),
           prefixIcon: Icon(icon, color: AppColors.white1, size: iconSize),

@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1018288286646",
+    "project_id": "milestone-firebase",
+    "storage_bucket": "milestone-firebase.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1018288286646:android:d4560c965f26d6e345af17",
+        "android_client_info": {
+          "package_name": "com.example.milestone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1018288286646-k6jimeqlr3043r39ns533feq79ugp3s2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-KRm90USlgabxZFOK5_kUbWRporAOSYo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1018288286646-k6jimeqlr3043r39ns533feq79ugp3s2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1018288286646-knjnmg46io24sq2l4cgilrmcoqehbf0n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.milestone"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
