@@ -69,7 +69,8 @@ class _forgotPasswordState extends State<forgotPassword> {
                   print("$forgotEmail");
                   final result = await AuthService().forgotPasswordEmailCheck(email: forgotEmail);
                   if(result==false){
-                    Navigator.pushNamed(context, '/codeVerificationScreen');
+                    AuthService().forgotPasswordEmailSend(email: forgotEmail);
+                    Navigator.pushNamed(context, '/register');
                   }
                   else if(result==true){
                     CustomSnackbar.showMessage(
