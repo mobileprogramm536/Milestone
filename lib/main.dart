@@ -26,9 +26,9 @@ void main() async {
     debugShowCheckedModeBanner: false,
     initialRoute: '/register',
     routes: {
-      '/register': (context) => RegisterPage(),
-      '/forgotPassword': (context) => forgotPassword(),
-      '/codeVerificationScreen': (context) => codeVerificationScreen(),
+      '/register': (context) => const RegisterPage(),
+      '/forgotPassword': (context) => const forgotPassword(),
+      '/codeVerificationScreen': (context) => const codeVerificationScreen(),
     },
   ));
 }

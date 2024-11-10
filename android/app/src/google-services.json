@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1018288286646-pc4phj0a2ml0a9mdl0oi6hdtaic648pn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.milestone",
+            "certificate_hash": "92a5759539b526ae174ad8f0e3b006341063648d"
+          }
+        },
+        {
           "client_id": "1018288286646-k6jimeqlr3043r39ns533feq79ugp3s2.apps.googleusercontent.com",
           "client_type": 3
         }
