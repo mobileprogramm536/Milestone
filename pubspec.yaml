@@ -41,6 +41,7 @@ dependencies:
   cloud_firestore: ^5.4.5
   google_api_availability: ^5.0.0
   firebase_storage: ^12.3.5
+  google_sign_in: ^6.2.2
 
 
 dev_dependencies:
