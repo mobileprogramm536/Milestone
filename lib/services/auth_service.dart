@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -42,4 +44,22 @@ class AuthService {
       return "Kayıt sırasında hata oluştu: $e";
     }
   }
+
+  Future<bool?> forgotPasswordEmailCheck({
+    required String email
+}) async{
+    try{
+      final existingEmail = await userCollection.where("email", isEqualTo: email).get();
+      if(existingEmail.docs.isEmpty) {
+        return true;
+      }
+      else{
+        return false;
+      }
+    }
+    catch(e){
+      return null;
+    }
+  }
+
 }

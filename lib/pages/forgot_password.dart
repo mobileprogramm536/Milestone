@@ -1,6 +1,9 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unused_import
 import 'package:flutter/material.dart';
 
+import '../services/auth_service.dart';
+import '../textfields/custom_snackbar.dart';
+
 class forgotPassword extends StatefulWidget {
   const forgotPassword({super.key});
 
@@ -9,6 +12,14 @@ class forgotPassword extends StatefulWidget {
 }
 
 class _forgotPasswordState extends State<forgotPassword> {
+  final _tForgotEmail = TextEditingController();
+
+  @override
+  void dispose() {
+    _tForgotEmail.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,6 +48,7 @@ class _forgotPasswordState extends State<forgotPassword> {
               ),
               SizedBox(height: 16),
               TextField(
+                controller: _tForgotEmail,
                 decoration: InputDecoration(
                     filled: true,
                     fillColor: Color(0xFF45474B),
@@ -52,8 +64,20 @@ class _forgotPasswordState extends State<forgotPassword> {
               ),
               SizedBox(height: 16),
               ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/codeVerificationScreen');
+                onPressed: () async {
+                  final forgotEmail = _tForgotEmail.text;
+                  print("$forgotEmail");
+                  final result = await AuthService().forgotPasswordEmailCheck(email: forgotEmail);
+                  if(result==false){
+                    Navigator.pushNamed(context, '/codeVerificationScreen');
+                  }
+                  else if(result==true){
+                    CustomSnackbar.showMessage(
+                      context,
+                      "Bu email ile kayıtlı bir hesap bulunmuyor.",
+                      backgroundColor: Colors.red,
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                     minimumSize: Size(260, 62),
