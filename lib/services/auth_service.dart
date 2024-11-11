@@ -62,4 +62,13 @@ class AuthService {
     }
   }
 
+  Future<void> forgotPasswordEmailSend({
+    required String email
+  }) async{
+    try{
+      _auth.sendPasswordResetEmail(email: email);
+    }catch (e){
+      return null;
+    }
+  }
 }
