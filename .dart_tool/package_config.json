@@ -3,7 +3,7 @@
   "packages": [
     {
       "name": "_flutterfire_internals",
-      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/_flutterfire_internals-1.3.45",
+      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/_flutterfire_internals-1.3.46",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -33,19 +33,19 @@
     },
     {
       "name": "cloud_firestore",
-      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/cloud_firestore-5.4.5",
+      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/cloud_firestore-5.5.0",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "cloud_firestore_platform_interface",
-      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/cloud_firestore_platform_interface-6.4.4",
+      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/cloud_firestore_platform_interface-6.5.0",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "cloud_firestore_web",
-      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/cloud_firestore_web-4.3.3",
+      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/cloud_firestore_web-4.3.4",
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
@@ -75,25 +75,25 @@
     },
     {
       "name": "firebase_auth",
-      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/firebase_auth-5.3.2",
+      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/firebase_auth-5.3.3",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "firebase_auth_platform_interface",
-      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/firebase_auth_platform_interface-7.4.8",
+      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/firebase_auth_platform_interface-7.4.9",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "firebase_auth_web",
-      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/firebase_auth_web-5.13.3",
+      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/firebase_auth_web-5.13.4",
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "firebase_core",
-      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/firebase_core-3.7.0",
+      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/firebase_core-3.8.0",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -111,19 +111,19 @@
     },
     {
       "name": "firebase_storage",
-      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/firebase_storage-12.3.5",
+      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/firebase_storage-12.3.6",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "firebase_storage_platform_interface",
-      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/firebase_storage_platform_interface-5.1.32",
+      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/firebase_storage_platform_interface-5.1.33",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "firebase_storage_web",
-      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/firebase_storage_web-3.10.4",
+      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/firebase_storage_web-3.10.5",
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
@@ -168,6 +168,42 @@
       "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/google_api_availability_platform_interface-1.0.1",
       "packageUri": "lib/",
       "languageVersion": "2.15"
+    },
+    {
+      "name": "google_identity_services_web",
+      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/google_identity_services_web-0.3.3",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "google_sign_in",
+      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/google_sign_in-6.2.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "google_sign_in_android",
+      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/google_sign_in_android-6.1.33",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "google_sign_in_ios",
+      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/google_sign_in_ios-5.7.8",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "google_sign_in_platform_interface",
+      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/google_sign_in_platform_interface-2.4.5",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "google_sign_in_web",
+      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/google_sign_in_web-0.12.4+3",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
     },
     {
       "name": "http",
@@ -308,7 +344,7 @@
       "languageVersion": "3.5"
     }
   ],
-  "generated": "2024-11-09T15:16:17.299470Z",
+  "generated": "2024-11-28T19:41:39.796957Z",
   "generator": "pub",
   "generatorVersion": "3.6.0-334.3.beta",
   "flutterRoot": "file:///Users/selinnurguzel/development/flutter",

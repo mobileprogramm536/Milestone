@@ -7,6 +7,17 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final userCollection = FirebaseFirestore.instance.collection("users");
 
+  Future<String?> signIn({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      _auth.signInWithEmailAndPassword(email: email, password: password);
+    } catch (e) {
+      return "Giriş sırasında hata oluştu: $e";
+    }
+  }
+
   Future<String?> registerUser({
     required String name,
     required String email,
@@ -45,29 +56,24 @@ class AuthService {
     }
   }
 
-  Future<bool?> forgotPasswordEmailCheck({
-    required String email
-}) async{
-    try{
-      final existingEmail = await userCollection.where("email", isEqualTo: email).get();
-      if(existingEmail.docs.isEmpty) {
+  Future<bool?> forgotPasswordEmailCheck({required String email}) async {
+    try {
+      final existingEmail =
+          await userCollection.where("email", isEqualTo: email).get();
+      if (existingEmail.docs.isEmpty) {
         return true;
-      }
-      else{
+      } else {
         return false;
       }
-    }
-    catch(e){
+    } catch (e) {
       return null;
     }
   }
 
-  Future<void> forgotPasswordEmailSend({
-    required String email
-  }) async{
-    try{
+  Future<void> forgotPasswordEmailSend({required String email}) async {
+    try {
       _auth.sendPasswordResetEmail(email: email);
-    }catch (e){
+    } catch (e) {
       return null;
     }
   }
