@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../theme/colors.dart';
+
 class SuccessScreen extends StatefulWidget {
   @override
   State<SuccessScreen> createState() => _SuccessScreenState();
@@ -15,8 +17,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Colors.black87,
-              Colors.black54,
+              AppColors.darkgrey1,
+              AppColors.darkgrey2,
             ],
           ),
         ),

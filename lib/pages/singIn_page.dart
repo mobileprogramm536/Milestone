@@ -56,8 +56,7 @@ class _SignInPageState extends State<SignInPage> {
     }
 
     // 2. Firebase giriş kontrol yap
-    final result = await AuthService().signIn
-      (
+    final result = await AuthService().signIn(
       email: email,
       password: password,
     );
@@ -84,6 +83,7 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
         resizeToAvoidBottomInset: true,
@@ -114,13 +114,13 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                     SizedBox(height: height * 0.05),
                     CustomTextField(
-                    controller: _tEmail,
-                    hintText: 'E-Posta',
-                    icon: EvaIcons.emailOutline,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20.0),
-                      topRight: Radius.circular(20.0),
-                    ),
+                      controller: _tEmail,
+                      hintText: 'E-Posta',
+                      icon: EvaIcons.emailOutline,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20.0),
+                        topRight: Radius.circular(20.0),
+                      ),
                     ),
                     SizedBox(height: height * 0.015),
                     PasswordTextField(
@@ -128,11 +128,15 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                     SizedBox(height: height * 0.01),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end ,
                       children: [
+                        SizedBox(width: width * 0.6),
                         GestureDetector(
-                          onTap:(){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=> forgotPassword()));
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const forgotPassword()));
                           },
                           child: Text(
                             'Şifremi Unuttum',
@@ -141,7 +145,6 @@ class _SignInPageState extends State<SignInPage> {
                                 fontSize: height * 0.017),
                           ),
                         ),
-                        Spacer(flex:20)
                       ],
                     ),
                     SizedBox(height: height * 0.03),
@@ -150,13 +153,15 @@ class _SignInPageState extends State<SignInPage> {
                         _Login();
                         _tEmail.clear();
                         _tPassword.clear();
-                        
                       },
                     ),
                     SizedBox(height: height * 0.02),
                     RegisterTextButton(
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>RegisterPage()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RegisterPage()));
                       },
                     ),
                     SizedBox(height: height * 0.04),

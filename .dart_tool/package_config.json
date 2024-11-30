@@ -213,9 +213,9 @@
     },
     {
       "name": "http_parser",
-      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/http_parser-4.1.1",
+      "rootUri": "file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/http_parser-4.0.2",
       "packageUri": "lib/",
-      "languageVersion": "3.4"
+      "languageVersion": "2.12"
     },
     {
       "name": "leak_tracker",
@@ -344,7 +344,7 @@
       "languageVersion": "3.5"
     }
   ],
-  "generated": "2024-11-28T19:41:39.796957Z",
+  "generated": "2024-11-30T20:40:18.320441Z",
   "generator": "pub",
   "generatorVersion": "3.6.0-334.3.beta",
   "flutterRoot": "file:///Users/selinnurguzel/development/flutter",

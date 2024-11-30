@@ -16,6 +16,7 @@ class AuthService {
     } catch (e) {
       return "Giriş sırasında hata oluştu: $e";
     }
+    return null;
   }
 
   Future<String?> registerUser({

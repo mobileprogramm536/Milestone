@@ -32,7 +32,7 @@ void main() async {
       '/signin': (context) => SignInPage(),
       '/forgotPassword': (context) => forgotPassword(),
       '/codeVerificationScreen': (context) => codeVerificationScreen(),
-      '/succes': (context) => SuccessScreen(),
+      '/success': (context) => SuccessScreen(),
     },
   ));
 }
