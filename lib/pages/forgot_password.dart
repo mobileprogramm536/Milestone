@@ -69,7 +69,7 @@ class _forgotPasswordState extends State<forgotPassword> {
                 EmailTextField(controller: _tForgotEmail),
                 SizedBox(height: height * 0.05),
                 CustomButton(
-                  button_text: 'Kod Gonder',
+                  button_text: 'Mail Gonder',
                   onPressed: () async {
                     final forgotEmail = _tForgotEmail.text;
                     print("$forgotEmail");
