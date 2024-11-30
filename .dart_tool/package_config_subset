@@ -127,9 +127,9 @@ http
 file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/http-1.2.2/
 file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/http-1.2.2/lib/
 http_parser
-3.4
-file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/http_parser-4.1.1/
-file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/http_parser-4.1.1/lib/
+2.12
+file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/http_parser-4.0.2/
+file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/http_parser-4.0.2/lib/
 leak_tracker
 3.2
 file:///Users/selinnurguzel/.pub-cache/hosted/pub.dev/leak_tracker-10.0.7/

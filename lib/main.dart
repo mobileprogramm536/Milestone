@@ -3,6 +3,8 @@ import 'package:milestone/pages/forgot_password.dart';
 import 'package:milestone/pages/codeVerificationScreen.dart';
 import 'package:milestone/pages/register%20page.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:milestone/pages/singIn_page.dart';
+import 'package:milestone/pages/successCodePage.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -24,11 +26,13 @@ void main() async {
       ),
     ),
     debugShowCheckedModeBanner: false,
-    initialRoute: '/register',
+    initialRoute: '/signin',
     routes: {
       '/register': (context) => RegisterPage(),
+      '/signin': (context) => SignInPage(),
       '/forgotPassword': (context) => forgotPassword(),
       '/codeVerificationScreen': (context) => codeVerificationScreen(),
+      '/success': (context) => SuccessScreen(),
     },
   ));
 }
