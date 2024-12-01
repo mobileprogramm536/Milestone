@@ -22,4 +22,12 @@ class ValidationService {
     }
     return null;
   }
+
+  static String? validateRouteTitle(String title) {
+    if (title.isEmpty) {
+      return "Rota başlığı boş bırakılamaz!";
+    }
+
+    return null;
+  }
 }

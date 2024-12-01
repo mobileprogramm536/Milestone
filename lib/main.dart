@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:milestone/pages/create_route_page.dart';
 import 'package:milestone/pages/forgot_password.dart';
 import 'package:milestone/pages/codeVerificationScreen.dart';
-import 'package:milestone/pages/register%20page.dart';
+import 'package:milestone/pages/register_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:milestone/pages/singIn_page.dart';
 import 'package:milestone/pages/successCodePage.dart';
@@ -26,8 +27,9 @@ void main() async {
       ),
     ),
     debugShowCheckedModeBanner: false,
-    initialRoute: '/signin',
+    initialRoute: '/createRoute',
     routes: {
+      '/createRoute': (context) => CreateRoutePage(),
       '/register': (context) => RegisterPage(),
       '/signin': (context) => SignInPage(),
       '/forgotPassword': (context) => forgotPassword(),
