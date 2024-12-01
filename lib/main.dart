@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:milestone/pages/forgot_password.dart';
-import 'package:milestone/pages/codeVerificationScreen.dart';
 import 'package:milestone/pages/register%20page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:milestone/pages/singIn_page.dart';
 import 'package:milestone/pages/successCodePage.dart';
+import 'package:milestone/pages/main_page.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -26,12 +26,12 @@ void main() async {
       ),
     ),
     debugShowCheckedModeBanner: false,
-    initialRoute: '/signin',
+    initialRoute: '/main_page',
     routes: {
       '/register': (context) => RegisterPage(),
       '/signin': (context) => SignInPage(),
       '/forgotPassword': (context) => forgotPassword(),
-      '/codeVerificationScreen': (context) => codeVerificationScreen(),
+      '/main_page': (context) => MainPage(),
       '/success': (context) => SuccessScreen(),
     },
   ));
