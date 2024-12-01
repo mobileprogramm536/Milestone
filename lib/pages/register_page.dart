@@ -180,9 +180,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     SizedBox(height: height * 0.04),
                     GoogleButton(
-                      onPressed: () {
-                        // Google ile giriş işlemi
-                      },
+                      onPressed: () {},
                     ),
                     SizedBox(
                       height: height * 0.2,

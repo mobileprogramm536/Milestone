@@ -2,7 +2,7 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:milestone/buttons/signIn_button.dart';
 import 'package:milestone/buttons/signIn_register_button.dart';
-import 'package:milestone/pages/register%20page.dart';
+import 'package:milestone/pages/register_page.dart';
 import 'package:milestone/services/auth_service.dart';
 import '../buttons/google_login_button.dart';
 import '../services/validation_service.dart';
