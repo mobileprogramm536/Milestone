@@ -1,6 +1,6 @@
 # milestone
 
-A new Flutter project.
+Milestone Project
 
 ## Getting Started
 
