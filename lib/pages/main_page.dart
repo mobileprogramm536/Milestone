@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:milestone/widgets/custom_navbar.dart';
-import 'package:milestone/theme/app_theme.dart';
-import 'package:milestone/theme/colors.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
