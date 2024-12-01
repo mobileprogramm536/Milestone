@@ -77,7 +77,7 @@ class _forgotPasswordState extends State<forgotPassword> {
                         .forgotPasswordEmailCheck(email: forgotEmail);
                     if (result == false) {
                       AuthService().forgotPasswordEmailSend(email: forgotEmail);
-                      Navigator.pushNamed(context, '/register');
+                      Navigator.pushNamed(context, '/success');
                     } else if (result == true) {
                       CustomSnackbar.showMessage(
                         context,
