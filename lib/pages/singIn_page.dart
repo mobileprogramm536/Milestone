@@ -38,7 +38,6 @@ class _SignInPageState extends State<SignInPage> {
 
     // 1. Girdileri doğrula
     final emailError = ValidationService.validateEmail(email);
-    final passwordError = ValidationService.validatePassword(password);
 
     if (emailError != null) {
       CustomSnackbar.showMessage(
@@ -47,10 +46,10 @@ class _SignInPageState extends State<SignInPage> {
         backgroundColor: Colors.red,
       );
       return;
-    } else if (passwordError != null) {
+    } else if (password.isEmpty) {
       CustomSnackbar.showMessage(
         context,
-        passwordError,
+        "Şifre boş olamaz!",
         backgroundColor: Colors.red,
       );
       return;
