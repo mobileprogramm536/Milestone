@@ -7,16 +7,20 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final userCollection = FirebaseFirestore.instance.collection("users");
 
+
   Future<String?> signIn({
     required String email,
     required String password,
   }) async {
     try {
-      _auth.signInWithEmailAndPassword(email: email, password: password);
+      await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return null;
     } catch (e) {
       return "Giriş sırasında hata oluştu: $e";
     }
-    return null;
   }
 
   Future<String?> registerUser({

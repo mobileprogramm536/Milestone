@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:milestone/buttons/signIn_button.dart';
 import 'package:milestone/buttons/signIn_register_button.dart';
 import 'package:milestone/pages/register_page.dart';
+import 'package:milestone/pages/test.dart';
 import 'package:milestone/services/auth_service.dart';
 import '../buttons/google_login_button.dart';
 import '../services/validation_service.dart';
@@ -37,7 +38,6 @@ class _SignInPageState extends State<SignInPage> {
 
     // 1. Girdileri doğrula
     final emailError = ValidationService.validateEmail(email);
-    final passwordError = ValidationService.validatePassword(password);
 
     if (emailError != null) {
       CustomSnackbar.showMessage(
@@ -46,10 +46,10 @@ class _SignInPageState extends State<SignInPage> {
         backgroundColor: Colors.red,
       );
       return;
-    } else if (passwordError != null) {
+    } else if (password.isEmpty) {
       CustomSnackbar.showMessage(
         context,
-        passwordError,
+        "Şifre boş olamaz!",
         backgroundColor: Colors.red,
       );
       return;
@@ -63,7 +63,11 @@ class _SignInPageState extends State<SignInPage> {
 
     if (result != null) {
       // Firebase'den hata mesajı dönerse göster
-      _showMessage(result);
+      CustomSnackbar.showMessage(
+        context,
+        "E-posta ya da şifre hatalı!",
+        backgroundColor: Colors.red,
+      );
     } else {
       // Giriş başarılıysa
       CustomSnackbar.showMessage(
@@ -103,14 +107,14 @@ class _SignInPageState extends State<SignInPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(
-                      height: height * 0.25,
+                      height: height * 0.15,
                     ),
                     Text(
                       'milestone',
                       style: TextStyle(
                           color: AppColors.white1,
                           fontWeight: FontWeight.bold,
-                          fontSize: height * 0.07),
+                          fontSize: height * 0.059),
                     ),
                     SizedBox(height: height * 0.05),
                     CustomTextField(
@@ -199,8 +203,29 @@ class _SignInPageState extends State<SignInPage> {
                       },
                     ),
                     SizedBox(
-                      height: height * 0.2,
-                    )
+                      height: height * 0.08,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        //Giriş yapmadan devam etme işlemi
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                            builder: (context) => ForgotPasswordScreen(),
+                          ),
+                              (Route<dynamic> route) => false,
+                        );
+                      },
+                      child: Text(
+                        'giriş yapmadan devam et',
+                        style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            decorationColor: AppColors.white1,
+                            color: AppColors.white1,
+                            fontStyle: FontStyle.italic,
+                            fontSize: height * 0.021),
+                      ),
+                    ),
+                    SizedBox(height: height * 0.04),
                   ],
                 ),
               ),
