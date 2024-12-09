@@ -6,17 +6,32 @@ import 'package:firebase_auth/firebase_auth.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final userCollection = FirebaseFirestore.instance.collection("users");
+  User? user;
 
+  void setUser(User? user1){
+    user = user1;
+  }
+  User? getUser(){
+    user = _auth.currentUser;
+    return user;
+  }
+
+  Future<void> signOut() async {
+    await _auth.signOut();
+  }
 
   Future<String?> signIn({
     required String email,
     required String password,
   }) async {
     try {
-      await _auth.signInWithEmailAndPassword(
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+      setUser(userCredential.user);
+      print(userCredential.user!.uid.toString());
+      print(user!.uid.toString());
       return null;
     } catch (e) {
       return "Giriş sırasında hata oluştu: $e";
