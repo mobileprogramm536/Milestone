@@ -4,9 +4,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final userCollection = FirebaseFirestore.instance.collection("users");
+  User? user;
+
 
   // Get the current user directly from FirebaseAuth
   User? get user => _auth.currentUser;
+
+
+
 
   Future<void> signOut() async {
     await _auth.signOut();
@@ -21,8 +26,12 @@ class AuthService {
         email: email,
         password: password,
       );
+
       print("Signed in user UID: ${userCredential.user!.uid}");
       return null; // No error
+
+   
+
     } catch (e) {
       return "Giriş sırasında hata oluştu: $e";
     }
