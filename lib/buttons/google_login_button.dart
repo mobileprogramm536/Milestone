@@ -42,7 +42,7 @@ class GoogleButton extends StatelessWidget {
         backgroundColor: const Color(0xFF45474B),
         side: BorderSide.none,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(25),
+          borderRadius: BorderRadius.circular(80),
         ),
         padding: EdgeInsets.zero,
       ),
