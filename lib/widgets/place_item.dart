@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:milestone/theme/colors.dart';
 
 class PlaceItem extends StatefulWidget {
@@ -11,6 +12,7 @@ class PlaceItem extends StatefulWidget {
   final VoidCallback onDelete;
   final bool isLastItem;
   final int totalItems;
+  final Function(LatLng?) onSaveLocation;
 
   const PlaceItem({
     super.key,
@@ -22,6 +24,7 @@ class PlaceItem extends StatefulWidget {
     required this.onDelete,
     required this.isLastItem,
     required this.totalItems,
+    required this.onSaveLocation,
   });
 
   @override
@@ -133,22 +136,46 @@ class _PlaceItemState extends State<PlaceItem> {
                     ),
                   ],
                 ),
-                trailing: SizedBox(
-                  width: 20, // Genişliği ayarlayabilirsiniz
-                  height: 20, // Yüksekliği ayarlayabilirsiniz
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.delete,
-                      color: AppColors.red1,
-                      size: 20, // Simge boyutu küçültüldü
+                trailing: Column(
+                  children: [
+                    SizedBox(
+                      width: 20, // Genişliği ayarlayabilirsiniz
+                      height: 20, // Yüksekliği ayarlayabilirsiniz
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.add_location,
+                          color: AppColors.green1,
+                          size: 25, // Simge boyutu küçültüldü
+                        ),
+                        onPressed: () {
+                          widget.onSaveLocation(null);
+                        },
+                        padding: EdgeInsets.zero,
+                        constraints:
+                            const BoxConstraints(), // Boyut sınırlarını sıfırlar
+                      ),
                     ),
-                    onPressed: widget.isLastItem && widget.totalItems == 1
-                        ? null // Eğer sadece bir öğe varsa silme butonu devre dışı bırakılır
-                        : widget.onDelete,
-                    padding: EdgeInsets.zero,
-                    constraints:
-                        const BoxConstraints(), // Boyut sınırlarını sıfırlar
-                  ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    SizedBox(
+                      width: 20, // Genişliği ayarlayabilirsiniz
+                      height: 15, // Yüksekliği ayarlayabilirsiniz
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.delete,
+                          color: AppColors.red1,
+                          size: 25, // Simge boyutu küçültüldü
+                        ),
+                        onPressed: widget.isLastItem && widget.totalItems == 1
+                            ? null // Eğer sadece bir öğe varsa silme butonu devre dışı bırakılır
+                            : widget.onDelete,
+                        padding: EdgeInsets.zero,
+                        constraints:
+                            const BoxConstraints(), // Boyut sınırlarını sıfırlar
+                      ),
+                    ),
+                  ],
                 ),
               ),
             )

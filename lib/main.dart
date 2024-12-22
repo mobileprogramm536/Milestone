@@ -4,8 +4,10 @@ import 'package:milestone/pages/forgot_password.dart';
 import 'package:milestone/pages/codeVerificationScreen.dart';
 import 'package:milestone/pages/register_page.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:milestone/pages/savedRoutesPage.dart';
 import 'package:milestone/pages/singIn_page.dart';
 import 'package:milestone/pages/successCodePage.dart';
+import 'package:milestone/widgets/google_maps_widget.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -31,10 +33,11 @@ void main() async {
     routes: {
       '/createRoute': (context) => CreateRoutePage(),
       '/register': (context) => RegisterPage(),
-      '/signin': (context) => SignInPage(),
+      '/signIn': (context) => SignInPage(),
       '/forgotPassword': (context) => forgotPassword(),
       '/codeVerificationScreen': (context) => codeVerificationScreen(),
       '/success': (context) => SuccessScreen(),
+      '/savedRoutesPage': (context) => SavedRoutesPage(),
     },
   ));
 }

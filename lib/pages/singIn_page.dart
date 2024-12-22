@@ -12,6 +12,7 @@ import '../textfields/custom_textfield.dart';
 import '../textfields/password_text_field.dart';
 import '../theme/app_theme.dart';
 import '../theme/colors.dart';
+import 'create_route_page.dart';
 import 'forgot_password.dart';
 
 class SignInPage extends StatefulWidget {
@@ -91,12 +92,12 @@ class _SignInPageState extends State<SignInPage> {
 
     return Scaffold(
         resizeToAvoidBottomInset: true,
-        body: SingleChildScrollView(
-          child: GestureDetector(
-            onTap: () {
-              FocusScope.of(context)
-                  .unfocus(); // Tüm TextField'lardan odağı kaldırır
-            },
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context)
+                .unfocus(); // Tüm TextField'lardan odağı kaldırır
+          },
+          child: SingleChildScrollView(
             child: Container(
               decoration: const BoxDecoration(
                 gradient: appBackground,
@@ -114,7 +115,7 @@ class _SignInPageState extends State<SignInPage> {
                       style: TextStyle(
                           color: AppColors.white1,
                           fontWeight: FontWeight.bold,
-                          fontSize: height * 0.059),
+                          fontSize: height * 0.040),
                     ),
                     SizedBox(height: height * 0.05),
                     CustomTextField(
@@ -155,7 +156,6 @@ class _SignInPageState extends State<SignInPage> {
                     SignInButton(
                       onPressed: () async {
                         _Login();
-                        _tEmail.clear();
                         _tPassword.clear();
                       },
                     ),
@@ -210,9 +210,9 @@ class _SignInPageState extends State<SignInPage> {
                         //Giriş yapmadan devam etme işlemi
                         Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(
-                            builder: (context) => ForgotPasswordScreen(),
+                            builder: (context) => CreateRoutePage(),
                           ),
-                              (Route<dynamic> route) => false,
+                          (Route<dynamic> route) => true,
                         );
                       },
                       child: Text(
@@ -225,7 +225,9 @@ class _SignInPageState extends State<SignInPage> {
                             fontSize: height * 0.021),
                       ),
                     ),
-                    SizedBox(height: height * 0.04),
+                    SizedBox(
+                      height: height * 0.2,
+                    )
                   ],
                 ),
               ),
