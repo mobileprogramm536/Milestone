@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:milestone/textfields/route_text_field.dart';
 import 'package:milestone/theme/colors.dart';
 import 'package:milestone/widgets/google_maps_widget.dart';
+import '../services/auth_service.dart';
 import '../widgets/place_item.dart';
 import '../services/route_service.dart';
 import '../theme/app_theme.dart';
@@ -63,18 +64,31 @@ class _CreateRoutePageState extends State<CreateRoutePage> {
   void createRoute() {
     final routeName = _routecontroller_name.text;
     final description = _routecontroller_desc.text;
+    final routeUsername = AuthService().user?.uid;
+
+    if (routeUsername == null) {
+      print("Error: User is not authenticated.");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please log in to create a route.'),
+        ),
+      );
+      return;
+    }
+
+    print("Authenticated user UID: $routeUsername");
 
     List<Map<String, dynamic>> locations = [];
     for (int i = 0; i < _controllers.length - 1; i++) {
       if (_controllers[i].text.isEmpty || places[i] == null) {
-        // Handle missing data, e.g., show an error message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text('Please fill in all fields and add locations')),
+            content: Text('Please fill in all fields and add locations'),
+          ),
         );
         return;
       }
-      if (places[i] != null) {}
+
       locations.add({
         'name': _controllers[i].text,
         'note': _noteControllers[i].text,
@@ -83,6 +97,7 @@ class _CreateRoutePageState extends State<CreateRoutePage> {
     }
 
     RouteService().createRoute(
+      routeUser: routeUsername,
       routeName: routeName,
       routeDescription: description,
       locations: locations,

@@ -2,6 +2,7 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:milestone/buttons/signIn_button.dart';
 import 'package:milestone/buttons/signIn_register_button.dart';
+import 'package:milestone/pages/create_route_page.dart';
 import 'package:milestone/pages/register_page.dart';
 import 'package:milestone/pages/test.dart';
 import 'package:milestone/services/auth_service.dart';
@@ -12,7 +13,6 @@ import '../textfields/custom_textfield.dart';
 import '../textfields/password_text_field.dart';
 import '../theme/app_theme.dart';
 import '../theme/colors.dart';
-import 'create_route_page.dart';
 import 'forgot_password.dart';
 
 class SignInPage extends StatefulWidget {
@@ -25,6 +25,7 @@ class SignInPage extends StatefulWidget {
 class _SignInPageState extends State<SignInPage> {
   final _tEmail = TextEditingController();
   final _tPassword = TextEditingController();
+  final user = AuthService().user;
 
   @override
   void dispose() {
@@ -70,6 +71,8 @@ class _SignInPageState extends State<SignInPage> {
         backgroundColor: Colors.red,
       );
     } else {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => CreateRoutePage()));
       // Giriş başarılıysa
       CustomSnackbar.showMessage(
         context,
@@ -92,12 +95,12 @@ class _SignInPageState extends State<SignInPage> {
 
     return Scaffold(
         resizeToAvoidBottomInset: true,
-        body: GestureDetector(
-          onTap: () {
-            FocusScope.of(context)
-                .unfocus(); // Tüm TextField'lardan odağı kaldırır
-          },
-          child: SingleChildScrollView(
+        body: SingleChildScrollView(
+          child: GestureDetector(
+            onTap: () {
+              FocusScope.of(context)
+                  .unfocus(); // Tüm TextField'lardan odağı kaldırır
+            },
             child: Container(
               decoration: const BoxDecoration(
                 gradient: appBackground,
@@ -115,7 +118,7 @@ class _SignInPageState extends State<SignInPage> {
                       style: TextStyle(
                           color: AppColors.white1,
                           fontWeight: FontWeight.bold,
-                          fontSize: height * 0.040),
+                          fontSize: height * 0.059),
                     ),
                     SizedBox(height: height * 0.05),
                     CustomTextField(
@@ -156,6 +159,7 @@ class _SignInPageState extends State<SignInPage> {
                     SignInButton(
                       onPressed: () async {
                         _Login();
+                        _tEmail.clear();
                         _tPassword.clear();
                       },
                     ),
@@ -210,9 +214,9 @@ class _SignInPageState extends State<SignInPage> {
                         //Giriş yapmadan devam etme işlemi
                         Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(
-                            builder: (context) => CreateRoutePage(),
+                            builder: (context) => ForgotPasswordScreen(),
                           ),
-                          (Route<dynamic> route) => true,
+                          (Route<dynamic> route) => false,
                         );
                       },
                       child: Text(
@@ -225,9 +229,7 @@ class _SignInPageState extends State<SignInPage> {
                             fontSize: height * 0.021),
                       ),
                     ),
-                    SizedBox(
-                      height: height * 0.2,
-                    )
+                    SizedBox(height: height * 0.04),
                   ],
                 ),
               ),

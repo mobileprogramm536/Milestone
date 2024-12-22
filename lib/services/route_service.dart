@@ -7,6 +7,7 @@ class RouteService {
 
   // Rota verilerini Firebase Firestore'a gönderme fonksiyonu
   Future<void> createRoute({
+    required String? routeUser,
     required String routeName,
     required String routeDescription,
     required List<Map<String, dynamic>> locations,
@@ -16,6 +17,7 @@ class RouteService {
 
       // Firestore'a yeni rota ekleniyor
       await RouteCollection.add({
+        'routeUser': routeUser,
         'routeName': routeName,
         'description': routeDescription,
         'locations': locations,

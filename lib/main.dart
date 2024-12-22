@@ -29,7 +29,7 @@ void main() async {
       ),
     ),
     debugShowCheckedModeBanner: false,
-    initialRoute: '/createRoute',
+    initialRoute: '/signIn',
     routes: {
       '/createRoute': (context) => CreateRoutePage(),
       '/register': (context) => RegisterPage(),
