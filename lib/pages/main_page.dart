@@ -6,7 +6,6 @@ import 'package:countries_world_map/countries_world_map.dart';
 import '../widgets/country_selection_modal.dart';
 import '../widgets/curved_action_button.dart';
 import '../services/map_service.dart';
-import '../services/route_service.dart';
 import '../theme/colors.dart';
 
 class MainPage extends StatefulWidget {
@@ -24,7 +23,6 @@ class _MainPageState extends State<MainPage> {
   bool _isLoading = true;
 
   final FirestoreService _firestoreService = FirestoreService();
-  final RouteService _routeService = RouteService();
   List<Map<String, dynamic>> _visitedCountries = [];
 
   @override
@@ -50,24 +48,6 @@ class _MainPageState extends State<MainPage> {
       setState(() {
         _isLoading = false;
       });
-    }
-  }
-
-  Future<void> _testExploreRoutes() async {
-    const String testUserId = "test_user_123";
-    try {
-      await _routeService.getExploreRoutes(userID: testUserId);
-    } catch (e) {
-      print("Error testing explore routes: $e");
-    }
-  }
-
-  Future<void> _testOwnedRoutes() async {
-    const String testUserId = "test_user_123";
-    try {
-      await _routeService.getOwnedRoutes(userID: testUserId);
-    } catch (e) {
-      print("Error testing owned routes: $e");
     }
   }
 
@@ -114,32 +94,6 @@ class _MainPageState extends State<MainPage> {
               fontSize: 24,
             ),
           ),
-          actions: [
-            IconButton(
-              icon: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: AppColors.green1.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(Icons.explore, color: AppColors.green1),
-              ),
-              onPressed: _testExploreRoutes,
-            ),
-            const SizedBox(width: 8),
-            IconButton(
-              icon: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: AppColors.green1.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(Icons.route, color: AppColors.green1),
-              ),
-              onPressed: _testOwnedRoutes,
-            ),
-            const SizedBox(width: 16),
-          ],
         ),
         body: Stack(
           children: [
