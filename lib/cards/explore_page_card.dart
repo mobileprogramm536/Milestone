@@ -111,7 +111,7 @@ class _ExploreCardState extends State<ExploreCard> {
                 child: Row(
                   children: [
                     const Icon(
-                      Icons.location_on,
+                      Icons.pin_drop_outlined,
                       color: AppColors.yellow1,
                       size: 16.0,
                     ),
@@ -125,7 +125,7 @@ class _ExploreCardState extends State<ExploreCard> {
                     ),
                     SizedBox(width: width*0.03),
                     const Icon(
-                      Icons.play_arrow,
+                      Icons.navigation_outlined ,
                       color: AppColors.yellow1,
                       size: 16.0,
                     ),
