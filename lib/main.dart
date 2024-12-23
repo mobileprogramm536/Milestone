@@ -6,6 +6,7 @@ import 'package:milestone/pages/register_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:milestone/pages/singIn_page.dart';
 import 'package:milestone/pages/successCodePage.dart';
+import 'package:milestone/pages/main_page.dart'
 import 'firebase_options.dart';
 
 void main() async {
@@ -29,6 +30,7 @@ void main() async {
     debugShowCheckedModeBanner: false,
     initialRoute: '/createRoute',
     routes: {
+      '/main_page': (context) => MainPage(),
       '/createRoute': (context) => CreateRoutePage(),
       '/register': (context) => RegisterPage(),
       '/signin': (context) => SignInPage(),
