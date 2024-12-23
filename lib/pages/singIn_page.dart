@@ -74,7 +74,6 @@ class _SignInPageState extends State<SignInPage> {
       );
     } else {
       Navigator.push(
-
           context, MaterialPageRoute(builder: (context) => CreateRoutePage()));
 
       // Giriş başarılıysa
@@ -82,7 +81,6 @@ class _SignInPageState extends State<SignInPage> {
         context,
         "Giriş başarılı!",
         backgroundColor: Colors.green,
-
       );
     }
   }
@@ -98,7 +96,7 @@ class _SignInPageState extends State<SignInPage> {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
 
-    return AuthService().getUser() != null ? DenemePage() : Scaffold(
+    return Scaffold(
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
           child: GestureDetector(

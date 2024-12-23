@@ -3,11 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class RouteService {
   final RouteCollection = FirebaseFirestore.instance.collection("routes");
   final UserCollection = FirebaseFirestore.instance.collection("users");
-
   final UserDetails = FirebaseFirestore.instance.collection("userdetails");
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-
 
   // Rota verilerini Firebase Firestore'a gönderme fonksiyonu
   Future<void> createRoute({
@@ -33,31 +30,28 @@ class RouteService {
     }
   }
 
-
   // Rota Explore Fonksiyonu
 
   Future<void> getExploreRoutes({
     required String userID,
   }) async {
-    try{
-      RouteCollection
-          .where("ownerId", isEqualTo: userID)
+    try {
+      RouteCollection.where("ownerId", isEqualTo: userID)
           .get()
           .then((querySnapshot) {
         print("Successfully completed");
         for (var docSnapshot in querySnapshot.docs) {
           // Extract specific fields from the document
-          var field1 = docSnapshot.get("description"); // Replace with your field names
+          var field1 =
+              docSnapshot.get("description"); // Replace with your field names
           var field2 = docSnapshot.get("routeName");
 
           print('${docSnapshot.id} ==> field1: $field1, field2: $field2');
         }
-      })
-          .catchError((error) {
+      }).catchError((error) {
         print("Failed to fetch data: $error");
       });
-    }
-    catch(e){
+    } catch (e) {
       print('Hata olustu: $e');
     }
   }
@@ -65,21 +59,22 @@ class RouteService {
   Future<void> getOwnedRoutes({
     required String routeName,
   }) async {
-    try{
-      RouteCollection
-          .where("routeName", isNotEqualTo: routeName)
+    try {
+      RouteCollection.where("routeName", isNotEqualTo: routeName)
           .get()
           .then((querySnapshot) {
         print("Successfully completed");
         for (var docSnapshot in querySnapshot.docs) {
           // Extract specific fields from the document
-          var field1 = docSnapshot.get("description"); // Replace with your field names
+          var field1 =
+              docSnapshot.get("description"); // Replace with your field names
           var field2 = docSnapshot.get("routeName");
           var locations = docSnapshot.get("locations") as List<dynamic>;
           var field3 = locations.map((location) {
             var name = location["name"] as String;
             var note = location["note"] as String;
-            var place = location["place"] as GeoPoint; // Cast explicitly to GeoPoint
+            var place =
+                location["place"] as GeoPoint; // Cast explicitly to GeoPoint
 
             return {
               "name": name,
@@ -91,33 +86,23 @@ class RouteService {
             };
           }).toList();
 
-          print('${docSnapshot.id} ==> field1: $field1, field2: $field2, field3: $field3');
+          print(
+              '${docSnapshot.id} ==> field1: $field1, field2: $field2, field3: $field3');
         }
-      })
-          .catchError((error) {
+      }).catchError((error) {
         print("Failed to fetch data: $error");
       });
-    }
-    catch(e){
+    } catch (e) {
       print('Hata olustu: $e');
     }
   }
 
-
-  Future<void> getRouteCredentials ({
+  Future<void> getRouteCredentials({
     required String routeID,
     required String userID,
-}) async{
-    try{
-      
-    }
-    catch(e){
+  }) async {
+    try {} catch (e) {
       print('Hata olustu: $e');
     }
-
+  }
 }
-
-
-       
-}
-
