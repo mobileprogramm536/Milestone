@@ -2,6 +2,7 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:milestone/buttons/signIn_button.dart';
 import 'package:milestone/buttons/signIn_register_button.dart';
+import 'package:milestone/pages/Deneme.dart';
 import 'package:milestone/pages/register_page.dart';
 import 'package:milestone/pages/test.dart';
 import 'package:milestone/services/auth_service.dart';
@@ -69,11 +70,17 @@ class _SignInPageState extends State<SignInPage> {
         backgroundColor: Colors.red,
       );
     } else {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+              const DenemePage()));
       // Giriş başarılıysa
       CustomSnackbar.showMessage(
         context,
         "Giriş başarılı!",
         backgroundColor: Colors.green,
+
       );
     }
   }
@@ -89,7 +96,7 @@ class _SignInPageState extends State<SignInPage> {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
 
-    return Scaffold(
+    return AuthService().getUser() != null ? DenemePage() : Scaffold(
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
           child: GestureDetector(
