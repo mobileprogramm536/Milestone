@@ -1,12 +1,15 @@
+import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:milestone/textfields/route_text_field.dart';
 import 'package:milestone/theme/colors.dart';
 import 'package:milestone/widgets/google_maps_widget.dart';
-import '../place_item.dart';
+import '../services/auth_service.dart';
+import '../widgets/place_item.dart';
 import '../services/route_service.dart';
-import '../services/validation_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/searchBarMaps.dart';
 
 class CreateRoutePage extends StatefulWidget {
   @override
@@ -19,11 +22,18 @@ class _CreateRoutePageState extends State<CreateRoutePage> {
   final _routecontroller_name = TextEditingController();
   final _routecontroller_desc = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  final Completer<GoogleMapController> _mapController =
+      Completer<GoogleMapController>();
+  late LatLng _selectedLocation; // Track selected location
+  Set<Marker> _markers = {};
+  final List<LatLng?> places = [];
+  final List<GeoPoint> geoPoints = [];
 
   @override
   void initState() {
     super.initState();
-    _addPlace();
+    _selectedLocation = LatLng(41.0082, 28.9784); // Default to Istanbul
+    _addPlace(); //first route field
   }
 
   @override
@@ -31,15 +41,16 @@ class _CreateRoutePageState extends State<CreateRoutePage> {
     super.dispose();
   }
 
+  // Method for adding extra route fields
   void _addPlace() {
     setState(() {
       _controllers.add(TextEditingController());
       _noteControllers.add(TextEditingController());
+      places.add(null);
 
-      // Yeni öğe eklendiğinde listeyi hafifçe kaydır
+      // Scroll slightly when a new item is added
       Future.delayed(Duration(milliseconds: 100), () {
-        double targetPosition =
-            _scrollController.position.maxScrollExtent + 2; // Biraz aşağı kayar
+        double targetPosition = _scrollController.position.maxScrollExtent + 2;
         _scrollController.animateTo(
           targetPosition,
           duration: Duration(milliseconds: 500),
@@ -49,24 +60,78 @@ class _CreateRoutePageState extends State<CreateRoutePage> {
     });
   }
 
+  //Method for save route field to firestore
   void createRoute() {
     final routeName = _routecontroller_name.text;
     final description = _routecontroller_desc.text;
-    // Konumları dinamik olarak alalım
+    final routeUsername = AuthService().user?.uid;
+
+    if (routeUsername == null) {
+      print("Error: User is not authenticated.");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please log in to create a route.'),
+        ),
+      );
+      return;
+    }
+
+    print("Authenticated user UID: $routeUsername");
+
     List<Map<String, dynamic>> locations = [];
     for (int i = 0; i < _controllers.length - 1; i++) {
+      if (_controllers[i].text.isEmpty || places[i] == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Please fill in all fields and add locations'),
+          ),
+        );
+        return;
+      }
+
       locations.add({
         'name': _controllers[i].text,
-        'note': _noteControllers[i].text, // Notu al
+        'note': _noteControllers[i].text,
+        'place': GeoPoint(places[i]!.latitude, places[i]!.longitude),
       });
     }
 
-    // RouteService kullanarak veriyi kaydedelim
     RouteService().createRoute(
+      routeUser: routeUsername,
       routeName: routeName,
       routeDescription: description,
       locations: locations,
     );
+  }
+
+  //Method to save selected place to place list
+  void _savePlace(LatLng location, int index) {
+    setState(() {
+      if (index < places.length) {
+        places[index] = location;
+      }
+    });
+    print("place saved: $location");
+  }
+
+  //Method that put marker to selected place from search bar
+  void _onPlaceSelected(LatLng location, String placeName) {
+    setState(() {
+      _selectedLocation = location;
+      _markers = {
+        Marker(
+          markerId: MarkerId(placeName),
+          position: location,
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+          infoWindow: InfoWindow(
+            title: placeName,
+            snippet: "${location.latitude}, ${location.longitude}",
+          ),
+        ),
+      };
+
+      print("this is selected from search bar: $_selectedLocation");
+    });
   }
 
   @override
@@ -85,15 +150,43 @@ class _CreateRoutePageState extends State<CreateRoutePage> {
           ),
           child: Stack(children: [
             Positioned(
-                top: height * 0.08,
-                left: width / 2 - 100,
-                child: Container(
-                  decoration: BoxDecoration(color: AppColors.white1),
-                  height: 200,
-                  width: 200,
-                )),
+                top: height * 0.07,
+                left: width * 0.1,
+                right: width * 0.1,
+                child: MapsSearchBar(
+                    mapController: _mapController,
+                    onPlaceSelected:
+                        _onPlaceSelected)), //controller and selected place communication from searchbar
+            Positioned(
+              top: height * 0.15,
+              left: width * 0.1,
+              right: width * 0.1,
+              child: Container(
+                height: height * 0.25, // Adjust the height to fit your design
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20), // Rounded edges
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius:
+                      BorderRadius.circular(20), // Rounded corners for map
+                  child: GoogleMapWidget(
+                    mapController: _mapController,
+                    markers: _markers,
+                    initialLocation: _selectedLocation,
+                  ),
+                ),
+              ),
+            ),
             Container(
-              margin: EdgeInsets.only(top: height * 0.37, left: 20, right: 20),
+              margin: EdgeInsets.only(top: height * 0.41, left: 20, right: 20),
               padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: AppColors.grey1,
@@ -115,28 +208,26 @@ class _CreateRoutePageState extends State<CreateRoutePage> {
                       controller: _routecontroller_desc,
                       text: "Rotanızı tanıtın..."),
                   SizedBox(height: 5),
-                  // Dinamik Liste
                   Flexible(
                     child: ListView.builder(
                       controller: _scrollController,
                       itemCount: _controllers.length,
                       itemBuilder: (context, index) {
-                        // Tüm önceki öğelerin doluluğunu kontrol et
                         bool canShow = true;
-
                         for (int i = 0; i <= index; i++) {
                           if (_controllers[i].text.isEmpty) {
                             canShow = false;
                             break;
                           }
                         }
-
                         return AnimatedOpacity(
                           duration: Duration(milliseconds: 300),
-                          opacity: canShow
-                              ? 1.0
-                              : 0.5, // Tüm önceki öğelere göre opacity kontrolü
+                          opacity: canShow ? 1.0 : 0.5,
                           child: PlaceItem(
+                            onSaveLocation: (LatLng? location) {
+                              _savePlace(location ?? _selectedLocation,
+                                  index); // Pass the location and index
+                            },
                             isLastItem: index == _controllers.length - 1,
                             totalItems: _controllers.length,
                             onDelete: () {
@@ -149,21 +240,18 @@ class _CreateRoutePageState extends State<CreateRoutePage> {
                             noteController: _noteControllers[index],
                             onChanged: (value, note) {
                               setState(() {
-                                // Eğer yazı eklenirse bir sonraki öğeyi ekle
                                 if (value.isNotEmpty &&
                                     index == _controllers.length - 1) {
                                   _addPlace();
                                 }
                                 if (value.isEmpty &&
                                     index < _controllers.length - 1) {
-                                  // Silinen öğeden sonra gelenleri bir önceki öğeye aktar
                                   for (int i = index;
                                       i < _controllers.length - 1;
                                       i++) {
                                     _controllers[i].text =
                                         _controllers[i + 1].text;
                                   }
-                                  // Son öğeyi kaldır
                                   _controllers.removeLast();
                                 }
                               });
@@ -175,7 +263,6 @@ class _CreateRoutePageState extends State<CreateRoutePage> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  // Oluştur Butonu
                   Row(
                     children: [
                       SizedBox(
