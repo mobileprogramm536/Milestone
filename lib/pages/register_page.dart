@@ -147,7 +147,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     SizedBox(height: height * 0.02),
                     LoginTextButton(
                       onTap: () {
-                        Navigator.popAndPushNamed(context, '/singin');
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SignInPage()));
                       },
                     ),
                     SizedBox(height: height * 0.04),

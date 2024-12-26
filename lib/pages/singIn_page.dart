@@ -2,7 +2,9 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:milestone/buttons/signIn_button.dart';
 import 'package:milestone/buttons/signIn_register_button.dart';
-import 'package:milestone/pages/Deneme.dart';
+
+import 'package:milestone/pages/create_route_page.dart';
+
 import 'package:milestone/pages/register_page.dart';
 import 'package:milestone/pages/test.dart';
 import 'package:milestone/services/auth_service.dart';
@@ -25,6 +27,7 @@ class SignInPage extends StatefulWidget {
 class _SignInPageState extends State<SignInPage> {
   final _tEmail = TextEditingController();
   final _tPassword = TextEditingController();
+  final user = AuthService().user;
 
   @override
   void dispose() {
@@ -71,10 +74,9 @@ class _SignInPageState extends State<SignInPage> {
       );
     } else {
       Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-              const DenemePage()));
+
+          context, MaterialPageRoute(builder: (context) => CreateRoutePage()));
+
       // Giriş başarılıysa
       CustomSnackbar.showMessage(
         context,
@@ -219,7 +221,7 @@ class _SignInPageState extends State<SignInPage> {
                           MaterialPageRoute(
                             builder: (context) => ForgotPasswordScreen(),
                           ),
-                              (Route<dynamic> route) => false,
+                          (Route<dynamic> route) => false,
                         );
                       },
                       child: Text(

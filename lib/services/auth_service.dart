@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -8,13 +6,12 @@ class AuthService {
   final userCollection = FirebaseFirestore.instance.collection("users");
   User? user;
 
-  void setUser(User? user1){
-    user = user1;
-  }
-  User? getUser(){
-    user = _auth.currentUser;
-    return user;
-  }
+
+  // Get the current user directly from FirebaseAuth
+  User? get user => _auth.currentUser;
+
+
+
 
   Future<void> signOut() async {
     await _auth.signOut();
@@ -29,10 +26,12 @@ class AuthService {
         email: email,
         password: password,
       );
-      setUser(userCredential.user);
-      print(userCredential.user!.uid.toString());
-      print(user!.uid.toString());
-      return null;
+
+      print("Signed in user UID: ${userCredential.user!.uid}");
+      return null; // No error
+
+   
+
     } catch (e) {
       return "Giriş sırasında hata oluştu: $e";
     }
@@ -44,7 +43,7 @@ class AuthService {
     required String password,
   }) async {
     try {
-      // Firestore’da aynı e-posta veya kullanıcı adını kontrol et
+      // Check for existing email or username in Firestore
       final existingUsers =
           await userCollection.where("email", isEqualTo: email).get();
       if (existingUsers.docs.isNotEmpty) {
@@ -57,20 +56,20 @@ class AuthService {
         return "Bu kullanıcı adı zaten kullanımda.";
       }
 
-      // Firebase Auth ile kullanıcıyı kaydet
+      // Register user with Firebase Auth
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      // Firestore’a ek bilgiler ekle
+      // Add user details to Firestore
       await userCollection.doc(userCredential.user!.uid).set({
         "name": name,
         "email": email,
       });
 
-      return null; // Başarılı bir kayıt dönerse null döndürür
+      return null; // Successful registration
     } catch (e) {
       return "Kayıt sırasında hata oluştu: $e";
     }
@@ -80,11 +79,7 @@ class AuthService {
     try {
       final existingEmail =
           await userCollection.where("email", isEqualTo: email).get();
-      if (existingEmail.docs.isEmpty) {
-        return true;
-      } else {
-        return false;
-      }
+      return existingEmail.docs.isEmpty;
     } catch (e) {
       return null;
     }
@@ -92,9 +87,9 @@ class AuthService {
 
   Future<void> forgotPasswordEmailSend({required String email}) async {
     try {
-      _auth.sendPasswordResetEmail(email: email);
+      await _auth.sendPasswordResetEmail(email: email);
     } catch (e) {
-      return null;
+      print("Failed to send password reset email: $e");
     }
   }
 }
