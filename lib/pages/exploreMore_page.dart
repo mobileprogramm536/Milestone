@@ -37,37 +37,36 @@ class _ExploreMorePageState extends State<ExploreMorePage> {
                 SizedBox(
                   height: height * 0.05,
                 ),
-                Container(
-                  width: width*0.975,
-                  height: height*0.7,
-                  child: ListView(
-                      children: [
-                        Row(
-                          children: [
-                            ExploremorePageCard(
-                              title: 'Date Mekanları',
-                              description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi viverra nulla non magna ullamcorper, non.',
-                              location: 'Rome, Italy',
-                              imageUrl: 'https://via.placeholder.com/60', // Replace with actual image URL
-                              destinations: 5,
-                              duration: '3 hours',
-                              likes: 476,
+                Flexible(
+                    child: CustomScrollView(
+                      slivers: [
+                        SliverPadding(
+                          padding: EdgeInsets.all(width*0.02),
+                          sliver: SliverGrid(
+                            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                              maxCrossAxisExtent: height*0.4,
+                              mainAxisSpacing: height*0.0001,
+                              crossAxisSpacing: width*0.002,
                             ),
-                            ExploremorePageCard(
-                              title: 'Date Mekanları',
-                              description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi viverra nulla non magna ullamcorper, non.',
-                              location: 'Rome, Italy',
-                              imageUrl: 'https://via.placeholder.com/60', // Replace with actual image URL
-                              destinations: 5,
-                              duration: '3 hours',
-                              likes: 476,
+                            delegate: SliverChildBuilderDelegate(
+                                  (BuildContext context, int index) {
+                                return ExploremorePageCard(
+                                  title: 'Date Mekanları',
+                                  description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi viverra nulla non magna ullamcorper, non.',
+                                  location: 'Rome, Italy',
+                                  imageUrl: 'https://via.placeholder.com/60', // Replace with actual image URL
+                                  destinations: 5,
+                                  duration: '3 hours',
+                                  likes: 476,
+                                );
+                              },
+                              childCount: 20,
                             ),
-                          ],
+                          )
                         )
-
-                      ]
+                      ],
+                    ),
                   ),
-                ),
               ],
             ),
           ),
