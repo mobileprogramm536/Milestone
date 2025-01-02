@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:milestone/pages/exploreMore_page.dart';
-import 'package:milestone/pages/singIn_page.dart';
-
-import '../buttons/signIn_button.dart';
 import '../cards/explore_page_card.dart';
-import '../services/auth_service.dart';
 import '../theme/app_theme.dart';
 import '../theme/colors.dart';
 
@@ -77,31 +73,26 @@ class _ExplorePageState extends State<ExplorePage> {
                 ),
                   SizedBox(width: width*0.05),
               ],),
-              Container(
-                width: width*0.975,
-                height: height*0.7,
-                child: ListView(
-                    children: [
-                      ExploreCard(
-                        title: 'Date Mekanları',
-                        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi viverra nulla non magna ullamcorper, non.',
-                        location: 'Rome, Italy',
-                        imageUrl: 'https://via.placeholder.com/60', // Replace with actual image URL
-                        destinations: 5,
-                        duration: '3 hours',
-                        likes: 476,
+              Flexible(
+                child: CustomScrollView(
+                  slivers: [
+                    SliverPadding(
+                      padding: EdgeInsets.all(width*0.01),
+                      sliver: SliverList.separated(
+                        itemBuilder: (context, index) => const ExploreCard(
+                          title: 'Date Mekanları',
+                          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi viverra nulla non magna ullamcorper, non.',
+                          location: 'Rome, Italy',
+                          imageUrl: 'https://via.placeholder.com/60', // Replace with actual image URL
+                          destinations: 5,
+                          duration: '3 hours',
+                          likes: 476,
+                        ),
+                        separatorBuilder: (context, index) => SizedBox(height: height*0.005),
+                        itemCount: 6,
                       ),
-                      ExploreCard(
-                        title: 'Date Mekanları',
-                        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi viverra nulla non magna ullamcorper, non.',
-                        location: 'Rome, Italy',
-                        imageUrl: 'https://via.placeholder.com/60', // Replace with actual image URL
-                        destinations: 5,
-                        duration: '3 hours',
-                        likes: 476,
-                      ),
-
-                    ]
+                    )
+                  ],
                 ),
               ),
             ],
