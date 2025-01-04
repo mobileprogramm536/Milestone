@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:milestone/services/route_service.dart';
 
 import '../theme/colors.dart';
 
 class ExploreCard extends StatefulWidget {
+  final String routeId;
   final String title;
-  final String description;
-  final String location;
   final String imageUrl;
-  final int destinations;
-  final String duration;
   final int likes;
 
   const ExploreCard({
     Key? key,
+    required this.routeId,
     required this.title,
-    required this.description,
-    required this.location,
     required this.imageUrl,
-    required this.destinations,
-    required this.duration,
     required this.likes,
   }) : super(key: key);
 
@@ -27,13 +22,16 @@ class ExploreCard extends StatefulWidget {
 }
 
 class _ExploreCardState extends State<ExploreCard> {
+  late Map<String,dynamic> routeCredentials;
   late int likes; // To track the number of likes
   late bool isLiked; // To toggle like state
   @override
+
   void initState() {
     super.initState();
     likes = widget.likes; // Initialize likes
     isLiked = false; // Default state: unliked
+    Future routeCredentials = getRouteCardCredentials(widget.routeId, title: widget.title);
   }
 
   void toggleLike() {
@@ -48,12 +46,15 @@ class _ExploreCardState extends State<ExploreCard> {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return GestureDetector(
+
       onTap: () => {},
+
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
         ),
-        color: AppColors.darkgrey2, // Background color as in the design
+
+        color: AppColors.grey1, // Background color as in the design
         margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -83,6 +84,7 @@ class _ExploreCardState extends State<ExploreCard> {
                           SizedBox(
                             height: height * 0.005,
                           ),
+
                           Text(
                             widget.title,
                             style: const TextStyle(
@@ -101,6 +103,7 @@ class _ExploreCardState extends State<ExploreCard> {
                             ),
                             maxLines: 4,
                             overflow: TextOverflow.ellipsis,
+
                           ),
                         ],
                       ),
@@ -122,6 +125,7 @@ class _ExploreCardState extends State<ExploreCard> {
                           color: Colors.white,
                           fontSize: 12.0,
                         ),
+
                       ),
                       SizedBox(width: width * 0.03),
                       const Icon(
@@ -132,11 +136,13 @@ class _ExploreCardState extends State<ExploreCard> {
                       const SizedBox(width: 4.0),
                       Text(
                         '${widget.destinations} destination',
+
                         style: const TextStyle(
                           color: AppColors.white1,
                           fontSize: 12.0,
                         ),
                       ),
+
                       SizedBox(width: width * 0.04),
                       Row(children: [
                         Text(
@@ -146,6 +152,7 @@ class _ExploreCardState extends State<ExploreCard> {
                             fontSize: 12.0,
                           ),
                         ),
+
                         IconButton(
                           onPressed: toggleLike, // Action to toggle like
                           icon: Icon(
@@ -154,6 +161,7 @@ class _ExploreCardState extends State<ExploreCard> {
                             size: 24.0,
                           ),
                         ),
+
                       ]),
                     ],
                   ),
@@ -164,3 +172,4 @@ class _ExploreCardState extends State<ExploreCard> {
     );
   }
 }
+

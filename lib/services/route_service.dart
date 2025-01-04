@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+
 //servis kontrol
 //username str
 //title srt ++
@@ -30,11 +31,13 @@ class RouteCard {
   int? destinationcount;
   bool? liked;
   int? likecount;
+
 }
 
 class RouteService {
   final RouteCollection = FirebaseFirestore.instance.collection("routes");
   final UserCollection = FirebaseFirestore.instance.collection("users");
+
   final UserDetailsCollection =
       FirebaseFirestore.instance.collection("userdetails");
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -77,6 +80,7 @@ class RouteService {
 
     return rc;
   }
+
 
   // Rota verilerini Firebase Firestore'a gönderme fonksiyonu
   Future<void> createRoute({
@@ -165,6 +169,7 @@ class RouteService {
         print("Failed to fetch data: $error");
       });
     } catch (e) {
+
       print('Hata olustu: $e');
     }
   }

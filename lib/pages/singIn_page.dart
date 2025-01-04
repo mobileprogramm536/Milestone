@@ -99,7 +99,9 @@ class _SignInPageState extends State<SignInPage> {
     final width = MediaQuery.of(context).size.width;
 
     return AuthService().user != null
+
         ? MainPage()
+
         : Scaffold(
             resizeToAvoidBottomInset: true,
             body: SingleChildScrollView(

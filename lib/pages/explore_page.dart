@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:milestone/pages/exploreMore_page.dart';
+
+import 'package:milestone/pages/singIn_page.dart';
+
+import '../buttons/signIn_button.dart';
 import '../cards/explore_page_card.dart';
+import '../services/auth_service.dart';
+
+
 import '../theme/app_theme.dart';
 import '../theme/colors.dart';
 import '../widgets/custom_navbar.dart';
@@ -29,6 +36,7 @@ class _ExplorePageState extends State<ExplorePage> {
     }
 
     return Scaffold(
+
       backgroundColor: AppColors.darkgrey1,
       resizeToAvoidBottomInset: true,
       body: Container(
@@ -138,5 +146,6 @@ class _ExplorePageState extends State<ExplorePage> {
         ),
       ),
     );
+
   }
 }

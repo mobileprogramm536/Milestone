@@ -28,6 +28,7 @@ class _ExploreMorePageState extends State<ExploreMorePage> {
     final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
+
       backgroundColor: AppColors.darkgrey1,
       resizeToAvoidBottomInset: true,
       body: Container(
@@ -101,5 +102,6 @@ class _ExploreMorePageState extends State<ExploreMorePage> {
         ),
       ),
     );
+
   }
 }
