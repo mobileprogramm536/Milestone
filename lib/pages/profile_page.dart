@@ -137,13 +137,13 @@ class _ProfilePageState extends State<ProfilePage> {
           children: avatars
               .map(
                 (avatarPath) => GestureDetector(
-                  onTap: () => _updateProfileImage(avatarPath),
-                  child: CircleAvatar(
-                    backgroundImage: AssetImage(avatarPath),
-                    radius: 30,
-                  ),
-                ),
-              )
+              onTap: () => _updateProfileImage(avatarPath),
+              child: CircleAvatar(
+                backgroundImage: AssetImage(avatarPath),
+                radius: 30,
+              ),
+            ),
+          )
               .toList(),
         ),
       ),
@@ -190,49 +190,49 @@ class _ProfilePageState extends State<ProfilePage> {
       body: profileImageUrl == null && username.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: _showAvatarSelection,
-                        child: CircleAvatar(
-                          radius: 40,
-                          backgroundImage:
-                              AssetImage(profileImageUrl ?? femaleAvatars[0]),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            username,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            "${followers} takipçi",
-                            style: const TextStyle(
-                                color: Colors.grey, fontSize: 16),
-                          ),
-                          Text(
-                            "${routes} rota",
-                            style: const TextStyle(
-                                color: Colors.grey, fontSize: 16),
-                          ),
-                        ],
-                      ),
-                    ],
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                GestureDetector(
+                  onTap: _showAvatarSelection,
+                  child: CircleAvatar(
+                    radius: 40,
+                    backgroundImage:
+                    AssetImage(profileImageUrl ?? femaleAvatars[0]),
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      username,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "${followers} takipçi",
+                      style: const TextStyle(
+                          color: Colors.grey, fontSize: 16),
+                    ),
+                    Text(
+                      "${routes} rota",
+                      style: const TextStyle(
+                          color: Colors.grey, fontSize: 16),
+                    ),
+                  ],
+                ),
+              ],
             ),
+          ],
+        ),
+      ),
     );
   }
 }

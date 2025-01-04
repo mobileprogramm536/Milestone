@@ -4,6 +4,8 @@ import 'package:milestone/buttons/custom_button.dart';
 import '../theme/app_theme.dart';
 
 class codeVerificationScreen extends StatefulWidget {
+  const codeVerificationScreen({super.key});
+
   @override
   _codeVerificationScreenState createState() => _codeVerificationScreenState();
 }

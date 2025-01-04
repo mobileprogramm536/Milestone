@@ -4,7 +4,7 @@ import 'package:milestone/theme/colors.dart';
 class SignInButton extends StatelessWidget {
   final VoidCallback onPressed;
 
-  SignInButton({required this.onPressed});
+  const SignInButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

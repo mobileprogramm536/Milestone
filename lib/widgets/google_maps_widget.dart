@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class GoogleMapWidget extends StatefulWidget {
+  const GoogleMapWidget({super.key});
+
   @override
   _GoogleMapWidgetState createState() => _GoogleMapWidgetState();
 }
@@ -10,7 +12,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
   late GoogleMapController mapController;
 
   // Google Map için başlangıç konumu
-  CameraPosition _initialCameraPosition = CameraPosition(
+  final CameraPosition _initialCameraPosition = const CameraPosition(
     target: LatLng(37.7749, -122.4194), // Örnek koordinat: San Francisco
     zoom: 12,
   );
@@ -22,7 +24,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
       onMapCreated: (GoogleMapController controller) {
         mapController = controller;
       },
-      markers: Set<Marker>(), // Marker'ları burada ekleyebilirsiniz
+      markers: const <Marker>{}, // Marker'ları burada ekleyebilirsiniz
     );
   }
 }

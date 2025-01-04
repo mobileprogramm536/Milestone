@@ -1,3 +1,21 @@
+// Buildscript bölümü eklendi
+buildscript {
+    ext.kotlin_version = '1.7.10'
+
+
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        //noinspection AndroidGradlePluginVersion
+        classpath 'com.android.tools.build:gradle:8.2.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+// Proje genelinde kullanılacak bağımlılık depoları
 allprojects {
     repositories {
         google()
@@ -5,6 +23,7 @@ allprojects {
     }
 }
 
+// Proje derleme yapılandırması ve dizin ayarları
 rootProject.buildDir = "../build"
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
@@ -13,6 +32,7 @@ subprojects {
     project.evaluationDependsOn(":app")
 }
 
+// Temizlik işlemi için görev tanımı
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }

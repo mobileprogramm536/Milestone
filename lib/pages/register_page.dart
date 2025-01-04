@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:milestone/pages/singIn_page.dart';
 import 'package:milestone/services/auth_service.dart';
 import '../buttons/google_login_button.dart';
 import '../buttons/register_button.dart';

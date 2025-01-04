@@ -5,7 +5,7 @@ import '../theme/colors.dart';
 class RegisterTextButton extends StatelessWidget {
   final VoidCallback onTap;
 
-  RegisterTextButton({required this.onTap});
+  const RegisterTextButton({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

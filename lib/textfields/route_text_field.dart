@@ -28,7 +28,8 @@ class RouteTextField extends StatelessWidget {
             TextStyle(color: Colors.grey[500], fontWeight: FontWeight.normal),
       ),
       cursorColor: AppColors.white1,
-      style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+      style:
+          const TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
     );
   }
 }

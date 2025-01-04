@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../theme/colors.dart';
 
 class SuccessScreen extends StatefulWidget {
+  const SuccessScreen({super.key});
+
   @override
   State<SuccessScreen> createState() => _SuccessScreenState();
 }
@@ -12,7 +14,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -33,7 +35,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 width: 2,
               ),
             ),
-            child: Center(
+            child: const Center(
               child: Icon(
                 Icons.check,
                 color: Colors.greenAccent,

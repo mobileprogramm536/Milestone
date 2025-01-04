@@ -4,7 +4,7 @@ import 'package:milestone/theme/colors.dart';
 class RegisterButton extends StatelessWidget {
   final VoidCallback onPressed;
 
-  RegisterButton({required this.onPressed});
+  const RegisterButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

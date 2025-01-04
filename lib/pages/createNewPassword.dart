@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class CreateNewPasswordScreen extends StatefulWidget {
+  const CreateNewPasswordScreen({super.key});
+
   @override
   _CreateNewPasswordScreenState createState() =>
       _CreateNewPasswordScreenState();
@@ -31,32 +33,33 @@ class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Instruction Text
-              Text(
+              const Text(
                 'Create your new password',
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.white70, fontSize: 20),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 'Your new password must be different from previously used passwords.',
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.white54, fontSize: 14),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
 
               // New Password Field
               TextField(
                 controller: _newPasswordController,
                 obscureText: _obscureNewPassword,
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   labelText: 'New Password',
-                  labelStyle: TextStyle(color: Colors.white70),
+                  labelStyle: const TextStyle(color: Colors.white70),
                   filled: true,
                   fillColor: Colors.grey[900],
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide(color: Colors.greenAccent, width: 2),
+                    borderSide:
+                        const BorderSide(color: Colors.greenAccent, width: 2),
                   ),
                   suffixIcon: IconButton(
                     icon: Icon(
@@ -73,21 +76,22 @@ class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
               // Confirm Password Field
               TextField(
                 controller: _confirmPasswordController,
                 obscureText: _obscureConfirmPassword,
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   labelText: 'Confirm Password',
-                  labelStyle: TextStyle(color: Colors.white70),
+                  labelStyle: const TextStyle(color: Colors.white70),
                   filled: true,
                   fillColor: Colors.grey[900],
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide(color: Colors.greenAccent, width: 2),
+                    borderSide:
+                        const BorderSide(color: Colors.greenAccent, width: 2),
                   ),
                   suffixIcon: IconButton(
                     icon: Icon(
@@ -104,19 +108,20 @@ class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
 
               // Create Password Button
               ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 80, vertical: 15),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
                   backgroundColor: Colors.greenAccent,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   'Create Password',
                   style: TextStyle(color: Colors.black, fontSize: 18),
                 ),

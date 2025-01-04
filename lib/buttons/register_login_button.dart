@@ -5,7 +5,7 @@ import '../theme/colors.dart';
 class LoginTextButton extends StatelessWidget {
   final VoidCallback onTap;
 
-  LoginTextButton({required this.onTap});
+  const LoginTextButton({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

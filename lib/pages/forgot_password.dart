@@ -72,7 +72,7 @@ class _forgotPasswordState extends State<forgotPassword> {
                   button_text: 'Kod Gonder',
                   onPressed: () async {
                     final forgotEmail = _tForgotEmail.text;
-                    print("$forgotEmail");
+                    print(forgotEmail);
                     final result = await AuthService()
                         .forgotPasswordEmailCheck(email: forgotEmail);
                     if (result == false) {

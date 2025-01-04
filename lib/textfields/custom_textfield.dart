@@ -13,7 +13,8 @@ class CustomTextField extends StatelessWidget {
   final BorderRadiusGeometry borderRadius;
   final TextEditingController controller;
 
-  CustomTextField({
+  const CustomTextField({
+    super.key,
     required this.hintText,
     required this.icon,
     this.obscureText = false,
@@ -46,7 +47,7 @@ class CustomTextField extends StatelessWidget {
           hintStyle: TextStyle(color: AppColors.white1, fontSize: fontSize),
           prefixIcon: Icon(icon, color: AppColors.white1, size: iconSize),
           border: InputBorder.none, // Outline kaldırıldı
-          contentPadding: EdgeInsets.symmetric(vertical: 16.0),
+          contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
         ),
         style: TextStyle(color: AppColors.white1, fontSize: fontSize),
       ),

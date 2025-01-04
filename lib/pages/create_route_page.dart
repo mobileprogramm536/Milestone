@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:milestone/textfields/route_text_field.dart';
 import 'package:milestone/theme/colors.dart';
-import 'package:milestone/widgets/google_maps_widget.dart';
 import '../place_item.dart';
 import '../services/route_service.dart';
-import '../services/validation_service.dart';
 import '../theme/app_theme.dart';
 
 class CreateRoutePage extends StatefulWidget {
+  const CreateRoutePage({super.key});
+
   @override
   _CreateRoutePageState createState() => _CreateRoutePageState();
 }
@@ -37,12 +36,12 @@ class _CreateRoutePageState extends State<CreateRoutePage> {
       _noteControllers.add(TextEditingController());
 
       // Yeni öğe eklendiğinde listeyi hafifçe kaydır
-      Future.delayed(Duration(milliseconds: 100), () {
+      Future.delayed(const Duration(milliseconds: 100), () {
         double targetPosition =
             _scrollController.position.maxScrollExtent + 2; // Biraz aşağı kayar
         _scrollController.animateTo(
           targetPosition,
-          duration: Duration(milliseconds: 500),
+          duration: const Duration(milliseconds: 500),
           curve: Curves.easeInOut,
         );
       });
@@ -88,14 +87,14 @@ class _CreateRoutePageState extends State<CreateRoutePage> {
                 top: height * 0.08,
                 left: width / 2 - 100,
                 child: Container(
-                  decoration: BoxDecoration(color: AppColors.white1),
+                  decoration: const BoxDecoration(color: AppColors.white1),
                   height: 200,
                   width: 200,
                 )),
             Container(
               margin: EdgeInsets.only(top: height * 0.37, left: 20, right: 20),
-              padding: EdgeInsets.all(20),
-              decoration: BoxDecoration(
+              padding: const EdgeInsets.all(20),
+              decoration: const BoxDecoration(
                 color: AppColors.grey1,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(50),
@@ -104,17 +103,17 @@ class _CreateRoutePageState extends State<CreateRoutePage> {
               ),
               child: Column(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   RouteTextField(
                       controller: _routecontroller_name,
                       text: "Rotanızın adı..."),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   RouteTextField(
                       controller: _routecontroller_desc,
                       text: "Rotanızı tanıtın..."),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   // Dinamik Liste
                   Flexible(
                     child: ListView.builder(
@@ -132,7 +131,7 @@ class _CreateRoutePageState extends State<CreateRoutePage> {
                         }
 
                         return AnimatedOpacity(
-                          duration: Duration(milliseconds: 300),
+                          duration: const Duration(milliseconds: 300),
                           opacity: canShow
                               ? 1.0
                               : 0.5, // Tüm önceki öğelere göre opacity kontrolü
@@ -187,13 +186,13 @@ class _CreateRoutePageState extends State<CreateRoutePage> {
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.green1,
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 30),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
                         ),
-                        child: Text("oluştur",
+                        child: const Text("oluştur",
                             style: TextStyle(
                                 fontSize: 14,
                                 color: AppColors.white1,

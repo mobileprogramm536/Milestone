@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -8,10 +6,11 @@ class AuthService {
   final userCollection = FirebaseFirestore.instance.collection("users");
   User? user;
 
-  void setUser(User? user1){
+  void setUser(User? user1) {
     user = user1;
   }
-  User? getUser(){
+
+  User? getUser() {
     user = _auth.currentUser;
     return user;
   }
@@ -94,7 +93,7 @@ class AuthService {
     try {
       _auth.sendPasswordResetEmail(email: email);
     } catch (e) {
-      return null;
+      return;
     }
   }
 }
