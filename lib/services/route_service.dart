@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'auth_service.dart';
 
 //servis kontrol
 //username str
@@ -31,7 +32,6 @@ class RouteCard {
   int? destinationcount;
   bool? liked;
   int? likecount;
-
 }
 
 class RouteService {
@@ -81,7 +81,6 @@ class RouteService {
     return rc;
   }
 
-
   // Rota verilerini Firebase Firestore'a gönderme fonksiyonu
   Future<void> createRoute({
     required String? routeUser,
@@ -108,27 +107,20 @@ class RouteService {
 
   // Rota Explore Fonksiyonu
 
-  Future<void> getExploreRoutes({
-    required String userID,
-  }) async {
+  Future<List<String>> getExploreRoutes() async {
+    var userID = AuthService().getUser();
     try {
-      RouteCollection.where("ownerId", isEqualTo: userID)
-          .get()
-          .then((querySnapshot) {
-        print("Successfully completed");
-        for (var docSnapshot in querySnapshot.docs) {
-          // Extract specific fields from the document
-          var field1 =
-              docSnapshot.get("description"); // Replace with your field names
-          var field2 = docSnapshot.get("routeName");
+      QuerySnapshot querySnapshot = await RouteCollection.where('routeUser',
+              isNotEqualTo: userID.toString())
+          .get();
 
-          print('${docSnapshot.id} ==> field1: $field1, field2: $field2');
-        }
-      }).catchError((error) {
-        print("Failed to fetch data: $error");
-      });
+      List<String> documentIds =
+          querySnapshot.docs.map((doc) => doc.id).toList();
+
+      return documentIds;
     } catch (e) {
-      print('Hata olustu: $e');
+      print('Error fetching routes: $e');
+      return [];
     }
   }
 
@@ -169,7 +161,6 @@ class RouteService {
         print("Failed to fetch data: $error");
       });
     } catch (e) {
-
       print('Hata olustu: $e');
     }
   }

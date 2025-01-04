@@ -5,14 +5,12 @@ import '../theme/colors.dart';
 
 class ExploreCard extends StatefulWidget {
   final String routeId;
-  final String title;
   final String imageUrl;
   final int likes;
 
   const ExploreCard({
     Key? key,
     required this.routeId,
-    required this.title,
     required this.imageUrl,
     required this.likes,
   }) : super(key: key);
@@ -22,16 +20,19 @@ class ExploreCard extends StatefulWidget {
 }
 
 class _ExploreCardState extends State<ExploreCard> {
-  late Map<String,dynamic> routeCredentials;
-  late int likes; // To track the number of likes
+  RouteCard? routeC = null;
+  int likes = 0; // To track the number of likes
   late bool isLiked; // To toggle like state
   @override
-
   void initState() {
-    super.initState();
-    likes = widget.likes; // Initialize likes
+    super.initState(); // Initialize likes
     isLiked = false; // Default state: unliked
-    Future routeCredentials = getRouteCardCredentials(widget.routeId, title: widget.title);
+    RouteService().getRouteCard(widget.routeId).then((element) => {
+          setState(() {
+            routeC = element;
+            likes = routeC!.likecount!;
+          })
+        });
   }
 
   void toggleLike() {
@@ -43,18 +44,22 @@ class _ExploreCardState extends State<ExploreCard> {
 
   @override
   Widget build(BuildContext context) {
+    if (routeC == null) {
+      return Container(
+        color: Colors.red,
+        height: 50,
+        width: 50,
+      );
+    }
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return GestureDetector(
-
       onTap: () => {},
-
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
         ),
-
-        color: AppColors.grey1, // Background color as in the design
+        color: AppColors.darkgrey2, // Background color as in the design
         margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -69,7 +74,8 @@ class _ExploreCardState extends State<ExploreCard> {
                       child: GestureDetector(
                         onTap: () => {},
                         child: CircleAvatar(
-                          backgroundImage: NetworkImage(widget.imageUrl),
+                          backgroundImage:
+                              AssetImage('assets/images/femaleavatar9.png'),
                           radius: 30.0,
                         ),
                       ),
@@ -84,9 +90,8 @@ class _ExploreCardState extends State<ExploreCard> {
                           SizedBox(
                             height: height * 0.005,
                           ),
-
                           Text(
-                            widget.title,
+                            routeC!.title!,
                             style: const TextStyle(
                               color: AppColors.white1,
                               fontSize: 16.0,
@@ -96,14 +101,13 @@ class _ExploreCardState extends State<ExploreCard> {
                           SizedBox(height: height * 0.001),
                           // Description
                           Text(
-                            widget.description,
+                            routeC!.description!,
                             style: const TextStyle(
                               color: AppColors.white1,
                               fontSize: 8.0,
                             ),
                             maxLines: 4,
                             overflow: TextOverflow.ellipsis,
-
                           ),
                         ],
                       ),
@@ -114,45 +118,41 @@ class _ExploreCardState extends State<ExploreCard> {
                   child: Row(
                     children: [
                       const Icon(
-                        Icons.location_on,
+                        Icons.pin_drop_outlined,
                         color: AppColors.yellow1,
                         size: 16.0,
                       ),
                       const SizedBox(width: 4.0),
                       Text(
-                        widget.location,
+                        routeC!.location!,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 12.0,
                         ),
-
                       ),
                       SizedBox(width: width * 0.03),
                       const Icon(
-                        Icons.play_arrow,
+                        Icons.navigation_outlined,
                         color: AppColors.yellow1,
                         size: 16.0,
                       ),
                       const SizedBox(width: 4.0),
                       Text(
-                        '${widget.destinations} destination',
-
+                        routeC!.destinationcount!.toString(),
                         style: const TextStyle(
                           color: AppColors.white1,
                           fontSize: 12.0,
                         ),
                       ),
-
                       SizedBox(width: width * 0.04),
                       Row(children: [
                         Text(
-                          likes.toString(),
+                          routeC!.likecount!.toString(),
                           style: const TextStyle(
                             color: AppColors.white1,
                             fontSize: 12.0,
                           ),
                         ),
-
                         IconButton(
                           onPressed: toggleLike, // Action to toggle like
                           icon: Icon(
@@ -161,7 +161,6 @@ class _ExploreCardState extends State<ExploreCard> {
                             size: 24.0,
                           ),
                         ),
-
                       ]),
                     ],
                   ),
@@ -172,4 +171,3 @@ class _ExploreCardState extends State<ExploreCard> {
     );
   }
 }
-
