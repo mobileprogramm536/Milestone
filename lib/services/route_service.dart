@@ -1,17 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-
-//username str
-//title srt ++
-//description str ++
-//location str AAAAA
-//destinationcount ++
-//likecount  AAAAA
-//liked?
-//pfpurl
-
-
 class RouteCard{
   RouteCard({
     this.location,
@@ -74,7 +63,6 @@ class RouteService {
     } catch (e) {
       print("Error fetching RouteCard: $e");
     }
-
     return rc;
   }
 
@@ -103,73 +91,35 @@ class RouteService {
     }
   }
 
+  Future<List<String>> getExploreRoutes(String userID) async {
+    try {
 
-  // Rota Explore Fonksiyonu
+      QuerySnapshot querySnapshot = await RouteCollection
+          .where('routeUser', isNotEqualTo: userID)
+          .get();
 
-  Future<void> getExploreRoutes({
-    required String userID,
-  }) async {
-    try{
-      RouteCollection
-          .where("ownerId", isEqualTo: userID)
-          .get()
-          .then((querySnapshot) {
-        print("Successfully completed");
-        for (var docSnapshot in querySnapshot.docs) {
-          // Extract specific fields from the document
-          var field1 = docSnapshot.get("description"); // Replace with your field names
-          var field2 = docSnapshot.get("routeName");
+      List<String> documentIds = querySnapshot.docs.map((doc) => doc.id).toList();
 
-          print('${docSnapshot.id} ==> field1: $field1, field2: $field2');
-        }
-      })
-          .catchError((error) {
-        print("Failed to fetch data: $error");
-      });
-    }
-    catch(e){
-      print('Hata olustu: $e');
+      return documentIds;
+    } catch (e) {
+      print('Error fetching routes: $e');
+      return [];
     }
   }
 
-  Future<void> getOwnedRoutes({
-    required String routeName,
-  }) async {
-    try{
-      RouteCollection
-          .where("routeName", isNotEqualTo: routeName)
-          .get()
-          .then((querySnapshot) {
-        print("Successfully completed");
-        for (var docSnapshot in querySnapshot.docs) {
-          // Extract specific fields from the document
-          var field1 = docSnapshot.get("description"); // Replace with your field names
-          var field2 = docSnapshot.get("routeName");
-          var locations = docSnapshot.get("locations") as List<dynamic>;
-          var field3 = locations.map((location) {
-            var name = location["name"] as String;
-            var note = location["note"] as String;
-            var place = location["place"] as GeoPoint; // Cast explicitly to GeoPoint
+  Future<List<String>> getOwnedRoutes(String userID) async {
+    try {
 
-            return {
-              "name": name,
-              "note": note,
-              "place": {
-                "latitude": place.latitude,
-                "longitude": place.longitude
-              }
-            };
-          }).toList();
+      QuerySnapshot querySnapshot = await RouteCollection
+          .where('routeUser', isEqualTo: userID)
+          .get();
 
-          print('${docSnapshot.id} ==> field1: $field1, field2: $field2, field3: $field3');
-        }
-      })
-          .catchError((error) {
-        print("Failed to fetch data: $error");
-      });
-    }
-    catch(e){
-      print('Hata olustu: $e');
+      List<String> documentIds = querySnapshot.docs.map((doc) => doc.id).toList();
+
+      return documentIds;
+    } catch (e) {
+      print('Error fetching routes: $e');
+      return [];
     }
   }
 
