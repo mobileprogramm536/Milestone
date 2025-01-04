@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:milestone/services/route_service.dart';
 
 import '../theme/colors.dart';
 
 class ExploreCard extends StatefulWidget {
+  final String routeId;
   final String title;
-  final String description;
-  final String location;
   final String imageUrl;
-  final int destinations;
-  final String duration;
   final int likes;
 
   const ExploreCard({
     Key? key,
+    required this.routeId,
     required this.title,
-    required this.description,
-    required this.location,
     required this.imageUrl,
-    required this.destinations,
-    required this.duration,
     required this.likes,
   }) : super(key: key);
 
@@ -27,13 +22,16 @@ class ExploreCard extends StatefulWidget {
 }
 
 class _ExploreCardState extends State<ExploreCard> {
+  late Map<String,dynamic> routeCredentials;
   late int likes; // To track the number of likes
   late bool isLiked; // To toggle like state
   @override
+
   void initState() {
     super.initState();
     likes = widget.likes; // Initialize likes
     isLiked = false; // Default state: unliked
+    Future routeCredentials = getRouteCardCredentials(widget.routeId, title: widget.title);
   }
   void toggleLike() {
     setState(() {
@@ -94,7 +92,7 @@ class _ExploreCardState extends State<ExploreCard> {
                             height: height * 0.001),
                         // Description
                         Text(
-                          widget.description,
+                          routeCredentials['routeDescription'],
                           style: const TextStyle(
                             color: AppColors.white1,
                             fontSize: 8.0,
@@ -117,7 +115,7 @@ class _ExploreCardState extends State<ExploreCard> {
                     ),
                     const SizedBox(width: 4.0),
                     Text(
-                      widget.location,
+                      routeCredentials['routeLocation'],
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 12.0,
@@ -131,7 +129,7 @@ class _ExploreCardState extends State<ExploreCard> {
                     ),
                     const SizedBox(width: 4.0),
                     Text(
-                      '${widget.destinations} destination',
+                      routeCredentials['routeSize'],
                       style: const TextStyle(
                         color: AppColors.white1,
                         fontSize: 12.0,
@@ -141,7 +139,7 @@ class _ExploreCardState extends State<ExploreCard> {
                     Row(
                       children: [
                         Text(
-                        likes.toString(),
+                        routeCredentials['likeCount'],
                         style: const TextStyle(
                           color: AppColors.white1,
                           fontSize: 12.0,
