@@ -36,6 +36,9 @@ class _PlaceItemState extends State<PlaceItem> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus(); // Tüm TextField'lardan odağı kaldırır
@@ -67,71 +70,78 @@ class _PlaceItemState extends State<PlaceItem> {
                 ),
                 title: Column(
                   children: [
-                    TextField(
-                      cursorColor: AppColors.white1,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: AppColors.darkgrey1,
-                        fontWeight: FontWeight.normal,
-                      ),
-                      controller: widget.controller,
-                      onChanged: (value) {
-                        setState(() {
-                          _showBorder = true; // Yazılırken kenarlık göster
-                        });
-                        widget.onChanged(value, widget.noteController.text);
-                      },
-                      onEditingComplete: () {
-                        setState(() {
-                          // Yazı tamamlandıysa ve boş değilse kenarlık kalkar
-                          if (widget.controller.text.isNotEmpty) {
-                            _showBorder = false;
-                          }
-                        });
-                      },
-                      decoration: InputDecoration(
-                        hintText: "Yerin adı...",
-                        border: _showBorder
-                            ? const OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: AppColors.white1, width: 1),
-                              )
-                            : InputBorder.none, // Kenarlık kaldırma
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: AppColors.white1, width: 1.5),
+                    Container(
+                      height: height * 0.04,
+                      child: Center(
+                        child: TextField(
+                          cursorColor: AppColors.white1,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: AppColors.darkgrey1,
+                            fontWeight: FontWeight.normal,
+                          ),
+                          controller: widget.controller,
+                          onChanged: (value) {
+                            setState(() {
+                              _showBorder = true; // Yazılırken kenarlık göster
+                            });
+                            widget.onChanged(value, widget.noteController.text);
+                          },
+                          onEditingComplete: () {
+                            setState(() {
+                              // Yazı tamamlandıysa ve boş değilse kenarlık kalkar
+                              if (widget.controller.text.isNotEmpty) {
+                                _showBorder = false;
+                              }
+                            });
+                          },
+                          decoration: InputDecoration(
+                            hintText: "Yerin adı...",
+                            border: _showBorder
+                                ? const OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: AppColors.white1),
+                                  )
+                                : InputBorder.none, // Kenarlık kaldırma
+                            focusedBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(color: AppColors.white1),
+                            ),
+                            hintStyle: const TextStyle(
+                                color: AppColors.grey1,
+                                fontWeight: FontWeight.normal),
+                          ),
                         ),
-                        hintStyle: const TextStyle(
-                            color: AppColors.grey1,
-                            fontWeight: FontWeight.normal),
                       ),
                     ),
-                    const SizedBox(height: 5),
+                    SizedBox(height: height * 0.005),
                   ],
                 ),
                 subtitle: Column(
                   children: [
-                    TextField(
-                      cursorColor: AppColors.white1,
-                      style: const TextStyle(
-                        color: AppColors.darkgrey1,
-                        fontSize: 12,
-                      ),
-                      controller: widget.noteController,
-                      onChanged: (value) {
-                        widget.onChanged(widget.controller.text, value);
-                      },
-                      decoration: const InputDecoration(
-                        hintText: "Not ekle...",
-                        border: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: AppColors.white1, width: 1),
+                    Container(
+                      height: height * 0.06,
+                      child: TextField(
+                        cursorColor: AppColors.white1,
+                        style: const TextStyle(
+                          color: AppColors.darkgrey1,
+                          fontSize: 12,
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: AppColors.white1, width: 1.5),
+                        controller: widget.noteController,
+                        onChanged: (value) {
+                          widget.onChanged(widget.controller.text, value);
+                        },
+                        decoration: const InputDecoration(
+                          hintText: "Not ekle...",
+                          border: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: AppColors.white1, width: 1),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: AppColors.white1, width: 1.5),
+                          ),
+                          hintStyle: TextStyle(color: AppColors.grey1),
                         ),
-                        hintStyle: TextStyle(color: AppColors.grey1),
                       ),
                     ),
                   ],
@@ -140,7 +150,7 @@ class _PlaceItemState extends State<PlaceItem> {
                   children: [
                     SizedBox(
                       width: 20, // Genişliği ayarlayabilirsiniz
-                      height: 20, // Yüksekliği ayarlayabilirsiniz
+                      height: 15, // Yüksekliği ayarlayabilirsiniz
                       child: IconButton(
                         icon: const Icon(
                           Icons.add_location,
@@ -156,7 +166,7 @@ class _PlaceItemState extends State<PlaceItem> {
                       ),
                     ),
                     SizedBox(
-                      height: 20,
+                      height: height * 0.02,
                     ),
                     SizedBox(
                       width: 20, // Genişliği ayarlayabilirsiniz

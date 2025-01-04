@@ -16,7 +16,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 4;
   int _visitedCountriesCount = 0;
   int _totalCountriesCount = 150;
   double _visitedPercentage = 0.0;
@@ -79,6 +79,9 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+
     return Container(
       decoration: const BoxDecoration(gradient: appBackground),
       child: Scaffold(
@@ -166,9 +169,27 @@ class _MainPageState extends State<MainPage> {
           ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        bottomNavigationBar: CustomNavBar(
-          onItemSelected: _onNavBarItemSelected,
-          selectedIndex: _selectedIndex,
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.only(right: 8.0, left: 8.0, bottom: 10.0),
+          child: Container(
+            height: height * 0.08, // Reduced height for a sleeker design
+            decoration: BoxDecoration(
+              color: Colors.transparent,
+              // Replace with AppColors if needed
+              borderRadius: BorderRadius.circular(16.0), // Rounded corners
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 6.0,
+                  offset: Offset(0, 6), // Subtle shadow effect
+                ),
+              ],
+            ),
+            child: CustomNavBar(
+              onItemSelected: _onNavBarItemSelected,
+              selectedIndex: _selectedIndex,
+            ),
+          ),
         ),
       ),
     );
