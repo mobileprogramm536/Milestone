@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:milestone/services/route_service.dart';
 
 import '../theme/colors.dart';
 
 class ExploreCard extends StatefulWidget {
+  final String routeId;
   final String title;
-  final String description;
-  final String location;
   final String imageUrl;
-  final int destinations;
-  final String duration;
   final int likes;
 
   const ExploreCard({
     Key? key,
+    required this.routeId,
     required this.title,
-    required this.description,
-    required this.location,
     required this.imageUrl,
-    required this.destinations,
-    required this.duration,
     required this.likes,
   }) : super(key: key);
 
@@ -27,13 +22,16 @@ class ExploreCard extends StatefulWidget {
 }
 
 class _ExploreCardState extends State<ExploreCard> {
+  late Map<String,dynamic> routeCredentials;
   late int likes; // To track the number of likes
   late bool isLiked; // To toggle like state
   @override
+
   void initState() {
     super.initState();
     likes = widget.likes; // Initialize likes
     isLiked = false; // Default state: unliked
+    Future routeCredentials = getRouteCardCredentials(widget.routeId, title: widget.title);
   }
   void toggleLike() {
     setState(() {
@@ -85,24 +83,17 @@ class _ExploreCardState extends State<ExploreCard> {
                           SizedBox(
                             height: height * 0.005,
                           ),
-                          Text(
-                            widget.title,
-                            style: const TextStyle(
-                              color: AppColors.white1,
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: height * 0.001),
-                          // Description
-                          Text(
-                            widget.description,
-                            style: const TextStyle(
-                              color: AppColors.white1,
-                              fontSize: 8.0,
-                            ),
-                            maxLines: 4,
-                            overflow: TextOverflow.ellipsis,
+
+                        ),
+                        SizedBox(
+                            height: height * 0.001),
+                        // Description
+                        Text(
+                          routeCredentials['routeDescription'],
+                          style: const TextStyle(
+                            color: AppColors.white1,
+                            fontSize: 8.0,
+
                           ),
                         ],
                       ),
@@ -124,16 +115,47 @@ class _ExploreCardState extends State<ExploreCard> {
                           color: Colors.white,
                           fontSize: 12.0,
                         ),
+
+                      ],
+                    ),
+                  )
+                ],
+              ),
+              Center(
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.pin_drop_outlined,
+                      color: AppColors.yellow1,
+                      size: 16.0,
+                    ),
+                    const SizedBox(width: 4.0),
+                    Text(
+                      routeCredentials['routeLocation'],
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12.0,
                       ),
-                      SizedBox(width: width * 0.03),
-                      const Icon(
-                        Icons.play_arrow,
-                        color: AppColors.yellow1,
-                        size: 16.0,
+                    ),
+                    SizedBox(width: width*0.03),
+                    const Icon(
+                      Icons.navigation_outlined ,
+                      color: AppColors.yellow1,
+                      size: 16.0,
+                    ),
+                    const SizedBox(width: 4.0),
+                    Text(
+                      routeCredentials['routeSize'],
+                      style: const TextStyle(
+                        color: AppColors.white1,
+                        fontSize: 12.0,
                       ),
-                      const SizedBox(width: 4.0),
-                      Text(
-                        '${widget.destinations} destination',
+                    ),
+                    SizedBox(width: width*0.04),
+                    Row(
+                      children: [
+                        Text(
+                        routeCredentials['likeCount'],
 
                         style: const TextStyle(
                           color: AppColors.white1,
