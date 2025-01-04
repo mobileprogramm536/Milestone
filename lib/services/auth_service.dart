@@ -8,6 +8,13 @@ class AuthService {
   // Get the current user directly from FirebaseAuth
   User? get user => _auth.currentUser;
 
+  Future<String?> getUser() async {
+    final User? user = _auth.currentUser;
+    String? uid = user?.uid;
+
+    return uid;
+  }
+
   Future<void> signOut() async {
     await _auth.signOut();
   }

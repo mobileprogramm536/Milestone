@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:milestone/cards/exploreMore_page_card.dart';
+import '../services/auth_service.dart';
+import '../services/route_service.dart';
 import '../theme/app_theme.dart';
 import '../theme/colors.dart';
 import '../widgets/custom_navbar.dart';
@@ -21,14 +23,21 @@ class _ExploreMorePageState extends State<ExploreMorePage> {
     print('Selected Index: $index');
   }
 
+  late Future<List<String>> routes; // Change routes to Future
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the routes Future
+    routes = RouteService().getExploreRoutes(); // Directly assign the future
+  }
+
   @override
   Widget build(BuildContext context) {
-    SearchController search = SearchController();
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-
       backgroundColor: AppColors.darkgrey1,
       resizeToAvoidBottomInset: true,
       body: Container(
@@ -41,38 +50,48 @@ class _ExploreMorePageState extends State<ExploreMorePage> {
               SizedBox(
                 height: height * 0.05,
               ),
-              Container(
-                width: width * 0.975,
-                height: height * 0.7,
-                child: Center(
-                  child: ListView(children: [
-                    Row(
-                      children: [
-                        ExploremorePageCard(
-                          title: 'Date Mekanları',
-                          description:
-                              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi viverra nulla non magna ullamcorper, non.',
-                          location: 'Rome, Italy',
-                          imageUrl:
-                              'https://via.placeholder.com/60', // Replace with actual image URL
-                          destinations: 5,
-                          duration: '3 hours',
-                          likes: 476,
-                        ),
-                        ExploremorePageCard(
-                          title: 'Date Mekanları',
-                          description:
-                              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi viverra nulla non magna ullamcorper, non.',
-                          location: 'Rome, Italy',
-                          imageUrl:
-                              'https://via.placeholder.com/60', // Replace with actual image URL
-                          destinations: 5,
-                          duration: '3 hours',
-                          likes: 476,
-                        ),
+              Flexible(
+                child: FutureBuilder<List<String>>(
+                  future: routes, // Pass the Future directly
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Center(child: Text('No routes available.'));
+                    }
+
+                    final routeList = snapshot.data!;
+                    return CustomScrollView(
+                      slivers: [
+                        SliverPadding(
+                          padding: EdgeInsets.all(width * 0.02),
+                          sliver: SliverGrid(
+                            gridDelegate:
+                                SliverGridDelegateWithMaxCrossAxisExtent(
+                              maxCrossAxisExtent: height * 0.4,
+                              mainAxisSpacing: height * 0.02,
+                              crossAxisSpacing: width * 0.02,
+                            ),
+                            delegate: SliverChildBuilderDelegate(
+                              (BuildContext context, int index) {
+                                final route = routeList[index];
+                                return ExploremorePageCard(
+                                  routeId: route,
+                                  imageUrl:
+                                      '../assets/images/femaleavatar9.png', // Replace with actual image URL
+                                  likes:
+                                      476, // Replace with dynamic likes if available
+                                );
+                              },
+                              childCount: routeList.length,
+                            ),
+                          ),
+                        )
                       ],
-                    )
-                  ]),
+                    );
+                  },
                 ),
               ),
             ],
@@ -85,7 +104,6 @@ class _ExploreMorePageState extends State<ExploreMorePage> {
           height: height * 0.08, // Reduced height for a sleeker design
           decoration: BoxDecoration(
             color: Colors.transparent,
-            // Replace with AppColors if needed
             borderRadius: BorderRadius.circular(16.0), // Rounded corners
             boxShadow: [
               BoxShadow(
@@ -102,6 +120,5 @@ class _ExploreMorePageState extends State<ExploreMorePage> {
         ),
       ),
     );
-
   }
 }
