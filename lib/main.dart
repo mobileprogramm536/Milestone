@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:milestone/pages/create_route_page.dart';
-import 'package:milestone/pages/exploreMore_page.dart';
-import 'package:milestone/pages/explore_page.dart';
 import 'package:milestone/pages/forgot_password.dart';
 import 'package:milestone/pages/codeVerificationScreen.dart';
-import 'package:milestone/pages/main_page.dart';
-import 'package:milestone/pages/profile_page.dart';
 import 'package:milestone/pages/register_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:milestone/pages/savedRoutesPage.dart';
 import 'package:milestone/pages/singIn_page.dart';
 import 'package:milestone/pages/successCodePage.dart';
+import 'package:milestone/widgets/google_maps_widget.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -41,10 +38,6 @@ void main() async {
       '/codeVerificationScreen': (context) => codeVerificationScreen(),
       '/success': (context) => SuccessScreen(),
       '/savedRoutesPage': (context) => SavedRoutesPage(),
-      '/explorePage': (context) => ExplorePage(),
-      '/exploreMorePage': (context) => ExploreMorePage(),
-      '/mainPage': (context) => MainPage(),
-      '/profilePage': (context) => ProfilePage(),
     },
   ));
 }

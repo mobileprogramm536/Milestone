@@ -89,7 +89,7 @@ class _ExploremorePageCardState extends State<ExploremorePageCard> {
                     Row(
                       children: [
                         const Icon(
-                          Icons.location_on,
+                          Icons.pin_drop_outlined ,
                           color: AppColors.yellow1,
                           size: 16.0,
                         ),
@@ -106,7 +106,7 @@ class _ExploremorePageCardState extends State<ExploremorePageCard> {
                     Row(
                       children: [
                         const Icon(
-                          Icons.play_arrow,
+                          Icons.navigation_outlined,
                           color: AppColors.yellow1,
                           size: 16.0,
                         ),
