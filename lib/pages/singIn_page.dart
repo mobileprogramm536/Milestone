@@ -2,7 +2,9 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:milestone/buttons/signIn_button.dart';
 import 'package:milestone/buttons/signIn_register_button.dart';
-import 'package:milestone/pages/Deneme.dart';
+
+import 'package:milestone/pages/create_route_page.dart';
+
 import 'package:milestone/pages/register_page.dart';
 import 'package:milestone/pages/test.dart';
 import 'package:milestone/services/auth_service.dart';
@@ -13,6 +15,7 @@ import '../textfields/custom_textfield.dart';
 import '../textfields/password_text_field.dart';
 import '../theme/app_theme.dart';
 import '../theme/colors.dart';
+import 'explore_page.dart';
 import 'forgot_password.dart';
 
 class SignInPage extends StatefulWidget {
@@ -25,6 +28,7 @@ class SignInPage extends StatefulWidget {
 class _SignInPageState extends State<SignInPage> {
   final _tEmail = TextEditingController();
   final _tPassword = TextEditingController();
+  final user = AuthService().user;
 
   @override
   void dispose() {
@@ -71,16 +75,13 @@ class _SignInPageState extends State<SignInPage> {
       );
     } else {
       Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-              const DenemePage()));
+          context, MaterialPageRoute(builder: (context) => CreateRoutePage()));
+
       // Giriş başarılıysa
       CustomSnackbar.showMessage(
         context,
         "Giriş başarılı!",
         backgroundColor: Colors.green,
-
       );
     }
   }
@@ -96,148 +97,150 @@ class _SignInPageState extends State<SignInPage> {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
 
-    return AuthService().getUser() != null ? DenemePage() : Scaffold(
-        resizeToAvoidBottomInset: true,
-        body: SingleChildScrollView(
-          child: GestureDetector(
-            onTap: () {
-              FocusScope.of(context)
-                  .unfocus(); // Tüm TextField'lardan odağı kaldırır
-            },
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: appBackground,
-              ),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: height * 0.15,
-                    ),
-                    Text(
-                      'milestone',
-                      style: TextStyle(
-                          color: AppColors.white1,
-                          fontWeight: FontWeight.bold,
-                          fontSize: height * 0.059),
-                    ),
-                    SizedBox(height: height * 0.05),
-                    CustomTextField(
-                      controller: _tEmail,
-                      hintText: 'E-Posta',
-                      icon: EvaIcons.emailOutline,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(20.0),
-                        topRight: Radius.circular(20.0),
-                      ),
-                    ),
-                    SizedBox(height: height * 0.015),
-                    PasswordTextField(
-                      controller: _tPassword,
-                    ),
-                    SizedBox(height: height * 0.01),
-                    Row(
+    return AuthService().user != null
+        ? ExplorePage()
+        : Scaffold(
+            resizeToAvoidBottomInset: true,
+            body: SingleChildScrollView(
+              child: GestureDetector(
+                onTap: () {
+                  FocusScope.of(context)
+                      .unfocus(); // Tüm TextField'lardan odağı kaldırır
+                },
+                child: Container(
+                  decoration: const BoxDecoration(
+                    gradient: appBackground,
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SizedBox(width: width * 0.6),
-                        GestureDetector(
+                        SizedBox(
+                          height: height * 0.15,
+                        ),
+                        Text(
+                          'milestone',
+                          style: TextStyle(
+                              color: AppColors.white1,
+                              fontWeight: FontWeight.bold,
+                              fontSize: height * 0.059),
+                        ),
+                        SizedBox(height: height * 0.05),
+                        CustomTextField(
+                          controller: _tEmail,
+                          hintText: 'E-Posta',
+                          icon: EvaIcons.emailOutline,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(20.0),
+                            topRight: Radius.circular(20.0),
+                          ),
+                        ),
+                        SizedBox(height: height * 0.015),
+                        PasswordTextField(
+                          controller: _tPassword,
+                        ),
+                        SizedBox(height: height * 0.01),
+                        Row(
+                          children: [
+                            SizedBox(width: width * 0.6),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const forgotPassword()));
+                              },
+                              child: Text(
+                                'Şifremi Unuttum',
+                                style: TextStyle(
+                                    color: AppColors.green1,
+                                    fontSize: height * 0.017),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: height * 0.03),
+                        SignInButton(
+                          onPressed: () async {
+                            _Login();
+                            _tEmail.clear();
+                            _tPassword.clear();
+                          },
+                        ),
+                        SizedBox(height: height * 0.02),
+                        RegisterTextButton(
                           onTap: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        const forgotPassword()));
+                                    builder: (context) => RegisterPage()));
+                          },
+                        ),
+                        SizedBox(height: height * 0.04),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Expanded(
+                              child: Divider(
+                                color: AppColors.white1,
+                                indent: 40,
+                                endIndent: 20,
+                                thickness: 2.5,
+                              ),
+                            ),
+                            Text(
+                              'ya da',
+                              style: TextStyle(
+                                  color: AppColors.white1,
+                                  fontSize: height * 0.017),
+                            ),
+                            const Expanded(
+                              child: Divider(
+                                color: AppColors.white1,
+                                indent: 20,
+                                endIndent: 40,
+                                thickness: 2.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: height * 0.04),
+                        GoogleButton(
+                          onPressed: () {
+                            // Google ile giriş işlemi
+                          },
+                        ),
+                        SizedBox(
+                          height: height * 0.08,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            //Giriş yapmadan devam etme işlemi
+                            Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(
+                                builder: (context) => ForgotPasswordScreen(),
+                              ),
+                              (Route<dynamic> route) => false,
+                            );
                           },
                           child: Text(
-                            'Şifremi Unuttum',
+                            'giriş yapmadan devam et',
                             style: TextStyle(
-                                color: AppColors.green1,
-                                fontSize: height * 0.017),
+                                decoration: TextDecoration.underline,
+                                decorationColor: AppColors.white1,
+                                color: AppColors.white1,
+                                fontStyle: FontStyle.italic,
+                                fontSize: height * 0.021),
                           ),
                         ),
+                        SizedBox(height: height * 0.04),
                       ],
                     ),
-                    SizedBox(height: height * 0.03),
-                    SignInButton(
-                      onPressed: () async {
-                        _Login();
-                        _tEmail.clear();
-                        _tPassword.clear();
-                      },
-                    ),
-                    SizedBox(height: height * 0.02),
-                    RegisterTextButton(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => RegisterPage()));
-                      },
-                    ),
-                    SizedBox(height: height * 0.04),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Expanded(
-                          child: Divider(
-                            color: AppColors.white1,
-                            indent: 40,
-                            endIndent: 20,
-                            thickness: 2.5,
-                          ),
-                        ),
-                        Text(
-                          'ya da',
-                          style: TextStyle(
-                              color: AppColors.white1,
-                              fontSize: height * 0.017),
-                        ),
-                        const Expanded(
-                          child: Divider(
-                            color: AppColors.white1,
-                            indent: 20,
-                            endIndent: 40,
-                            thickness: 2.5,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: height * 0.04),
-                    GoogleButton(
-                      onPressed: () {
-                        // Google ile giriş işlemi
-                      },
-                    ),
-                    SizedBox(
-                      height: height * 0.08,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        //Giriş yapmadan devam etme işlemi
-                        Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                            builder: (context) => ForgotPasswordScreen(),
-                          ),
-                              (Route<dynamic> route) => false,
-                        );
-                      },
-                      child: Text(
-                        'giriş yapmadan devam et',
-                        style: TextStyle(
-                            decoration: TextDecoration.underline,
-                            decorationColor: AppColors.white1,
-                            color: AppColors.white1,
-                            fontStyle: FontStyle.italic,
-                            fontSize: height * 0.021),
-                      ),
-                    ),
-                    SizedBox(height: height * 0.04),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ),
-        ));
+            ));
   }
 }

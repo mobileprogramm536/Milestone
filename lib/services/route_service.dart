@@ -1,12 +1,42 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+
+
+
+class RouteCard{
+  RouteCard({
+    this.location,
+    this.title,
+    this.description,
+    this.pfpurl,
+    this.username,
+    this.destinationcount,
+    this.liked,
+    this.likecount
+  });
+
+String? location;
+String? title;
+String? description;
+String? pfpurl;
+String? username;
+int? destinationcount;
+bool? liked;
+int? likecount;
+}
 
 class RouteService {
   final RouteCollection = FirebaseFirestore.instance.collection("routes");
   final UserCollection = FirebaseFirestore.instance.collection("users");
+
+  final UserDetails = FirebaseFirestore.instance.collection("userdetails");
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+
+  
   // Rota verilerini Firebase Firestore'a gönderme fonksiyonu
   Future<void> createRoute({
+    required String? routeUser,
     required String routeName,
     required String routeDescription,
     required List<Map<String, dynamic>> locations,
@@ -16,6 +46,7 @@ class RouteService {
 
       // Firestore'a yeni rota ekleniyor
       await RouteCollection.add({
+        'routeUser': routeUser,
         'routeName': routeName,
         'description': routeDescription,
         'locations': locations,
@@ -27,67 +58,80 @@ class RouteService {
     }
   }
 
-  // Veritabanındaki rotaları almak için fonksiyon
-  Future<List<Map<String, dynamic>>> getRoutes() async {
+  // Rota Explore Fonksiyonu
+
+  Future<void> getExploreRoutes({
+    required String userID,
+  }) async {
     try {
-      QuerySnapshot querySnapshot = await _firestore.collection('routes').get();
-      List<Map<String, dynamic>> routeList = querySnapshot.docs.map((doc) {
-        return doc.data() as Map<String, dynamic>;
-      }).toList();
+      RouteCollection.where("ownerId", isEqualTo: userID)
+          .get()
+          .then((querySnapshot) {
+        print("Successfully completed");
+        for (var docSnapshot in querySnapshot.docs) {
+          // Extract specific fields from the document
+          var field1 =
+              docSnapshot.get("description"); // Replace with your field names
+          var field2 = docSnapshot.get("routeName");
 
-      return routeList;
+          print('${docSnapshot.id} ==> field1: $field1, field2: $field2');
+        }
+      }).catchError((error) {
+        print("Failed to fetch data: $error");
+      });
     } catch (e) {
-      print('Veriler alınırken hata oluştu: $e');
-      return [];
+      print('Hata olustu: $e');
     }
   }
-}
 
-Future<Map<String, dynamic>> getRouteCardCredentials(String routeId,
-    {required String title}) async {
-  try {
-    // Firestore instance oluştur
-    final firestore = FirebaseFirestore.instance;
+  Future<void> getOwnedRoutes({
+    required String routeName,
+  }) async {
+    try {
+      RouteCollection.where("routeName", isNotEqualTo: routeName)
+          .get()
+          .then((querySnapshot) {
+        print("Successfully completed");
+        for (var docSnapshot in querySnapshot.docs) {
+          // Extract specific fields from the document
+          var field1 =
+              docSnapshot.get("description"); // Replace with your field names
+          var field2 = docSnapshot.get("routeName");
+          var locations = docSnapshot.get("locations") as List<dynamic>;
+          var field3 = locations.map((location) {
+            var name = location["name"] as String;
+            var note = location["note"] as String;
+            var place =
+                location["place"] as GeoPoint; // Cast explicitly to GeoPoint
 
-    // Firestore'dan belirtilen routeId'ye sahip dokümanı getir
-    final docSnapshot = await firestore.collection('routes').doc(routeId).get();
+            return {
+              "name": name,
+              "note": note,
+              "place": {
+                "latitude": place.latitude,
+                "longitude": place.longitude
+              }
+            };
+          }).toList();
 
-    // Eğer doküman mevcut değilse hata döndür
-    if (!docSnapshot.exists) {
-      throw Exception("Route not found for id: $routeId");
+          print(
+              '${docSnapshot.id} ==> field1: $field1, field2: $field2, field3: $field3');
+        }
+      }).catchError((error) {
+        print("Failed to fetch data: $error");
+      });
+    } catch (e) {
+      print('Hata olustu: $e');
     }
-
-    // Doküman verilerini al
-    final data = docSnapshot.data();
-
-    // Eğer data null ise hata döndür
-    if (data == null) {
-      throw Exception("No data found in the document");
-    }
-
-    // İstenen verileri işle
-    final likeCount =
-        data['likecount']?.toString() ?? '0'; // likecount'ı stringe çevir
-    final owner = data['owner'] ?? ''; // owner string
-    final routeDescription =
-        data['routedescription'] ?? ''; // routedescription string
-    final routeLocation = data['routelocation'] ?? ''; // routelocation string
-    final title = data['title'] ?? ''; // title string
-    final routeSize =
-        (data['route'] as Map?)?.length ?? 0; // route map eleman sayısı
-
-    // Verileri bir map olarak döndür
-    return {
-      'likeCount': likeCount,
-      'owner': owner,
-      'routeDescription': routeDescription,
-      'routeLocation': routeLocation,
-      'title': title,
-      'routeSize': routeSize,
-    };
-  } catch (e) {
-    // Hata durumunda loglama yapabilir veya özel hata dönebilirsiniz
-    print('Error fetching route credentials: $e');
-    rethrow;
   }
+
+  Future<void> getRouteCredentials({
+    required String routeID,
+    required String userID,
+  }) async {
+    try {} catch (e) {
+      print('Hata olustu: $e');
+    }
+  }
+
 }
