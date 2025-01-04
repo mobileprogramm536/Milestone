@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:milestone/pages/exploreMore_page.dart';
+
 import 'package:milestone/pages/singIn_page.dart';
 
 import '../buttons/signIn_button.dart';
 import '../cards/explore_page_card.dart';
 import '../services/auth_service.dart';
+
+
 import '../theme/app_theme.dart';
 import '../theme/colors.dart';
 
@@ -16,13 +19,16 @@ class ExplorePage extends StatefulWidget {
 }
 
 class _ExplorePageState extends State<ExplorePage> {
+
   @override
+
   Widget build(BuildContext context) {
     SearchController search = SearchController();
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
+
         backgroundColor: AppColors.darkgrey1,
         resizeToAvoidBottomInset: true,
         body: Container(
@@ -109,5 +115,6 @@ class _ExplorePageState extends State<ExplorePage> {
             ),
           ),
         ));
+
   }
 }

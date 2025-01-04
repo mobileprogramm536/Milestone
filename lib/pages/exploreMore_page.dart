@@ -16,7 +16,9 @@ class ExploreMorePage extends StatefulWidget {
 }
 
 class _ExploreMorePageState extends State<ExploreMorePage> {
+
   @override
+
   Widget build(BuildContext context) {
     SearchController search = SearchController();
     final height = MediaQuery.of(context).size.height;
@@ -35,6 +37,7 @@ class _ExploreMorePageState extends State<ExploreMorePage> {
                 SizedBox(
                   height: height * 0.05,
                 ),
+
                 Container(
                   width: width * 0.975,
                   height: height * 0.7,
@@ -73,5 +76,6 @@ class _ExploreMorePageState extends State<ExploreMorePage> {
             ),
           ),
         ));
+
   }
 }

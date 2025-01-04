@@ -47,6 +47,7 @@ class _ExploremorePageCardState extends State<ExploremorePageCard> {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return SizedBox(
+
       height: height * 0.21,
       width: width * 0.47,
       child: Stack(children: [
@@ -60,12 +61,15 @@ class _ExploremorePageCardState extends State<ExploremorePageCard> {
                 borderRadius: BorderRadius.circular(20.0),
               ),
               color: AppColors.grey1,
+
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+
                     SizedBox(height: height * 0.003),
+
                     Text(
                       widget.title,
                       style: const TextStyle(
@@ -84,12 +88,15 @@ class _ExploremorePageCardState extends State<ExploremorePageCard> {
                       overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(
+
                       height: height * 0.01,
-                    ),
+    ),
                     Row(
                       children: [
                         const Icon(
+
                           Icons.location_on,
+
                           color: AppColors.yellow1,
                           size: 16.0,
                         ),
@@ -106,7 +113,9 @@ class _ExploremorePageCardState extends State<ExploremorePageCard> {
                     Row(
                       children: [
                         const Icon(
+
                           Icons.play_arrow,
+
                           color: AppColors.yellow1,
                           size: 16.0,
                         ),
@@ -181,6 +190,7 @@ class _ExploremorePageCardState extends State<ExploremorePageCard> {
           ],
         ),
       ]),
+
     );
   }
 }

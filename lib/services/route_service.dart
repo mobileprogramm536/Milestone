@@ -1,11 +1,39 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+
+
+
+class RouteCard{
+  RouteCard({
+    this.location,
+    this.title,
+    this.description,
+    this.pfpurl,
+    this.username,
+    this.destinationcount,
+    this.liked,
+    this.likecount
+  });
+
+String? location;
+String? title;
+String? description;
+String? pfpurl;
+String? username;
+int? destinationcount;
+bool? liked;
+int? likecount;
+}
 
 class RouteService {
   final RouteCollection = FirebaseFirestore.instance.collection("routes");
   final UserCollection = FirebaseFirestore.instance.collection("users");
+
   final UserDetails = FirebaseFirestore.instance.collection("userdetails");
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+
+  
   // Rota verilerini Firebase Firestore'a gönderme fonksiyonu
   Future<void> createRoute({
     required String? routeUser,
@@ -105,4 +133,5 @@ class RouteService {
       print('Hata olustu: $e');
     }
   }
+
 }

@@ -35,7 +35,6 @@ class _ExploreCardState extends State<ExploreCard> {
     likes = widget.likes; // Initialize likes
     isLiked = false; // Default state: unliked
   }
-
   void toggleLike() {
     setState(() {
       isLiked = !isLiked; // Toggle state
@@ -48,11 +47,14 @@ class _ExploreCardState extends State<ExploreCard> {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return GestureDetector(
+
       onTap: () => {},
+
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
         ),
+
         color: AppColors.grey1, // Background color as in the design
         margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         child: Padding(
@@ -132,11 +134,13 @@ class _ExploreCardState extends State<ExploreCard> {
                       const SizedBox(width: 4.0),
                       Text(
                         '${widget.destinations} destination',
+
                         style: const TextStyle(
                           color: AppColors.white1,
                           fontSize: 12.0,
                         ),
                       ),
+
                       SizedBox(width: width * 0.04),
                       Row(children: [
                         Text(
@@ -146,6 +150,7 @@ class _ExploreCardState extends State<ExploreCard> {
                             fontSize: 12.0,
                           ),
                         ),
+
                         IconButton(
                           onPressed: toggleLike, // Action to toggle like
                           icon: Icon(
@@ -154,6 +159,7 @@ class _ExploreCardState extends State<ExploreCard> {
                             size: 24.0,
                           ),
                         ),
+
                       ]),
                     ],
                   ),
@@ -164,3 +170,4 @@ class _ExploreCardState extends State<ExploreCard> {
     );
   }
 }
+
