@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-
+//servis kontrol
 //username str
 //title srt ++
 //description str ++
@@ -11,35 +11,33 @@ import 'package:firebase_core/firebase_core.dart';
 //liked?
 //pfpurl
 
+class RouteCard {
+  RouteCard(
+      {this.location,
+      this.title,
+      this.description,
+      this.pfpurl,
+      this.username,
+      this.destinationcount,
+      this.liked,
+      this.likecount});
 
-class RouteCard{
-  RouteCard({
-    this.location,
-    this.title,
-    this.description,
-    this.pfpurl,
-    this.username,
-    this.destinationcount,
-    this.liked,
-    this.likecount
-  });
-
-String? location;
-String? title;
-String? description;
-String? pfpurl;
-String? username;
-int? destinationcount;
-bool? liked;
-int? likecount;
+  String? location;
+  String? title;
+  String? description;
+  String? pfpurl;
+  String? username;
+  int? destinationcount;
+  bool? liked;
+  int? likecount;
 }
 
 class RouteService {
   final RouteCollection = FirebaseFirestore.instance.collection("routes");
   final UserCollection = FirebaseFirestore.instance.collection("users");
-  final UserDetailsCollection = FirebaseFirestore.instance.collection("userdetails");
+  final UserDetailsCollection =
+      FirebaseFirestore.instance.collection("userdetails");
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
 
   Future<RouteCard?> getRouteCard(String routeId) async {
     RouteCard? rc = RouteCard();
@@ -52,7 +50,8 @@ class RouteService {
         rc.location = "buduzelecek";
         rc.title = docref1.get("routeName");
         rc.likecount = 41;
-        rc.destinationcount = (docref1.get("locations") as List<dynamic>).length;
+        rc.destinationcount =
+            (docref1.get("locations") as List<dynamic>).length;
 
         var docref2 = await UserCollection.doc(docref1.get('routeUser')).get();
         if (docref2.exists) {
@@ -60,12 +59,13 @@ class RouteService {
           rc.pfpurl = docref2.get('profileImage');
         }
 
-        var querySnapshot = await UserDetailsCollection
-            .where("userId", isEqualTo: docref1.get("routeUser"))
+        var querySnapshot = await UserDetailsCollection.where("userId",
+                isEqualTo: docref1.get("routeUser"))
             .get();
 
         if (querySnapshot.docs.isNotEmpty) {
-          var temp = querySnapshot.docs.first.get("likedRoutes") as List<dynamic>;
+          var temp =
+              querySnapshot.docs.first.get("likedRoutes") as List<dynamic>;
           rc.liked = temp.contains(routeId);
         } else {
           rc.liked = false;
@@ -77,7 +77,6 @@ class RouteService {
 
     return rc;
   }
-
 
   // Rota verilerini Firebase Firestore'a gönderme fonksiyonu
   Future<void> createRoute({
@@ -103,31 +102,28 @@ class RouteService {
     }
   }
 
-
   // Rota Explore Fonksiyonu
 
   Future<void> getExploreRoutes({
     required String userID,
   }) async {
-    try{
-      RouteCollection
-          .where("ownerId", isEqualTo: userID)
+    try {
+      RouteCollection.where("ownerId", isEqualTo: userID)
           .get()
           .then((querySnapshot) {
         print("Successfully completed");
         for (var docSnapshot in querySnapshot.docs) {
           // Extract specific fields from the document
-          var field1 = docSnapshot.get("description"); // Replace with your field names
+          var field1 =
+              docSnapshot.get("description"); // Replace with your field names
           var field2 = docSnapshot.get("routeName");
 
           print('${docSnapshot.id} ==> field1: $field1, field2: $field2');
         }
-      })
-          .catchError((error) {
+      }).catchError((error) {
         print("Failed to fetch data: $error");
       });
-    }
-    catch(e){
+    } catch (e) {
       print('Hata olustu: $e');
     }
   }
@@ -135,21 +131,22 @@ class RouteService {
   Future<void> getOwnedRoutes({
     required String routeName,
   }) async {
-    try{
-      RouteCollection
-          .where("routeName", isNotEqualTo: routeName)
+    try {
+      RouteCollection.where("routeName", isNotEqualTo: routeName)
           .get()
           .then((querySnapshot) {
         print("Successfully completed");
         for (var docSnapshot in querySnapshot.docs) {
           // Extract specific fields from the document
-          var field1 = docSnapshot.get("description"); // Replace with your field names
+          var field1 =
+              docSnapshot.get("description"); // Replace with your field names
           var field2 = docSnapshot.get("routeName");
           var locations = docSnapshot.get("locations") as List<dynamic>;
           var field3 = locations.map((location) {
             var name = location["name"] as String;
             var note = location["note"] as String;
-            var place = location["place"] as GeoPoint; // Cast explicitly to GeoPoint
+            var place =
+                location["place"] as GeoPoint; // Cast explicitly to GeoPoint
 
             return {
               "name": name,
@@ -161,17 +158,14 @@ class RouteService {
             };
           }).toList();
 
-          print('${docSnapshot.id} ==> field1: $field1, field2: $field2, field3: $field3');
+          print(
+              '${docSnapshot.id} ==> field1: $field1, field2: $field2, field3: $field3');
         }
-      })
-          .catchError((error) {
+      }).catchError((error) {
         print("Failed to fetch data: $error");
       });
-    }
-    catch(e){
+    } catch (e) {
       print('Hata olustu: $e');
     }
   }
-
 }
-
