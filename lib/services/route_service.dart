@@ -91,37 +91,5 @@ class RouteService {
     }
   }
 
-  Future<List<String>> getExploreRoutes(String userID) async {
-    try {
-
-      QuerySnapshot querySnapshot = await RouteCollection
-          .where('routeUser', isNotEqualTo: userID)
-          .get();
-
-      List<String> documentIds = querySnapshot.docs.map((doc) => doc.id).toList();
-
-      return documentIds;
-    } catch (e) {
-      print('Error fetching routes: $e');
-      return [];
-    }
-  }
-
-  Future<List<String>> getOwnedRoutes(String userID) async {
-    try {
-
-      QuerySnapshot querySnapshot = await RouteCollection
-          .where('routeUser', isEqualTo: userID)
-          .get();
-
-      List<String> documentIds = querySnapshot.docs.map((doc) => doc.id).toList();
-
-      return documentIds;
-    } catch (e) {
-      print('Error fetching routes: $e');
-      return [];
-    }
-  }
-
 }
 
