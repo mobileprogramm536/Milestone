@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../widgets/custom_navbar.dart';
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -12,6 +14,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final User? user = FirebaseAuth.instance.currentUser;
+  int _selectedIndex = 3;
 
   String? profileImageUrl;
   String username = "";
@@ -67,6 +70,13 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     _loadUserProfile();
+  }
+
+  void _onNavBarItemSelected(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    print('Selected Index: $index');
   }
 
   Future<void> _loadUserProfile() async {
@@ -179,6 +189,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: const Color(0xFF1C1C1E),
       appBar: AppBar(
@@ -233,6 +246,28 @@ class _ProfilePageState extends State<ProfilePage> {
                 ],
               ),
             ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(right: 8.0, left: 8.0, bottom: 10.0),
+        child: Container(
+          height: height * 0.08, // Reduced height for a sleeker design
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            // Replace with AppColors if needed
+            borderRadius: BorderRadius.circular(16.0), // Rounded corners
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 6.0,
+                offset: Offset(0, 6), // Subtle shadow effect
+              ),
+            ],
+          ),
+          child: CustomNavBar(
+            onItemSelected: _onNavBarItemSelected,
+            selectedIndex: _selectedIndex,
+          ),
+        ),
+      ),
     );
   }
 }

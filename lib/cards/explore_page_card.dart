@@ -33,6 +33,7 @@ class _ExploreCardState extends State<ExploreCard> {
     isLiked = false; // Default state: unliked
     Future routeCredentials = getRouteCardCredentials(widget.routeId, title: widget.title);
   }
+
   void toggleLike() {
     setState(() {
       isLiked = !isLiked; // Toggle state
@@ -84,15 +85,24 @@ class _ExploreCardState extends State<ExploreCard> {
                             height: height * 0.005,
                           ),
 
-                        ),
-                        SizedBox(
-                            height: height * 0.001),
-                        // Description
-                        Text(
-                          routeCredentials['routeDescription'],
-                          style: const TextStyle(
-                            color: AppColors.white1,
-                            fontSize: 8.0,
+                          Text(
+                            widget.title,
+                            style: const TextStyle(
+                              color: AppColors.white1,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: height * 0.001),
+                          // Description
+                          Text(
+                            widget.description,
+                            style: const TextStyle(
+                              color: AppColors.white1,
+                              fontSize: 8.0,
+                            ),
+                            maxLines: 4,
+                            overflow: TextOverflow.ellipsis,
 
                           ),
                         ],
@@ -116,46 +126,16 @@ class _ExploreCardState extends State<ExploreCard> {
                           fontSize: 12.0,
                         ),
 
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              Center(
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.pin_drop_outlined,
-                      color: AppColors.yellow1,
-                      size: 16.0,
-                    ),
-                    const SizedBox(width: 4.0),
-                    Text(
-                      routeCredentials['routeLocation'],
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12.0,
                       ),
-                    ),
-                    SizedBox(width: width*0.03),
-                    const Icon(
-                      Icons.navigation_outlined ,
-                      color: AppColors.yellow1,
-                      size: 16.0,
-                    ),
-                    const SizedBox(width: 4.0),
-                    Text(
-                      routeCredentials['routeSize'],
-                      style: const TextStyle(
-                        color: AppColors.white1,
-                        fontSize: 12.0,
+                      SizedBox(width: width * 0.03),
+                      const Icon(
+                        Icons.play_arrow,
+                        color: AppColors.yellow1,
+                        size: 16.0,
                       ),
-                    ),
-                    SizedBox(width: width*0.04),
-                    Row(
-                      children: [
-                        Text(
-                        routeCredentials['likeCount'],
+                      const SizedBox(width: 4.0),
+                      Text(
+                        '${widget.destinations} destination',
 
                         style: const TextStyle(
                           color: AppColors.white1,

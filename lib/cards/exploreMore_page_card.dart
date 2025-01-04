@@ -87,7 +87,8 @@ class _ExploremorePageCardState extends State<ExploremorePageCard> {
                     SizedBox(
 
                       height: height * 0.01,
-    ),
+                    ),
+
                     Row(
                       children: [
                         const Icon(
@@ -158,32 +159,23 @@ class _ExploremorePageCardState extends State<ExploremorePageCard> {
                           fontWeight: FontWeight.bold,
                         ),
 
-                     
-                        Text(
-                          routeCredentials['owner'],
-                          style: const TextStyle(
-                            color: AppColors.white1,
-                            fontSize: 5.0,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      ),
+                      Text(
+                        likes.toString(),
+                        style: const TextStyle(
+                          color: AppColors.white1,
+                          fontSize: 8.0,
                         ),
-                            Text(
-                            routeCredentials['likeCount'],
-                            style: const TextStyle(
-                              color: AppColors.white1,
-                              fontSize: 8.0,
-                            ),
-                          ),
-                            IconButton(
-                              onPressed: toggleLike, // Action to toggle like
-                              icon: Icon(
-                                isLiked ? Icons.favorite : Icons.favorite_border,
-                                color: isLiked ? AppColors.red1 : AppColors.white1,
-                                size: 16.0,
-                              ),
-                            ),
-                      ],
-                    ),
+                      ),
+                      IconButton(
+                        onPressed: toggleLike, // Action to toggle like
+                        icon: Icon(
+                          isLiked ? Icons.favorite : Icons.favorite_border,
+                          color: isLiked ? AppColors.red1 : AppColors.white1,
+                          size: 16.0,
+                        ),
+                      ),
+                    ],
 
                   ),
                 ),

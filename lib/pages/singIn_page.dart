@@ -17,6 +17,7 @@ import '../theme/app_theme.dart';
 import '../theme/colors.dart';
 import 'explore_page.dart';
 import 'forgot_password.dart';
+import 'main_page.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -98,7 +99,9 @@ class _SignInPageState extends State<SignInPage> {
     final width = MediaQuery.of(context).size.width;
 
     return AuthService().user != null
-        ? ExplorePage()
+
+        ? MainPage()
+
         : Scaffold(
             resizeToAvoidBottomInset: true,
             body: SingleChildScrollView(
