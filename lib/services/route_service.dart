@@ -13,9 +13,20 @@ import 'auth_service.dart';
 //liked?
 //pfpurl
 
+class RouteDetail {
+  RouteDetail({
+    this.routecard,
+    this.ownerfollowercount,
+    this.locations,
+  });
+  int? ownerfollowercount;
+  List<dynamic>? locations;
+  RouteCard? routecard;
+}
+
 class RouteCard {
   RouteCard(
-      {this.location,
+      {this.routeOwnerId,
       this.title,
       this.description,
       this.pfpurl,
@@ -24,7 +35,7 @@ class RouteCard {
       this.liked,
       this.likecount});
 
-  String? location;
+  String? routeOwnerId;
   String? title;
   String? description;
   String? pfpurl;
@@ -50,7 +61,7 @@ class RouteService {
 
       if (docref1.exists) {
         rc.description = docref1.get("description");
-        rc.location = "buduzelecek";
+        rc.routeOwnerId = docref1.get("routeUser");
         rc.title = docref1.get("routeName");
         rc.likecount = 41;
         rc.destinationcount =
@@ -79,6 +90,25 @@ class RouteService {
     }
 
     return rc;
+  }
+
+  Future<RouteDetail?> getRouteDetail(String routeId) async {
+    RouteDetail? rd = RouteDetail();
+    try {
+      var docref1 = await RouteCollection.doc(routeId).get();
+
+      rd.routecard = getRouteCard(routeId) as RouteCard?;
+      rd.locations = docref1.get("locations") as List<dynamic>;
+
+      var querySnapshot = await UserDetailsCollection.where("userId",
+              isEqualTo: docref1.get("routeUser"))
+          .get();
+
+      rd.ownerfollowercount =
+          (querySnapshot.docs.first.get("followers") as List<dynamic>).length;
+    } catch (e) {}
+
+    return rd;
   }
 
   // Rota verilerini Firebase Firestore'a gönderme fonksiyonu

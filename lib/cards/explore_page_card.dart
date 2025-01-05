@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:milestone/pages/route_detail_page.dart';
 import 'package:milestone/services/route_service.dart';
 
 import '../theme/colors.dart';
@@ -61,7 +62,14 @@ class _ExploreCardState extends State<ExploreCard> {
     }
 
     return GestureDetector(
-      onTap: () => {},
+      onTap: () => {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => RouteDetailPage(routeId: widget.routeId),
+          ),
+        )
+      },
       child: Container(
         width: width * 0.5,
         height: height * 0.21,
@@ -147,13 +155,6 @@ class _ExploreCardState extends State<ExploreCard> {
                           size: 16.0,
                         ),
                         const SizedBox(width: 4.0),
-                        Text(
-                          routeC!.location!,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12.0,
-                          ),
-                        ),
                         SizedBox(width: width * 0.08),
                         Transform.rotate(
                           angle: 90 * 3.1415927 / 180, // 90 derece döndürme

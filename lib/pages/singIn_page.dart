@@ -236,7 +236,7 @@ class _SignInPageState extends State<SignInPage> {
                                 fontSize: height * 0.021),
                           ),
                         ),
-                        SizedBox(height: height * 0.04),
+                        SizedBox(height: height * 0.1),
                       ],
                     ),
                   ),
