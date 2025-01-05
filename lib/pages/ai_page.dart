@@ -10,7 +10,8 @@ class AiPage extends StatelessWidget {
     return Scaffold(
       body: Container(
         alignment: Alignment.center,
-        color: Colors.grey[200], // Arkaplan rengini değiştirin (isteğe bağlı)
+        color:
+            AppColors.darkgrey2, // Arkaplan rengini değiştirin (isteğe bağlı)
         child: const Text(
           'Coming Soon',
           style: TextStyle(

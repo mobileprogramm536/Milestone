@@ -175,7 +175,7 @@ class _ExploreCardState extends State<ExploreCard> {
                         SizedBox(width: width * 0.17),
                         Row(children: [
                           Text(
-                            routeC!.likecount!.toString(),
+                            likes.toString(),
                             style: const TextStyle(
                               color: AppColors.white1,
                               fontSize: 12.0,
