@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:milestone/pages/edit_route_page.dart';
+import 'package:milestone/pages/settings_page.dart';
+
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -10,64 +13,199 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  static List<String> _generateAvatarList(String gender, int count) {
+    return List.generate(count, (index) => 'assets/images/${gender}avatar${index + 1}.png');
+  }
+
+
+  final List<String> femaleAvatars = _generateAvatarList('female', 18);
+  final List<String> maleAvatars = _generateAvatarList('male', 20);
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final User? user = FirebaseAuth.instance.currentUser;
+
+
+
 
   String? profileImageUrl;
   String username = "";
   int followers = 0;
   int routes = 0;
 
-  // Avatar listeleri
-  final List<String> femaleAvatars = [
-    'assets/images/femaleavatar1.png',
-    'assets/images/femaleavatar2.png',
-    'assets/images/femaleavatar3.png',
-    'assets/images/femaleavatar4.png',
-    'assets/images/femaleavatar5.png',
-    'assets/images/femaleavatar6.png',
-    'assets/images/femaleavatar7.png',
-    'assets/images/femaleavatar8.png',
-    'assets/images/femaleavatar9.png',
-    'assets/images/femaleavatar10.png',
-    'assets/images/femaleavatar11.png',
-    'assets/images/femaleavatar12.png',
-    'assets/images/femaleavatar13.png',
-    'assets/images/femaleavatar14.png',
-    'assets/images/femaleavatar15.png',
-    'assets/images/femaleavatar16.png',
-    'assets/images/femaleavatar17.png',
-    'assets/images/femaleavatar18.png',
-  ];
 
-  final List<String> maleAvatars = [
-    'assets/images/maleavatar1.png',
-    'assets/images/maleavatar2.png',
-    'assets/images/maleavatar3.png',
-    'assets/images/maleavatar4.png',
-    'assets/images/maleavatar5.png',
-    'assets/images/maleavatar6.png',
-    'assets/images/maleavatar7.png',
-    'assets/images/maleavatar8.png',
-    'assets/images/maleavatar9.png',
-    'assets/images/maleavatar10.png',
-    'assets/images/maleavatar11.png',
-    'assets/images/maleavatar12.png',
-    'assets/images/maleavatar13.png',
-    'assets/images/maleavatar14.png',
-    'assets/images/maleavatar15.png',
-    'assets/images/maleavatar16.png',
-    'assets/images/maleavatar17.png',
-    'assets/images/maleavatar18.png',
-    'assets/images/maleavatar19.png',
-    'assets/images/maleavatar20.png',
-  ];
+  List<Map<String, dynamic>> userRoutes = []; // Kullanıcının rotaları
+  bool isLoading = true; // Yüklenme durumu
 
   @override
   void initState() {
     super.initState();
     _loadUserProfile();
+    _loadUserRoutes(); // Rotaları yükle
   }
+  void _editRoute(Map<String, dynamic> route) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditRoutePage(
+          routeData: route,
+          onSave: (updatedRoute) async {
+            setState(() {
+              final index = userRoutes.indexWhere((r) => r['id'] == route['id']);
+              if (index != -1) {
+                userRoutes[index] = updatedRoute;
+              }
+            });
+
+            // Firestore üzerinde güncelleme
+            try {
+              await _firestore.collection('routes').doc(route['id']).update({
+                'routeName': updatedRoute['routeName'] ?? route['routeName'],
+                'description': updatedRoute['description'] ?? route['description'],
+                'locations': updatedRoute['locations']?.map((loc) => {
+                  'name': loc['name'] ?? route['locations'][0]['name'],
+                  'note': loc['note'] ?? route['locations'][0]['note'],
+                  'place': loc['place'] ?? route['locations'][0]['place'],
+                }).toList() ?? route['locations'], // Eğer updatedRoute içinde 'locations' yoksa mevcut değerleri koru
+              });
+
+              _showSuccessMessage("Rota başarıyla güncellendi!");
+            } catch (e) {
+              _showErrorMessage("Rota güncellenemedi: $e");
+            }
+
+          },
+        ),
+      ),
+    );
+  }
+
+
+
+  Future<void> _loadUserRoutes() async {
+    if (user == null) return;
+
+    try {
+      final querySnapshot = await _firestore
+          .collection('routes')
+          .where('routeUser', isEqualTo: user!.uid) // Burada kontrol 'routeUser' üzerinden yapılır.
+          .get();
+
+      setState(() {
+        userRoutes = querySnapshot.docs.map((doc) {
+          return {
+            'id': doc.id,
+            'routeName': doc['routeName'] ?? '',
+            'description': doc['description'] ?? '',
+            'place': (doc['locations'] != null && (doc['locations'] as List).isNotEmpty)
+                ? doc['locations'][0]['place'] ?? ''
+                : 'Konum belirtilmemiş',
+            'likes': doc['likecount'] ?? 0, // Beğeni sayısını ekle
+            'destinationCount': doc['locations'] != null && doc['locations'] is List
+                ? (doc['locations'] as List).length
+                : 0, // Lokasyon sayısını kontrol et, null ise 0 yap
+
+          };
+        }).toList();
+
+        isLoading = false; // Yüklenme tamamlandı
+      });
+    } catch (e) {
+      _showErrorMessage("Rotalar yüklenemedi: $e");
+      setState(() => isLoading = false);
+    }
+  }
+  Widget _buildRouteCard(Map<String, dynamic> route) {
+    return GestureDetector(
+      onTap: () => _editRoute(route), // Kart tıklandığında düzenleme ekranını aç
+      child: Card(
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        color: const Color(0xFF2D2D2D), // Kart arka plan rengi
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Kart Başlığı
+              Text(
+                route['routeName'], // Rota adı
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 8),
+
+              // Açıklama
+              Text(
+                route['description'], // Açıklama
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey,
+                ),
+              ),
+              const SizedBox(height: 8),
+
+              // Konum Bilgisi
+              Row(
+                children: [
+                  const Icon(Icons.location_on, color: Colors.yellow, size: 16),
+                  const SizedBox(width: 4),
+                  Text(
+                    route['place'], // Konum
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+
+              // Detaylar: Destination ve Beğeni Sayısı
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Destination Sayısı
+                  Row(
+                    children: [
+                      const Icon(Icons.flag, color: Colors.yellow, size: 16),
+                      const SizedBox(width: 4),
+                      Text(
+                        "${route['destinationCount']} destinasyon",
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  // Beğeni Sayısı
+                  Row(
+                    children: [
+                      const Icon(Icons.favorite, color: Colors.red, size: 16),
+                      const SizedBox(width: 4),
+                      Text(
+                        "${route['likes']} beğeni",
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
 
   Future<void> _loadUserProfile() async {
     if (user == null) {
@@ -76,14 +214,22 @@ class _ProfilePageState extends State<ProfilePage> {
     }
 
     try {
+      // Firestore'dan kullanıcı verilerini al
       final doc = await _firestore.collection('users').doc(user!.uid).get();
       if (doc.exists && doc.data() != null) {
         final data = doc.data()!;
         setState(() {
+          // Firestore'dan gelen verileri güncelle
           username = data['name'] ?? "Kullanıcı";
           followers = data['followers'] ?? 0;
-          routes = data['routes'] ?? 0;
-          profileImageUrl = data['profileImage'] ?? femaleAvatars[0];
+          routes = data['routes'] is int ? data['routes'] : 0;
+
+
+          // Eğer profil resmi yoksa varsayılan avatarı ata
+          profileImageUrl = data['profileImage']?.isNotEmpty == true
+              ? data['profileImage']
+              : femaleAvatars[0];
+
         });
       } else {
         _showErrorMessage("Kullanıcı verisi bulunamadı!");
@@ -92,6 +238,13 @@ class _ProfilePageState extends State<ProfilePage> {
       _showErrorMessage("Kullanıcı verisi yüklenirken hata oluştu: $e");
     }
   }
+
+
+  // Kullanıcının rotalarını yüklemek için fonksiyon
+
+
+
+
 
   void _showAvatarSelection() {
     showModalBottomSheet(
@@ -186,21 +339,34 @@ class _ProfilePageState extends State<ProfilePage> {
         elevation: 0,
         title: const Text("Profile (My Routes)"),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings, color: Colors.white), // Ayarlar ikonu
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingsPage()), // Ayarlar sayfasına git
+              );
+            },
+          ),
+        ],
       ),
-      body: profileImageUrl == null && username.isEmpty
-          ? const Center(child: CircularProgressIndicator())
-          : Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Row(
+
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator()) // Yükleniyor göstergesi
+          : Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Avatar ve Kullanıcı Bilgileri
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
               children: [
                 GestureDetector(
-                  onTap: _showAvatarSelection,
+                  onTap: _showAvatarSelection, // Avatar seçme işlemi
                   child: CircleAvatar(
-                    radius: 40,
-                    backgroundImage:
-                    AssetImage(profileImageUrl ?? femaleAvatars[0]),
+                    radius: 50,
+                    backgroundImage: AssetImage(profileImageUrl ?? femaleAvatars[0]),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -218,21 +384,50 @@ class _ProfilePageState extends State<ProfilePage> {
                     const SizedBox(height: 8),
                     Text(
                       "${followers} takipçi",
-                      style: const TextStyle(
-                          color: Colors.grey, fontSize: 16),
+                      style: const TextStyle(color: Colors.grey, fontSize: 16),
                     ),
                     Text(
                       "${routes} rota",
-                      style: const TextStyle(
-                          color: Colors.grey, fontSize: 16),
+                      style: const TextStyle(color: Colors.grey, fontSize: 16),
                     ),
                   ],
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 3,),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0), // Daha küçük boşluk
+            child: Divider(
+              color: Colors.white.withOpacity(0.2), // Hafif daha şeffaf çizgi
+              thickness: 0.8, // İnceltilmiş çizgi
+              indent: 20, // Daha dar boşluk
+              endIndent: 20,
+            ),
+          ),
+
+          // Kullanıcının Rotası
+          Expanded(
+              child: userRoutes.isEmpty
+                  ? const Center(
+                child: Text(
+                  "Henüz rota eklenmedi!",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+                  : ListView.builder(
+                itemCount: userRoutes.length,
+                itemBuilder: (context, index) {
+                  final route = userRoutes[index];
+                  return _buildRouteCard(route); // Yeni fonksiyonu çağır
+                },
+              )
+
+          ),
+        ],
       ),
+
+
     );
   }
 }
