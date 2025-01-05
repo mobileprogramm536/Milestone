@@ -97,7 +97,7 @@ class RouteService {
     try {
       var docref1 = await RouteCollection.doc(routeId).get();
 
-      rd.routecard = getRouteCard(routeId) as RouteCard?;
+      rd.routecard = await getRouteCard(routeId);
       rd.locations = docref1.get("locations") as List<dynamic>;
 
       var querySnapshot = await UserDetailsCollection.where("userId",
