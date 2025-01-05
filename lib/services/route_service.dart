@@ -49,7 +49,7 @@ class RouteService {
             docref1.data()?["description"] ?? "No description available",
         routeOwnerId: docref1.data()?["routeUser"] ?? "Unknown",
         title: docref1.data()?["routeName"] ?? "Untitled",
-        likecount: docref1.data()?["likecount"] ?? 0, // Varsayılan 0
+        likecount: docref1.data()?["likeCount"] ?? 0, // Varsayılan 0
         destinationcount:
             (docref1.data()?["locations"] as List<dynamic>?)?.length ?? 0,
         category: docref1.data()?["category"] ?? "All",
