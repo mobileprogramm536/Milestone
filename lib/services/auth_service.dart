@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final userCollection = FirebaseFirestore.instance.collection("users");
+  final userDetailsCollection =
+      FirebaseFirestore.instance.collection("userdetails");
 
   // Get the current user directly from FirebaseAuth
   User? get user => _auth.currentUser;
@@ -62,10 +64,20 @@ class AuthService {
         password: password,
       );
 
-      // Add user details to Firestore
+      // Add user to Firestore
       await userCollection.doc(userCredential.user!.uid).set({
         "name": name,
         "email": email,
+        "profileImage": "assets/images/maleavatar1.png",
+      });
+
+      //Add userdetails to Firestore
+      await userDetailsCollection.doc(userCredential.user!.uid).set({
+        "followers": [],
+        "likedRoutes": [],
+        "savedRoutes": [],
+        "userlevel": 0,
+        "userxp": 0,
       });
 
       return null; // Successful registration

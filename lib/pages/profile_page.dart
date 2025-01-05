@@ -103,7 +103,7 @@ class _ProfilePageState extends State<ProfilePage> {
               isEqualTo:
                   user!.uid) // Burada kontrol 'routeUser' üzerinden yapılır.
           .get();
-
+      print(user!.uid);
       setState(() {
         userRoutes = querySnapshot.docs.map((doc) {
           return {
@@ -114,7 +114,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     (doc['locations'] as List).isNotEmpty)
                 ? doc['locations'][0]['place'] ?? ''
                 : 'Konum belirtilmemiş',
-            'likes': doc['likecount'] ?? 0, // Beğeni sayısını ekle
+            'likeCount': doc['likeCount'] ?? 0, // Beğeni sayısını ekle
             'destinationCount':
                 doc['locations'] != null && doc['locations'] is List
                     ? (doc['locations'] as List).length
@@ -166,15 +166,6 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               const SizedBox(height: 8),
 
-              // Konum Bilgisi
-              Row(
-                children: [
-                  const Icon(Icons.location_on, color: Colors.yellow, size: 16),
-                  const SizedBox(width: 4),
-                ],
-              ),
-              const SizedBox(height: 8),
-
               // Detaylar: Destination ve Beğeni Sayısı
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -200,7 +191,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       const Icon(Icons.favorite, color: Colors.red, size: 16),
                       const SizedBox(width: 4),
                       Text(
-                        "${route['likes']} beğeni",
+                        "${route['likeCount']} beğeni",
                         style: const TextStyle(
                           fontSize: 14,
                           color: Colors.white,

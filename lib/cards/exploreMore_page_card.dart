@@ -19,19 +19,21 @@ class ExploremorePageCard extends StatefulWidget {
 }
 
 class _ExploremorePageCardState extends State<ExploremorePageCard> {
-  RouteCard? routeC = null;
-  int likes = 0; // To track the number of likes
-  bool isLiked = false;
+  RouteCard? routeC;
+  late int likes;
+  late bool isLiked;
+  late String imageUrl;
 
   @override
   void initState() {
     super.initState();
-
+    likes = widget.likes;
+    isLiked = false;
     RouteService().getRouteCard(widget.routeId).then((element) => {
           setState(() {
             routeC = element;
             likes = routeC!.likecount!;
-            isLiked = routeC!.liked!;
+            imageUrl = routeC!.pfpurl!;
           })
         });
   }
@@ -40,9 +42,7 @@ class _ExploremorePageCardState extends State<ExploremorePageCard> {
     // Before making the API call, we toggle the like state.
     setState(() {
       isLiked = !isLiked; // Toggle heart state
-      likes = isLiked
-          ? likes + 1
-          : likes - 1; // Update like count immediately on the UI
+      likes = isLiked ? likes + 1 : likes - 1;
     });
 
     // Make the API call to update the like status on the backend
@@ -55,6 +55,7 @@ class _ExploremorePageCardState extends State<ExploremorePageCard> {
             routeC = updatedRouteCard;
             likes = routeC!
                 .likecount!; // Update the UI with the correct like count from the backend
+            imageUrl = routeC!.pfpurl!;
           });
         }
       }).catchError((e) {
@@ -65,9 +66,21 @@ class _ExploremorePageCardState extends State<ExploremorePageCard> {
     });
   }
 
-  @override
-  void dispose() {
-    super.dispose();
+  Widget _buildUserAvatar() {
+    return Padding(
+      padding: const EdgeInsets.all(1.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.yellow1,
+          shape: BoxShape.circle,
+        ),
+        padding: const EdgeInsets.all(1.0),
+        child: CircleAvatar(
+          backgroundImage: AssetImage('$imageUrl'),
+          radius: 20.0,
+        ),
+      ),
+    );
   }
 
   @override
@@ -79,7 +92,7 @@ class _ExploremorePageCardState extends State<ExploremorePageCard> {
       return Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
-          margin: EdgeInsets.all(10),
+          margin: const EdgeInsets.all(10),
           color: AppColors.grey1,
           height: height * 0.1,
           width: height * 0.1,
@@ -108,25 +121,28 @@ class _ExploremorePageCardState extends State<ExploremorePageCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: height * 0.003),
-                      // Safe null check for routeC
-                      Text(
-                        routeC?.title ?? 'Title not available',
-                        style: TextStyle(
-                          color: AppColors.white1,
-                          fontSize: height * 0.018,
-                          fontWeight: FontWeight.bold,
+                      Expanded(
+                        child: Text(
+                          routeC?.title ?? 'Title not available',
+                          style: TextStyle(
+                            color: AppColors.white1,
+                            fontSize: height * 0.018,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                      Text(
-                        routeC?.description ?? 'Description not available',
-                        style: TextStyle(
-                          color: AppColors.white1,
-                          fontSize: height * 0.01,
+                      SizedBox(height: height * 0.003),
+                      Expanded(
+                        child: Text(
+                          routeC?.description ?? 'Description not available',
+                          style: TextStyle(
+                            color: AppColors.white1,
+                            fontSize: height * 0.007,
+                          ),
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        maxLines: 4,
-                        overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(height: height * 0.01),
                       Row(
                         children: [
                           const Icon(
@@ -187,17 +203,17 @@ class _ExploremorePageCardState extends State<ExploremorePageCard> {
                           ),
                         ),
                         SizedBox(
-                          width: width * 0.01,
+                          width: width * 0.03,
                         ),
                         Text(
-                          routeC?.likecount?.toString() ?? '0',
+                          likes.toString(),
                           style: const TextStyle(
                             color: AppColors.white1,
                             fontSize: 10.0,
                           ),
                         ),
                         IconButton(
-                          onPressed: toggleLike, // Action to toggle like
+                          onPressed: toggleLike,
                           icon: Icon(
                             isLiked ? Icons.favorite : Icons.favorite_border,
                             color: isLiked ? AppColors.red1 : AppColors.white1,
@@ -212,15 +228,10 @@ class _ExploremorePageCardState extends State<ExploremorePageCard> {
               Positioned(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.yellow, // Sarı arka plan rengi
-                    shape: BoxShape.circle, // Yuvarlak şekil
+                    color: Colors.yellow,
+                    shape: BoxShape.circle,
                   ),
-                  padding: EdgeInsets.all(3.0),
-                  child: CircleAvatar(
-                    backgroundImage:
-                        AssetImage('assets/images/femaleavatar9.png'),
-                    radius: 20.0,
-                  ),
+                  child: _buildUserAvatar(),
                 ),
               ),
             ],

@@ -114,7 +114,7 @@ class RouteService {
   }) async {
     try {
       await RouteCollection.add({
-        'likecount': likecount,
+        'likeCount': likecount,
         'routeUser': routeUser,
         'routeName': routeName,
         'description': routeDescription,
