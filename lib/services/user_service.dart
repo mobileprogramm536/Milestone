@@ -35,12 +35,13 @@ class UserService {
           isEqualTo: UserId)
           .get();
 
-      uc.pfp= docref1.get('profileImage');
-      uc.name=docref1.get('name');
-      uc.userLevel=querySnapshot.docs.first.get('userlevel');
-      uc.userXp=querySnapshot.docs.first.get('userxp');
-      uc.followers=querySnapshot.docs.first.get('followers') as List<String>;
-      uc.likedRoutes=querySnapshot.docs.first.get('likedRoutes') as List<String>;
+      uc.pfp = docref1.data()?['profileImage'] ?? '';
+      uc.name = docref1.data()?['name'] ?? 'Bilinmeyen Kullanıcı';
+      uc.userLevel = querySnapshot.docs.isNotEmpty ? querySnapshot.docs.first.get('userlevel') : 0;
+      uc.userXp = querySnapshot.docs.isNotEmpty ? querySnapshot.docs.first.get('userxp') : 0;
+      uc.followers = List<String>.from(querySnapshot.docs.first.get('followers') ?? []);
+      uc.likedRoutes = List<String>.from(querySnapshot.docs.first.get('likedRoutes') ?? []);
+
 
 
     } catch (e) {
@@ -48,7 +49,7 @@ class UserService {
     }
 
     return uc;
-  }
+    }
 
 
 

@@ -114,7 +114,7 @@ class _ExplorePageState extends State<ExplorePage> {
                               final route = routeList[index];
                               return ExploreCard(
                                 routeId: route,
-                                imageUrl: '../assets/images/femaleavatar9.png',
+                                imageUrl: 'a',
                                 likes: 476, // Add dynamic likes if available
                               );
                             },

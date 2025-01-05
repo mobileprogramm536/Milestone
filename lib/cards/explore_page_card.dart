@@ -43,9 +43,7 @@ class _ExploreCardState extends State<ExploreCard> {
     // Before making the API call, we toggle the like state.
     setState(() {
       isLiked = !isLiked; // Toggle heart state
-      likes = isLiked
-          ? likes + 1
-          : likes - 1; // Update like count immediately on the UI
+      likes = isLiked ? likes + 1 : likes - 1;
     });
 
     // Make the API call to update the like status on the backend
@@ -58,6 +56,7 @@ class _ExploreCardState extends State<ExploreCard> {
             routeC = updatedRouteCard;
             likes = routeC!
                 .likecount!; // Update the UI with the correct like count from the backend
+            imageUrl = routeC!.pfpurl!;
           });
         }
       }).catchError((e) {
@@ -66,6 +65,50 @@ class _ExploreCardState extends State<ExploreCard> {
     }).catchError((e) {
       print("Error liking route: $e");
     });
+  }
+
+  Widget _buildUserAvatar() {
+    return Padding(
+      padding: const EdgeInsets.all(2.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.yellow1,
+          shape: BoxShape.circle,
+        ),
+        padding: const EdgeInsets.all(3.0),
+        child: CircleAvatar(
+          backgroundImage: AssetImage('$imageUrl'),
+          radius: 30.0,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRouteStats(double width) {
+    return Row(
+      children: [
+        const Icon(Icons.pin_drop_outlined,
+            color: AppColors.yellow1, size: 16.0),
+        SizedBox(width: width * 0.08),
+        _buildRotatedNavigationIcon(),
+        const SizedBox(width: 4.0),
+        Text(
+          routeC?.destinationcount?.toString() ?? '0',
+          style: const TextStyle(color: AppColors.white1, fontSize: 12.0),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRotatedNavigationIcon() {
+    return Transform.rotate(
+      angle: 90 * 3.14159 / 180, // Rotate 90 degrees
+      child: const Icon(
+        Icons.navigation,
+        color: AppColors.yellow1,
+        size: 16.0,
+      ),
+    );
   }
 
   @override
@@ -111,25 +154,7 @@ class _ExploreCardState extends State<ExploreCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Circular image on the left
-                      Padding(
-                        padding: EdgeInsets.all(2.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.yellow, // Sarı arka plan rengi
-                            shape: BoxShape.circle, // Yuvarlak şekil
-                          ),
-                          padding: EdgeInsets.all(
-                              3.0), // Arka planın boyutunu büyütüyoruz
-                          child: GestureDetector(
-                            onTap: () => {},
-                            child: CircleAvatar(
-                              backgroundImage:
-                                  AssetImage('assets/images/femaleavatar9.png'),
-                              radius: 30.0, // Avatarın boyutu
-                            ),
-                          ),
-                        ),
-                      ),
+                      _buildUserAvatar(),
                       SizedBox(
                         width: width * 0.05,
                       ),
@@ -151,7 +176,7 @@ class _ExploreCardState extends State<ExploreCard> {
                             SizedBox(height: height * 0.001),
                             // Description
                             Container(
-                              height: height * 0.04,
+                              height: height * 0.033,
                               child: Text(
                                 routeC!.description!,
                                 style: TextStyle(
@@ -167,38 +192,13 @@ class _ExploreCardState extends State<ExploreCard> {
                       )
                     ],
                   ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
                   Center(
                     child: Row(
                       children: [
                         SizedBox(
                           width: width * 0.01,
                         ),
-                        const Icon(
-                          Icons.pin_drop_outlined,
-                          color: AppColors.yellow1,
-                          size: 16.0,
-                        ),
-                        const SizedBox(width: 4.0),
-                        SizedBox(width: width * 0.08),
-                        Transform.rotate(
-                          angle: 90 * 3.1415927 / 180, // 90 derece döndürme
-                          child: const Icon(
-                            Icons.navigation_outlined,
-                            color: AppColors.yellow1,
-                            size: 16.0,
-                          ),
-                        ),
-                        const SizedBox(width: 4.0),
-                        Text(
-                          routeC!.destinationcount!.toString(),
-                          style: const TextStyle(
-                            color: AppColors.white1,
-                            fontSize: 12.0,
-                          ),
-                        ),
+                        _buildRouteStats(width),
                         SizedBox(width: width * 0.35),
                         Row(children: [
                           Text(

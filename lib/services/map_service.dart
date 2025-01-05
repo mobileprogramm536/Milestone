@@ -8,6 +8,8 @@ class FirestoreService {
   Future<String?> _getCurrentUserId() async {
     final user = _auth.currentUser;
     return user?.uid;
+
+    // return 'XBNmdeE7GC2GVJ8jW7Dm';
   }
 
   Future<List<Map<String, dynamic>>> getVisitedCountries() async {
@@ -51,7 +53,8 @@ class FirestoreService {
       } else {
         await userRef.set({
           'visitedCountries': [countryData],
-        });
+          'createdAt': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
       }
     } catch (e) {
       print('Error adding visited country: $e');
@@ -74,13 +77,19 @@ class FirestoreService {
         if (data != null && data.containsKey('visitedCountries')) {
           final visitedCountries =
               List<Map<String, dynamic>>.from(data['visitedCountries']);
-          final updatedCountries = visitedCountries
-              .where((country) => country['code'] != countryCode)
-              .toList();
 
-          await userRef.update({
-            'visitedCountries': updatedCountries,
-          });
+          // Find the country to remove
+          final countryToRemove = visitedCountries.firstWhere(
+            (country) => country['code'] == countryCode,
+            orElse: () => {},
+          );
+
+          if (countryToRemove.isNotEmpty) {
+            // Use arrayRemove to remove the specific country
+            await userRef.update({
+              'visitedCountries': FieldValue.arrayRemove([countryToRemove])
+            });
+          }
         }
       }
     } catch (e) {
@@ -88,3 +97,4 @@ class FirestoreService {
     }
   }
 }
+

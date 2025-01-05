@@ -25,6 +25,7 @@ class _RouteDetailPageState extends State<RouteDetailPage> {
   double estimatedTravelTime = 0.0;
   int _selectedIndex = 1;
   RouteCard? routeC = null;
+  String imageUrl = '';
 
   GeolocationCalculator geolocationCalculator = GeolocationCalculator();
 
@@ -37,6 +38,7 @@ class _RouteDetailPageState extends State<RouteDetailPage> {
             routeC = element;
             likes = routeC!.likecount!;
             isLiked = routeC!.liked!;
+            imageUrl = routeC!.pfpurl!;
           })
         });
   }
@@ -214,6 +216,8 @@ class _RouteDetailPageState extends State<RouteDetailPage> {
                                   //Profile info
                                   Center(
                                     child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         SizedBox(
                                           width: width * 0.025,
@@ -232,8 +236,8 @@ class _RouteDetailPageState extends State<RouteDetailPage> {
                                             child: GestureDetector(
                                               onTap: () => {},
                                               child: CircleAvatar(
-                                                backgroundImage: AssetImage(
-                                                    'assets/images/femaleavatar9.png'),
+                                                backgroundImage:
+                                                    AssetImage('$imageUrl'),
                                                 radius: 30.0, // Avatarın boyutu
                                               ),
                                             ),
@@ -265,7 +269,7 @@ class _RouteDetailPageState extends State<RouteDetailPage> {
                                           ],
                                         ),
                                         SizedBox(
-                                          width: width * 0.21,
+                                          width: width * 0.05,
                                         ),
                                         OutlinedButton(
                                           style: OutlinedButton.styleFrom(

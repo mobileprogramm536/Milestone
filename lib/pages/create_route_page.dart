@@ -75,6 +75,7 @@ class _CreateRoutePageState extends State<CreateRoutePage> {
     final routeName = _routecontroller_name.text;
     final description = _routecontroller_desc.text;
     final routeUsername = AuthService().user?.uid;
+    final likecount = 0;
 
     if (routeUsername == null) {
       print("Error: User is not authenticated.");
@@ -115,6 +116,7 @@ class _CreateRoutePageState extends State<CreateRoutePage> {
 
     // Call the RouteService to create the route
     RouteService().createRoute(
+      likecount: likecount,
       routeUser: routeUsername,
       routeName: routeName,
       routeDescription: description,
