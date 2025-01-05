@@ -10,7 +10,7 @@ class PersonalDetailsPage extends StatefulWidget {
 }
 
 class _PersonalDetailsPageState extends State<PersonalDetailsPage> {
-  final User? user = FirebaseAuth.instance.currentUser; // Mevcut kullanıcı
+  final User? user = FirebaseAuth.instance.currentUser;
   String name = ""; // Kullanıcı adı
   String email = ""; // E-posta
   String registrationDate = ""; // Kayıt tarihi
@@ -24,7 +24,10 @@ class _PersonalDetailsPageState extends State<PersonalDetailsPage> {
   // Kullanıcı bilgilerini Firestore'dan çekme
   Future<void> _loadUserDetails() async {
     if (user != null) {
-      final doc = await FirebaseFirestore.instance.collection('users').doc(user!.uid).get();
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user!.uid)
+          .get();
       if (doc.exists && doc.data() != null) {
         final data = doc.data()!;
         setState(() {
@@ -42,11 +45,10 @@ class _PersonalDetailsPageState extends State<PersonalDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
-        backgroundColor: Colors.black,
+        backgroundColor: const Color(0xFF1C1C1E),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      backgroundColor: Colors.black,
+      backgroundColor: const Color(0xFF1C1C1E),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

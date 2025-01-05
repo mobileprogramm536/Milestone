@@ -7,11 +7,11 @@ class AboutUsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
-        backgroundColor: Colors.black, // AppBar arka planı siyah
-        iconTheme: const IconThemeData(color: Colors.white), // Geri butonu rengi beyaz
+        backgroundColor: const Color(0xFF1C1C1E),
+        iconTheme:
+            const IconThemeData(color: Colors.white), // Geri butonu rengi beyaz
       ),
-      backgroundColor: Colors.black, // Arka plan siyah
+      backgroundColor: const Color(0xFF1C1C1E),
       body: const Padding(
         padding: EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -29,9 +29,9 @@ class AboutUsPage extends StatelessWidget {
               SizedBox(height: 10),
               Text(
                 'Milestone, seyahat severlerin keşiflerini daha keyifli ve planlı hale '
-                    'getirmek için geliştirilmiş bir mobil uygulamadır. Amacımız, kullanıcılarımıza '
-                    'en iyi rota planlama ve paylaşma deneyimini sunarak dünyayı keşfetmelerini '
-                    'kolaylaştırmaktır.',
+                'getirmek için geliştirilmiş bir mobil uygulamadır. Amacımız, kullanıcılarımıza '
+                'en iyi rota planlama ve paylaşma deneyimini sunarak dünyayı keşfetmelerini '
+                'kolaylaştırmaktır.',
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.white, // Font rengi beyaz
@@ -49,8 +49,8 @@ class AboutUsPage extends StatelessWidget {
               SizedBox(height: 10),
               Text(
                 'Kullanıcılarımızın hem kendi oluşturdukları rotalarla hem de diğer '
-                    'gezginlerin önerilerini değerlendirerek eşsiz seyahat deneyimleri '
-                    'yaşamalarını sağlamak.',
+                'gezginlerin önerilerini değerlendirerek eşsiz seyahat deneyimleri '
+                'yaşamalarını sağlamak.',
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.white, // Font rengi beyaz
@@ -68,9 +68,9 @@ class AboutUsPage extends StatelessWidget {
               SizedBox(height: 10),
               Text(
                 'Seyahat planlamasında lider bir platform olmak ve kullanıcılarımızın '
-                    'dünya üzerindeki her köşeyi keşfetmelerine ilham vermek. Sunduğumuz '
-                    'teknolojilerle insanların seyahat deneyimlerini daha kolay, keyifli ve '
-                    'güvenilir hale getirmek.',
+                'dünya üzerindeki her köşeyi keşfetmelerine ilham vermek. Sunduğumuz '
+                'teknolojilerle insanların seyahat deneyimlerini daha kolay, keyifli ve '
+                'güvenilir hale getirmek.',
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.white, // Font rengi beyaz
@@ -84,5 +84,3 @@ class AboutUsPage extends StatelessWidget {
     );
   }
 }
-
-
