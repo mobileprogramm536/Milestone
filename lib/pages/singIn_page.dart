@@ -76,7 +76,7 @@ class _SignInPageState extends State<SignInPage> {
       );
     } else {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => CreateRoutePage()));
+          context, MaterialPageRoute(builder: (context) => MainPage()));
 
       // Giriş başarılıysa
       CustomSnackbar.showMessage(
@@ -99,9 +99,7 @@ class _SignInPageState extends State<SignInPage> {
     final width = MediaQuery.of(context).size.width;
 
     return AuthService().user != null
-
         ? MainPage()
-
         : Scaffold(
             resizeToAvoidBottomInset: true,
             body: SingleChildScrollView(
