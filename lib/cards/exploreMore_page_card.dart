@@ -107,13 +107,6 @@ class _ExploremorePageCardState extends State<ExploremorePageCard> {
                             size: 16.0,
                           ),
                           const SizedBox(width: 2.0),
-                          Text(
-                            routeC?.location ?? 'Location not available',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12.0,
-                            ),
-                          ),
                         ],
                       ),
                       Row(

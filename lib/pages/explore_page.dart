@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:milestone/pages/exploreMore_page.dart';
-
-import 'package:milestone/pages/singIn_page.dart';
-
-import '../buttons/signIn_button.dart';
 import '../cards/explore_page_card.dart';
-import '../services/auth_service.dart';
-
 import '../services/route_service.dart';
 import '../theme/app_theme.dart';
 import '../theme/colors.dart';
