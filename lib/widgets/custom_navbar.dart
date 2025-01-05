@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:milestone/theme/colors.dart';
 
 class CustomNavBar extends StatelessWidget {
   final Function(int) onItemSelected;
@@ -44,28 +45,28 @@ class CustomNavBar extends StatelessWidget {
               children: [
                 _buildNavBarIcon(
                   context: context,
-                  icon: Icons.location_pin,
+                  icon: Icons.location_on_outlined,
                   index: 0,
-                  route: '/location',
+                  route: '/createRoute',
                 ),
                 _buildNavBarIcon(
                   context: context,
-                  icon: Icons.explore,
+                  icon: Icons.explore_outlined,
                   index: 1,
-                  route: '/explore',
+                  route: '/explorePage',
                 ),
                 const SizedBox(width: 60),
                 _buildNavBarIcon(
                   context: context,
-                  icon: Icons.star,
+                  icon: Icons.star_border_rounded,
                   index: 2,
-                  route: '/favorites',
+                  route: '/savedRoutesPage',
                 ),
                 _buildNavBarIcon(
                   context: context,
-                  icon: Icons.person,
+                  icon: Icons.person_outlined,
                   index: 3,
-                  route: '/profile',
+                  route: '/profilePage',
                 ),
               ],
             ),
@@ -76,14 +77,14 @@ class CustomNavBar extends StatelessWidget {
           child: GestureDetector(
             onTap: () {
               onItemSelected(4);
-              Navigator.pushNamed(context, '/ai');
+              Navigator.pushNamed(context, '/mainPage');
             },
             child: CircleAvatar(
               backgroundColor: Colors.grey[900],
               radius: 40,
               child: CircleAvatar(
                 radius: 30,
-                backgroundColor: Colors.greenAccent,
+                backgroundColor: AppColors.green1,
                 child: const Icon(
                   Icons.airplanemode_active,
                   color: Colors.white,
@@ -112,7 +113,7 @@ class CustomNavBar extends StatelessWidget {
       },
       child: Icon(
         icon,
-        color: isSelected ? Colors.greenAccent : Colors.white,
+        color: isSelected ? AppColors.green1 : Colors.white,
         size: 28,
       ),
     );

@@ -6,7 +6,6 @@ import 'package:milestone/buttons/signIn_register_button.dart';
 import 'package:milestone/pages/create_route_page.dart';
 
 import 'package:milestone/pages/register_page.dart';
-import 'package:milestone/pages/test.dart';
 import 'package:milestone/services/auth_service.dart';
 import '../buttons/google_login_button.dart';
 import '../services/validation_service.dart';
@@ -15,7 +14,9 @@ import '../textfields/custom_textfield.dart';
 import '../textfields/password_text_field.dart';
 import '../theme/app_theme.dart';
 import '../theme/colors.dart';
+import 'explore_page.dart';
 import 'forgot_password.dart';
+import 'main_page.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -74,15 +75,13 @@ class _SignInPageState extends State<SignInPage> {
       );
     } else {
       Navigator.push(
-
-          context, MaterialPageRoute(builder: (context) => CreateRoutePage()));
+          context, MaterialPageRoute(builder: (context) => MainPage()));
 
       // Giriş başarılıysa
       CustomSnackbar.showMessage(
         context,
         "Giriş başarılı!",
         backgroundColor: Colors.green,
-
       );
     }
   }
@@ -98,7 +97,7 @@ class _SignInPageState extends State<SignInPage> {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
 
-    return AuthService().getUser() != null ? DenemePage() : Scaffold(
+    return Scaffold(
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
           child: GestureDetector(
@@ -219,7 +218,7 @@ class _SignInPageState extends State<SignInPage> {
                         //Giriş yapmadan devam etme işlemi
                         Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(
-                            builder: (context) => ForgotPasswordScreen(),
+                            builder: (context) => forgotPassword(),
                           ),
                           (Route<dynamic> route) => false,
                         );
@@ -234,7 +233,7 @@ class _SignInPageState extends State<SignInPage> {
                             fontSize: height * 0.021),
                       ),
                     ),
-                    SizedBox(height: height * 0.04),
+                    SizedBox(height: height * 0.1),
                   ],
                 ),
               ),

@@ -17,7 +17,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 4;
   int _visitedCountriesCount = 0;
   int _totalCountriesCount = countries.length;
   double _visitedPercentage = 0.0;
@@ -254,6 +254,9 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+
     return Container(
       decoration: const BoxDecoration(gradient: appBackground),
       child: Scaffold(
@@ -351,9 +354,11 @@ class _MainPageState extends State<MainPage> {
             ),
           ],
         ),
+
         bottomNavigationBar: CustomNavBar(
           selectedIndex: _selectedIndex,
           onItemSelected: _onNavBarItemSelected,
+
         ),
       ),
     );
