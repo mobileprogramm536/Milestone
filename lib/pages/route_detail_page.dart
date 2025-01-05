@@ -214,6 +214,8 @@ class _RouteDetailPageState extends State<RouteDetailPage> {
                                   //Profile info
                                   Center(
                                     child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         SizedBox(
                                           width: width * 0.025,
@@ -265,7 +267,7 @@ class _RouteDetailPageState extends State<RouteDetailPage> {
                                           ],
                                         ),
                                         SizedBox(
-                                          width: width * 0.21,
+                                          width: width * 0.05,
                                         ),
                                         OutlinedButton(
                                           style: OutlinedButton.styleFrom(

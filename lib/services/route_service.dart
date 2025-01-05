@@ -45,11 +45,14 @@ class RouteService {
       if (!docref1.exists) return null;
 
       RouteCard rc = RouteCard(
-        description: docref1.get("description"),
-        routeOwnerId: docref1.get("routeUser"),
-        title: docref1.get("routeName"),
-        likecount: docref1.get("likecount"),
-        destinationcount: (docref1.get("locations") as List<dynamic>).length,
+        description:
+            docref1.data()?["description"] ?? "No description available",
+        routeOwnerId: docref1.data()?["routeUser"] ?? "Unknown",
+        title: docref1.data()?["routeName"] ?? "Untitled",
+        likecount: docref1.data()?["likecount"] ?? 0, // Varsayılan 0
+        destinationcount:
+            (docref1.data()?["locations"] as List<dynamic>?)?.length ?? 0,
+        category: docref1.data()?["category"] ?? "All",
       );
 
       var docref2 = await UserCollection.doc(rc.routeOwnerId).get();
@@ -103,6 +106,7 @@ class RouteService {
   }
 
   Future<void> createRoute({
+    required int likecount,
     required String? routeUser,
     required String routeName,
     required String routeDescription,
@@ -110,6 +114,7 @@ class RouteService {
   }) async {
     try {
       await RouteCollection.add({
+        'likecount': likecount,
         'routeUser': routeUser,
         'routeName': routeName,
         'description': routeDescription,
@@ -214,8 +219,11 @@ class RouteService {
   Future<List<String>> getExploreRoutes() async {
     try {
       var userID = await AuthService().getUser();
+      print('Fetched User ID: $userID');
+
       QuerySnapshot querySnapshot =
           await RouteCollection.where('routeUser', isNotEqualTo: userID).get();
+      print('Fetched Docs: ${querySnapshot.docs}');
       return querySnapshot.docs.map((doc) => doc.id).toList();
     } catch (e) {
       print('Error fetching explore routes: $e');

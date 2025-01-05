@@ -18,8 +18,6 @@ class _SavedRoutesPageState extends State<SavedRoutesPage> {
     "🇩🇪", "🇹🇷", "🇮🇹", "🏛️"
   ];
 
-  int _selectedIndex = 0; // Default to 'All'
-
   @override
   void initState() {
     super.initState();
@@ -43,14 +41,6 @@ class _SavedRoutesPageState extends State<SavedRoutesPage> {
     _filterRoutesByCategory("All");
   }
 
-  void _onNavBarItemSelected(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    print('Selected Index: $index');
-    _filterRoutesByCategory(collectionIcons[index]);
-  }
-
   void _filterRoutesByCategory(String category) {
     setState(() {
       if (category == "All") {
@@ -67,22 +57,27 @@ class _SavedRoutesPageState extends State<SavedRoutesPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Change Category"),
+          title: const Text("Kategori Seçin"),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: collectionIcons.map((icon) {
               return ListTile(
-                title: Text("Category: $icon"),
+                leading: Text(
+                  icon,
+                  style: const TextStyle(fontSize: 24),
+                ),
+                title: Text("Kategori: $icon"),
                 onTap: () async {
                   final routeService = RouteService();
                   await routeService.updateRouteCategory(
                       route.routeOwnerId ?? "", icon);
 
                   setState(() {
-                    route.category = icon; // Update the route's category
+                    route.category = icon; // Seçilen kategoriyi güncelle
                   });
 
                   Navigator.pop(context);
+                  _filterRoutesByCategory(icon); // Filtreleme işlemi
                 },
               );
             }).toList(),
@@ -108,8 +103,7 @@ class _SavedRoutesPageState extends State<SavedRoutesPage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: collectionIcons.map((icon) {
                 return GestureDetector(
-                  onTap: () =>
-                      _onNavBarItemSelected(collectionIcons.indexOf(icon)),
+                  onTap: () => _filterRoutesByCategory(icon),
                   child: CircleAvatar(
                     radius: 30,
                     backgroundColor: AppColors.yellow1,
@@ -158,27 +152,6 @@ class _SavedRoutesPageState extends State<SavedRoutesPage> {
                   ),
           ),
         ],
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(right: 8.0, left: 8.0, bottom: 10.0),
-        child: Container(
-          height: height * 0.08,
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(16.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 6.0,
-                offset: Offset(0, 6),
-              ),
-            ],
-          ),
-          child: CustomNavBar(
-            onItemSelected: _onNavBarItemSelected,
-            selectedIndex: _selectedIndex,
-          ),
-        ),
       ),
     );
   }
