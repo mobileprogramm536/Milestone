@@ -22,6 +22,7 @@ class _ExploremorePageCardState extends State<ExploremorePageCard> {
   RouteCard? routeC = null;
   int likes = 0; // To track the number of likes
   late bool isLiked; // To toggle like state
+  late String imageUrl;
 
   @override
   void initState() {
@@ -31,14 +32,47 @@ class _ExploremorePageCardState extends State<ExploremorePageCard> {
       setState(() {
         routeC = element;
         likes = routeC?.likecount ?? 0; // If null, default to 0
+        imageUrl = routeC?.pfpurl ?? "../assets/images/femaleavatar9.png";
       });
     });
   }
 
+  void fetchRouteCard() {
+    RouteService().getRouteCard(widget.routeId).then((element) {
+      if (mounted) {
+        setState(() {
+          routeC = element;
+          likes = routeC!.likecount!;
+          isLiked = routeC!.liked!;
+        });
+      }
+    }).catchError((e) {
+      print("Error fetching route card: $e");
+    });
+  }
+
   void toggleLike() {
+    // Update UI optimistically
     setState(() {
-      isLiked = !isLiked; // Toggle state
-      likes += isLiked ? 1 : -1; // Increment or decrement the count
+      isLiked = !isLiked; // Toggle heart state
+      likes = isLiked ? likes + 1 : likes - 1;
+    });
+
+    // Make the API call to update the like status on the backend
+    RouteService().likeRoute(widget.routeId, isLiked).then((_) {
+      if (mounted) {
+        fetchRouteCard(); // Fetch the updated data after API call
+      }
+    }).catchError((e) {
+      print("Error liking route: $e");
+
+      // Revert the UI changes in case of an error
+      if (mounted) {
+        setState(() {
+          isLiked = !isLiked;
+          likes = isLiked ? likes + 1 : likes - 1;
+        });
+      }
     });
   }
 
@@ -51,7 +85,7 @@ class _ExploremorePageCardState extends State<ExploremorePageCard> {
       return Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
-          margin: EdgeInsets.all(10),
+          margin: const EdgeInsets.all(10),
           color: AppColors.grey1,
           height: height * 0.1,
           width: height * 0.1,
@@ -80,7 +114,6 @@ class _ExploremorePageCardState extends State<ExploremorePageCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: height * 0.003),
-                      // Safe null check for routeC
                       Text(
                         routeC?.title ?? 'Title not available',
                         style: TextStyle(
@@ -162,7 +195,7 @@ class _ExploremorePageCardState extends State<ExploremorePageCard> {
                           width: width * 0.01,
                         ),
                         Text(
-                          routeC?.likecount?.toString() ?? '0',
+                          likes.toString(),
                           style: const TextStyle(
                             color: AppColors.white1,
                             fontSize: 10.0,
@@ -184,11 +217,11 @@ class _ExploremorePageCardState extends State<ExploremorePageCard> {
               Positioned(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.yellow, // Sarı arka plan rengi
-                    shape: BoxShape.circle, // Yuvarlak şekil
+                    color: Colors.yellow,
+                    shape: BoxShape.circle,
                   ),
-                  padding: EdgeInsets.all(3.0),
-                  child: CircleAvatar(
+                  padding: const EdgeInsets.all(3.0),
+                  child: const CircleAvatar(
                     backgroundImage:
                         AssetImage('assets/images/femaleavatar9.png'),
                     radius: 20.0,

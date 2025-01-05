@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import '../calculator/geolocation_calculator.dart';
 import '../services/route_service.dart';
 import '../theme/app_theme.dart';
 import '../theme/colors.dart';
 import '../widgets/custom_navbar.dart';
+import 'ai_page.dart';
 
 class RouteDetailPage extends StatefulWidget {
   final String routeId;
@@ -20,10 +20,11 @@ class _RouteDetailPageState extends State<RouteDetailPage> {
   RouteDetail? _routeDetail;
   bool _isLoading = true;
   String _errorMessage = '';
-  late bool isLiked;
+  bool isLiked = false;
   int likes = 0;
   double estimatedTravelTime = 0.0;
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
+  RouteCard? routeC = null;
 
   GeolocationCalculator geolocationCalculator = GeolocationCalculator();
 
@@ -31,6 +32,13 @@ class _RouteDetailPageState extends State<RouteDetailPage> {
   void initState() {
     super.initState();
     _fetchRouteDetails();
+    RouteService().getRouteCard(widget.routeId).then((element) => {
+          setState(() {
+            routeC = element;
+            likes = routeC!.likecount!;
+            isLiked = routeC!.liked!;
+          })
+        });
   }
 
   void _onNavBarItemSelected(int index) {
@@ -41,10 +49,37 @@ class _RouteDetailPageState extends State<RouteDetailPage> {
   }
 
   void toggleLike() {
+    // Before making the API call, we toggle the like state.
     setState(() {
-      isLiked = !isLiked; // Toggle state
-      likes += isLiked ? 1 : -1; // Increment or decrement the count
+      isLiked = !isLiked; // Toggle heart state
+      likes = isLiked
+          ? likes + 1
+          : likes - 1; // Update like count immediately on the UI
     });
+
+    // Make the API call to update the like status on the backend
+    RouteService().likeRoute(widget.routeId, isLiked).then((_) {
+      // After updating the backend, fetch the updated route data (including like count)
+      RouteService().getRouteCard(widget.routeId).then((updatedRouteCard) {
+        // Ensure the widget is still mounted before calling setState
+        if (mounted) {
+          setState(() {
+            routeC = updatedRouteCard;
+            likes = routeC!
+                .likecount!; // Update the UI with the correct like count from the backend
+          });
+        }
+      }).catchError((e) {
+        print("Error getting updated route card: $e");
+      });
+    }).catchError((e) {
+      print("Error liking route: $e");
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   Future<List<Position>> _convertLocationsToPositions(
@@ -54,7 +89,9 @@ class _RouteDetailPageState extends State<RouteDetailPage> {
 
     for (int i = 0; i < locations.length; i++) {
       double latitude = locations[i]["place"].latitude;
+      print(latitude);
       double longitude = locations[i]["place"].longitude;
+      print(longitude);
 
       // Get current time as timestamp
       DateTime currentTime = DateTime.now();
@@ -89,6 +126,7 @@ class _RouteDetailPageState extends State<RouteDetailPage> {
     // Calculate the total travel time by dividing total distance by speed (in km/h)
     double travelTime = totalDistance /
         (speed * 1000 / 3600); // Convert speed to meters per second
+
     print('Total Distance: $totalDistance meters');
     print('Total Travel Time: $travelTime hours');
     return positions;
@@ -324,7 +362,7 @@ class _RouteDetailPageState extends State<RouteDetailPage> {
                                         const SizedBox(height: 16),
                                         // Destinations and Likes
                                         Text(
-                                          'Estimated trip time: ${estimatedTravelTime}',
+                                          'Estimated trip time: ${estimatedTravelTime} hours',
                                           style: const TextStyle(
                                               fontSize: 12,
                                               color: AppColors.white1),
@@ -332,105 +370,107 @@ class _RouteDetailPageState extends State<RouteDetailPage> {
                                         // Locations Section
                                         if (_routeDetail!.locations != null &&
                                             _routeDetail!.locations!.isNotEmpty)
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              SingleChildScrollView(
-                                                child: Flexible(
-                                                  child: ListView.builder(
-                                                    shrinkWrap: true,
-                                                    itemCount: _routeDetail!
-                                                        .locations!.length,
-                                                    itemBuilder:
-                                                        (context, index) {
-                                                      final location =
-                                                          _routeDetail!
-                                                                  .locations![
-                                                              index];
-                                                      return SingleChildScrollView(
-                                                        child: Container(
-                                                            margin:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    bottom: 8),
-                                                            decoration:
-                                                                const BoxDecoration(
-                                                              gradient:
-                                                                  LinearGradient(
-                                                                begin: Alignment
-                                                                    .topLeft,
-                                                                end: Alignment
-                                                                    .bottomRight,
-                                                                colors: [
-                                                                  AppColors
-                                                                      .yellow1,
-                                                                  AppColors
-                                                                      .yellow2
-                                                                ],
-                                                              ),
-                                                              borderRadius:
-                                                                  BorderRadius
+                                          Expanded(
+                                            child: Container(
+                                              height: height * 0.6,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Flexible(
+                                                    child: ListView.builder(
+                                                      shrinkWrap: true,
+                                                      itemCount: _routeDetail!
+                                                          .locations!.length,
+                                                      itemBuilder:
+                                                          (context, index) {
+                                                        final location =
+                                                            _routeDetail!
+                                                                    .locations![
+                                                                index];
+                                                        return SingleChildScrollView(
+                                                          child: Container(
+                                                              margin:
+                                                                  const EdgeInsets
                                                                       .only(
-                                                                topLeft: Radius
-                                                                    .circular(
-                                                                        80),
-                                                                topRight: Radius
-                                                                    .circular(
-                                                                        20),
-                                                                bottomLeft: Radius
-                                                                    .circular(
-                                                                        80),
-                                                                bottomRight:
-                                                                    Radius
-                                                                        .circular(
-                                                                            20),
-                                                              ),
-                                                            ),
-                                                            child: ListTile(
-                                                              leading:
-                                                                  CircleAvatar(
-                                                                backgroundColor:
+                                                                      bottom:
+                                                                          8),
+                                                              decoration:
+                                                                  const BoxDecoration(
+                                                                gradient:
+                                                                    LinearGradient(
+                                                                  begin: Alignment
+                                                                      .topLeft,
+                                                                  end: Alignment
+                                                                      .bottomRight,
+                                                                  colors: [
                                                                     AppColors
-                                                                        .grey1,
-                                                                child: Text(
-                                                                  "${index + 1}",
-                                                                  style: const TextStyle(
-                                                                      color: AppColors
-                                                                          .white1,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
+                                                                        .yellow1,
+                                                                    AppColors
+                                                                        .yellow2
+                                                                  ],
+                                                                ),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .only(
+                                                                  topLeft: Radius
+                                                                      .circular(
+                                                                          80),
+                                                                  topRight: Radius
+                                                                      .circular(
+                                                                          20),
+                                                                  bottomLeft: Radius
+                                                                      .circular(
+                                                                          80),
+                                                                  bottomRight: Radius
+                                                                      .circular(
+                                                                          20),
                                                                 ),
                                                               ),
-                                                              title: Text(
-                                                                  location[
-                                                                          'name'] ??
-                                                                      '',
-                                                                  style: TextStyle(
-                                                                      color: AppColors
+                                                              child: ListTile(
+                                                                leading:
+                                                                    CircleAvatar(
+                                                                  backgroundColor:
+                                                                      AppColors
                                                                           .grey1,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                      fontSize:
-                                                                          16)),
-                                                              subtitle: Text(
-                                                                  location[
-                                                                          'note'] ??
-                                                                      '',
-                                                                  style: TextStyle(
-                                                                      color: AppColors
-                                                                          .grey1,
-                                                                      fontSize:
-                                                                          14)),
-                                                            )),
-                                                      );
-                                                    },
+                                                                  child: Text(
+                                                                    "${index + 1}",
+                                                                    style: const TextStyle(
+                                                                        color: AppColors
+                                                                            .white1,
+                                                                        fontWeight:
+                                                                            FontWeight.bold),
+                                                                  ),
+                                                                ),
+                                                                title: Text(
+                                                                    location[
+                                                                            'name'] ??
+                                                                        '',
+                                                                    style: TextStyle(
+                                                                        color: AppColors
+                                                                            .grey1,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        fontSize:
+                                                                            16)),
+                                                                subtitle: Text(
+                                                                    location[
+                                                                            'note'] ??
+                                                                        '',
+                                                                    style: TextStyle(
+                                                                        color: AppColors
+                                                                            .grey1,
+                                                                        fontSize:
+                                                                            14)),
+                                                              )),
+                                                        );
+                                                      },
+                                                    ),
                                                   ),
-                                                ),
+                                                ],
                                               ),
-                                            ],
+                                            ),
                                           )
                                         else
                                           const Center(
@@ -446,7 +486,14 @@ class _RouteDetailPageState extends State<RouteDetailPage> {
                                           MainAxisAlignment.center,
                                       children: [
                                         OutlinedButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => AiPage(),
+                                              ),
+                                            );
+                                          },
                                           style: OutlinedButton.styleFrom(
                                             side: BorderSide(
                                                 color: AppColors.green1,
@@ -483,7 +530,10 @@ class _RouteDetailPageState extends State<RouteDetailPage> {
                                           width: width * 0.2,
                                         ),
                                         ElevatedButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            RouteService()
+                                                .saveRoute(widget.routeId);
+                                          },
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: AppColors
                                                 .green1, // Butonun arka plan rengi

@@ -99,13 +99,21 @@ class _CreateRoutePageState extends State<CreateRoutePage> {
         return;
       }
 
+      // Get the latitude and longitude with higher precision
+      double preciseLatitude = double.parse(
+          places[i]!.latitude.toStringAsFixed(9)); // 9 decimal places
+      double preciseLongitude = double.parse(
+          places[i]!.longitude.toStringAsFixed(9)); // 9 decimal places
+
       locations.add({
         'name': _controllers[i].text,
         'note': _noteControllers[i].text,
-        'place': GeoPoint(places[i]!.latitude, places[i]!.longitude),
+        'place': GeoPoint(
+            preciseLatitude, preciseLongitude), // Store the precise values
       });
     }
 
+    // Call the RouteService to create the route
     RouteService().createRoute(
       routeUser: routeUsername,
       routeName: routeName,

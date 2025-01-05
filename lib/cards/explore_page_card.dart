@@ -24,6 +24,7 @@ class _ExploreCardState extends State<ExploreCard> {
   RouteCard? routeC = null;
   int likes = 0; // To track the number of likes
   late bool isLiked; // To toggle like state
+  late String imageUrl;
 
   @override
   void initState() {
@@ -33,14 +34,37 @@ class _ExploreCardState extends State<ExploreCard> {
           setState(() {
             routeC = element;
             likes = routeC!.likecount!;
+            imageUrl = routeC!.pfpurl!;
           })
         });
   }
 
   void toggleLike() {
+    // Before making the API call, we toggle the like state.
     setState(() {
-      isLiked = !isLiked; // Toggle state
-      likes += isLiked ? 1 : -1; // Increment or decrement the count
+      isLiked = !isLiked; // Toggle heart state
+      likes = isLiked
+          ? likes + 1
+          : likes - 1; // Update like count immediately on the UI
+    });
+
+    // Make the API call to update the like status on the backend
+    RouteService().likeRoute(widget.routeId, isLiked).then((_) {
+      // After updating the backend, fetch the updated route data (including like count)
+      RouteService().getRouteCard(widget.routeId).then((updatedRouteCard) {
+        // Ensure the widget is still mounted before calling setState
+        if (mounted) {
+          setState(() {
+            routeC = updatedRouteCard;
+            likes = routeC!
+                .likecount!; // Update the UI with the correct like count from the backend
+          });
+        }
+      }).catchError((e) {
+        print("Error getting updated route card: $e");
+      });
+    }).catchError((e) {
+      print("Error liking route: $e");
     });
   }
 
@@ -126,14 +150,17 @@ class _ExploreCardState extends State<ExploreCard> {
                             ),
                             SizedBox(height: height * 0.001),
                             // Description
-                            Text(
-                              routeC!.description!,
-                              style: TextStyle(
-                                  color: AppColors.white1,
-                                  fontSize: height * 0.013,
-                                  fontWeight: FontWeight.w100),
-                              maxLines: 4,
-                              overflow: TextOverflow.ellipsis,
+                            Container(
+                              height: height * 0.04,
+                              child: Text(
+                                routeC!.description!,
+                                style: TextStyle(
+                                    color: AppColors.white1,
+                                    fontSize: height * 0.013,
+                                    fontWeight: FontWeight.w100),
+                                maxLines: 4,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                           ],
                         ),
@@ -172,7 +199,7 @@ class _ExploreCardState extends State<ExploreCard> {
                             fontSize: 12.0,
                           ),
                         ),
-                        SizedBox(width: width * 0.17),
+                        SizedBox(width: width * 0.35),
                         Row(children: [
                           Text(
                             likes.toString(),
