@@ -1,32 +1,90 @@
-// map_service.dart
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class FirestoreService {
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // Fetch countries collection from Firestore
-  Future<List<Map<String, dynamic>>> getCountries() async {
+  Future<String?> _getCurrentUserId() async {
+    final user = _auth.currentUser;
+    return user?.uid;
+  }
+
+  Future<List<Map<String, dynamic>>> getVisitedCountries() async {
     try {
-      // Get all documents from the 'countries' collection
-      QuerySnapshot snapshot = await _db.collection('countries').get();
+      final userId = await _getCurrentUserId();
+      if (userId == null) {
+        print('User not signed in');
+        return [];
+      }
 
-      // Convert documents to a list of maps
-      List<Map<String, dynamic>> countries = snapshot.docs.map((doc) {
-        final data = doc.data() as Map<String, dynamic>;
-
-        // Return a map with the desired fields
-        return {
-          'name': data['name'] ?? 'Unknown',
-          'id': data['id'] ?? 0,
-          'mapsupport': data['mapsupport'] ?? false,
-        };
-      }).toList();
-
-      return countries;
+      final userDetailsDoc =
+          await _firestore.collection('userdetails').doc(userId).get();
+      if (userDetailsDoc.exists) {
+        final data = userDetailsDoc.data();
+        if (data != null && data.containsKey('visitedCountries')) {
+          return List<Map<String, dynamic>>.from(data['visitedCountries']);
+        }
+      }
+      return [];
     } catch (e) {
-      print("Error fetching countries: $e");
-      throw e;
+      print('Error fetching visited countries: $e');
+      return [];
+    }
+  }
+
+  Future<void> addVisitedCountry(Map<String, dynamic> countryData) async {
+    try {
+      final userId = await _getCurrentUserId();
+      if (userId == null) {
+        print('User not signed in');
+        return;
+      }
+
+      final userRef = _firestore.collection('userdetails').doc(userId);
+      final userDetailsDoc = await userRef.get();
+
+      if (userDetailsDoc.exists) {
+        await userRef.update({
+          'visitedCountries': FieldValue.arrayUnion([countryData]),
+        });
+      } else {
+        await userRef.set({
+          'visitedCountries': [countryData],
+        });
+      }
+    } catch (e) {
+      print('Error adding visited country: $e');
+    }
+  }
+
+  Future<void> removeVisitedCountry(String countryCode) async {
+    try {
+      final userId = await _getCurrentUserId();
+      if (userId == null) {
+        print('User not signed in');
+        return;
+      }
+
+      final userRef = _firestore.collection('userdetails').doc(userId);
+      final userDetailsDoc = await userRef.get();
+
+      if (userDetailsDoc.exists) {
+        final data = userDetailsDoc.data();
+        if (data != null && data.containsKey('visitedCountries')) {
+          final visitedCountries =
+              List<Map<String, dynamic>>.from(data['visitedCountries']);
+          final updatedCountries = visitedCountries
+              .where((country) => country['code'] != countryCode)
+              .toList();
+
+          await userRef.update({
+            'visitedCountries': updatedCountries,
+          });
+        }
+      }
+    } catch (e) {
+      print('Error removing visited country: $e');
     }
   }
 }
