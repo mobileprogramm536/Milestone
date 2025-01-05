@@ -29,12 +29,7 @@ class _ExplorePageState extends State<ExplorePage> {
   void initState() {
     super.initState();
     // Initialize the routes Future
-    routes = RouteService().getExploreRoutes();
-    routes.then((routeList) {
-      print('Fetched routes: $routeList');
-    }).catchError((e) {
-      print('Error fetching routes: $e');
-    }); // Directly assign the future
+    routes = RouteService().getExploreRoutes(); // Directly assign the future
   }
 
   @override
@@ -119,6 +114,8 @@ class _ExplorePageState extends State<ExplorePage> {
                               final route = routeList[index];
                               return ExploreCard(
                                 routeId: route,
+                                imageUrl: 'a',
+                                likes: 476, // Add dynamic likes if available
                               );
                             },
                             separatorBuilder: (context, index) =>

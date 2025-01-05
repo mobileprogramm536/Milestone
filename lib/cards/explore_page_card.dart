@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:milestone/pages/route_detail_page.dart';
 import 'package:milestone/services/route_service.dart';
+
 import '../theme/colors.dart';
 
 class ExploreCard extends StatefulWidget {
   final String routeId;
+  final String imageUrl;
+  final int likes;
 
   const ExploreCard({
     Key? key,
     required this.routeId,
+    required this.imageUrl,
+    required this.likes,
   }) : super(key: key);
 
   @override
@@ -16,50 +21,94 @@ class ExploreCard extends StatefulWidget {
 }
 
 class _ExploreCardState extends State<ExploreCard> {
-  RouteCard? routeC;
-  int likes = 0;
-  bool isLiked = false;
-  String imageUrl = '';
+  RouteCard? routeC = null;
+  int likes = 0; // To track the number of likes
+  late bool isLiked; // To toggle like state
+  late String imageUrl;
 
   @override
   void initState() {
-    super.initState();
-    // Get initial route data
-    RouteService().getRouteCard(widget.routeId).then((element) {
-      setState(() {
-        routeC = element;
-        likes = routeC!.likecount!;
-        isLiked = routeC!.liked!;
-        imageUrl = routeC!.pfpurl!;
-      });
-    }).catchError((e) {
-      print("Error fetching route card: $e");
-    });
+    super.initState(); // Initialize likes
+    isLiked = false; // Default state: unliked
+    RouteService().getRouteCard(widget.routeId).then((element) => {
+          setState(() {
+            routeC = element;
+            likes = routeC!.likecount!;
+            imageUrl = routeC!.pfpurl!;
+          })
+        });
   }
 
   void toggleLike() {
-    // Call backend to update like status
+    // Before making the API call, we toggle the like state.
+    setState(() {
+      isLiked = !isLiked; // Toggle heart state
+      likes = isLiked ? likes + 1 : likes - 1;
+    });
+
+    // Make the API call to update the like status on the backend
     RouteService().likeRoute(widget.routeId, isLiked).then((_) {
-      // Fetch updated route data after liking
+      // After updating the backend, fetch the updated route data (including like count)
       RouteService().getRouteCard(widget.routeId).then((updatedRouteCard) {
+        // Ensure the widget is still mounted before calling setState
         if (mounted) {
           setState(() {
             routeC = updatedRouteCard;
-            likes = routeC!.likecount!;
+            likes = routeC!
+                .likecount!; // Update the UI with the correct like count from the backend
+            imageUrl = routeC!.pfpurl!;
           });
         }
       }).catchError((e) {
-        print("Error fetching updated route card: $e");
+        print("Error getting updated route card: $e");
       });
     }).catchError((e) {
       print("Error liking route: $e");
     });
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    // Any necessary cleanup, cancel timers, etc.
+  Widget _buildUserAvatar() {
+    return Padding(
+      padding: const EdgeInsets.all(2.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.yellow1,
+          shape: BoxShape.circle,
+        ),
+        padding: const EdgeInsets.all(3.0),
+        child: CircleAvatar(
+          backgroundImage: AssetImage('$imageUrl'),
+          radius: 30.0,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRouteStats(double width) {
+    return Row(
+      children: [
+        const Icon(Icons.pin_drop_outlined,
+            color: AppColors.yellow1, size: 16.0),
+        SizedBox(width: width * 0.08),
+        _buildRotatedNavigationIcon(),
+        const SizedBox(width: 4.0),
+        Text(
+          routeC?.destinationcount?.toString() ?? '0',
+          style: const TextStyle(color: AppColors.white1, fontSize: 12.0),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRotatedNavigationIcon() {
+    return Transform.rotate(
+      angle: 90 * 3.14159 / 180, // Rotate 90 degrees
+      child: const Icon(
+        Icons.navigation,
+        color: AppColors.yellow1,
+        size: 16.0,
+      ),
+    );
   }
 
   @override
@@ -95,95 +144,63 @@ class _ExploreCardState extends State<ExploreCard> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),
           ),
-          color: AppColors.grey1,
+          color: AppColors.grey1, // Background color as in the design
           margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 30.0),
           child: Padding(
-            padding: EdgeInsets.all(height * 0.018),
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Circular image on the left
-                    Padding(
-                      padding: EdgeInsets.all(2.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.yellow, // Yellow background
-                          shape: BoxShape.circle,
-                        ),
-                        padding: EdgeInsets.all(3.0),
-                        child: GestureDetector(
-                          onTap: () => {},
-                          child: CircleAvatar(
-                            backgroundImage: AssetImage(imageUrl),
-                            radius: 30.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: width * 0.05),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: height * 0.005),
-                          Text(
-                            routeC!.title!,
-                            style: TextStyle(
-                              color: AppColors.white1,
-                              fontSize: height * 0.023,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: height * 0.001),
-                          Container(
-                            height: height * 0.033,
-                            child: Text(
-                              routeC!.description!,
-                              style: TextStyle(
-                                  color: AppColors.white1,
-                                  fontSize: height * 0.013,
-                                  fontWeight: FontWeight.w100),
-                              maxLines: 4,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                Center(
-                  child: Row(
+              padding: EdgeInsets.all(height * 0.018),
+              child: Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(width: width * 0.01),
-                      const Icon(
-                        Icons.pin_drop_outlined,
-                        color: AppColors.yellow1,
-                        size: 16.0,
+                      // Circular image on the left
+                      _buildUserAvatar(),
+                      SizedBox(
+                        width: width * 0.05,
                       ),
-                      const SizedBox(width: 4.0),
-                      SizedBox(width: width * 0.08),
-                      Transform.rotate(
-                        angle: 90 * 3.1415927 / 180,
-                        child: const Icon(
-                          Icons.navigation_outlined,
-                          color: AppColors.yellow1,
-                          size: 16.0,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: height * 0.005,
+                            ),
+                            Text(
+                              routeC!.title!,
+                              style: TextStyle(
+                                color: AppColors.white1,
+                                fontSize: height * 0.023,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: height * 0.001),
+                            // Description
+                            Container(
+                              height: height * 0.033,
+                              child: Text(
+                                routeC!.description!,
+                                style: TextStyle(
+                                    color: AppColors.white1,
+                                    fontSize: height * 0.013,
+                                    fontWeight: FontWeight.w100),
+                                maxLines: 4,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      const SizedBox(width: 4.0),
-                      Text(
-                        routeC!.destinationcount!.toString(),
-                        style: const TextStyle(
-                          color: AppColors.white1,
-                          fontSize: 12.0,
+                      )
+                    ],
+                  ),
+                  Center(
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: width * 0.01,
                         ),
-                      ),
-                      SizedBox(width: width * 0.35),
-                      Row(
-                        children: [
+                        _buildRouteStats(width),
+                        SizedBox(width: width * 0.35),
+                        Row(children: [
                           Text(
                             likes.toString(),
                             style: const TextStyle(
@@ -192,7 +209,7 @@ class _ExploreCardState extends State<ExploreCard> {
                             ),
                           ),
                           IconButton(
-                            onPressed: toggleLike,
+                            onPressed: toggleLike, // Action to toggle like
                             icon: Icon(
                               isLiked ? Icons.favorite : Icons.favorite_border,
                               color:
@@ -200,14 +217,12 @@ class _ExploreCardState extends State<ExploreCard> {
                               size: 24.0,
                             ),
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+                        ]),
+                      ],
+                    ),
+                  )
+                ],
+              )),
         ),
       ),
     );
