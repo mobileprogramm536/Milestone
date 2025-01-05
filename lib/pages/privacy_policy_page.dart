@@ -77,7 +77,7 @@ class PrivacyPolicyPage extends StatelessWidget {
               ),
               SizedBox(height: 10),
               Text(
-                'Sorularınız için bizimle iletişime geçin: mobileprogramm536@gmail.com',
+                'Sorularınız için bizimle iletişime geçebilirsiniz: mobileprogramm536@gmail.com',
                 style: TextStyle(fontSize: 16, color: Colors.white),
               ),
               SizedBox(height: 20),

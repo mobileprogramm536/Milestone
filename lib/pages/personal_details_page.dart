@@ -10,7 +10,7 @@ class PersonalDetailsPage extends StatefulWidget {
 }
 
 class _PersonalDetailsPageState extends State<PersonalDetailsPage> {
-  final User? user = FirebaseAuth.instance.currentUser; // Mevcut kullanıcı
+  final User? user = FirebaseAuth.instance.currentUser;
   String name = ""; // Kullanıcı adı
   String email = ""; // E-posta
   String registrationDate = ""; // Kayıt tarihi

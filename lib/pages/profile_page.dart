@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:milestone/pages/edit_route_page.dart';
+
 import 'package:milestone/pages/settings_page.dart';
 
 
@@ -33,7 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
 
-    // Eğer kullanıcı silmeyi onaylamazsa işlemi iptal et
+
     if (confirmDelete != true) return;
 
     // Firestore’dan silme işlemi
@@ -57,10 +57,6 @@ class _ProfilePageState extends State<ProfilePage> {
   final List<String> maleAvatars = _generateAvatarList('male', 20);
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final User? user = FirebaseAuth.instance.currentUser;
-
-
-
-
   String? profileImageUrl;
   String username = "";
   int followers = 0;
@@ -77,42 +73,6 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     _loadUserProfile();
     _loadUserRoutes(); // Rotaları yükle
-  }
-  void _editRoute(Map<String, dynamic> route) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => EditRoutePage(
-          routeData: route,
-          onSave: (updatedRoute) async {
-            setState(() {
-              final index = userRoutes.indexWhere((r) => r['id'] == route['id']);
-              if (index != -1) {
-                userRoutes[index] = updatedRoute;
-              }
-            });
-
-            // Firestore üzerinde güncelleme
-            try {
-              await _firestore.collection('routes').doc(route['id']).update({
-                'routeName': updatedRoute['routeName'] ?? route['routeName'],
-                'description': updatedRoute['description'] ?? route['description'],
-                'locations': updatedRoute['locations']?.map((loc) => {
-                  'name': loc['name'] ?? route['locations'][0]['name'],
-                  'note': loc['note'] ?? route['locations'][0]['note'],
-                  'place': loc['place'] ?? route['locations'][0]['place'],
-                }).toList() ?? route['locations'], // Eğer updatedRoute içinde 'locations' yoksa mevcut değerleri koru
-              });
-
-              _showSuccessMessage("Rota başarıyla güncellendi!");
-            } catch (e) {
-              _showErrorMessage("Rota güncellenemedi: $e");
-            }
-
-          },
-        ),
-      ),
-    );
   }
 
 
@@ -154,7 +114,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
   Widget _buildRouteCard(Map<String, dynamic> route) {
     return GestureDetector(
-      onTap: () => _editRoute(route), // Kart tıklandığında düzenleme ekranını aç
+
       child: Card(
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -187,12 +147,6 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               const SizedBox(height: 8),
 
-
-
-
-              const SizedBox(height: 8),
-
-              // Detaylar: Destination ve Beğeni Sayısı
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -294,13 +248,6 @@ class _ProfilePageState extends State<ProfilePage> {
       _showErrorMessage("Kullanıcı verisi yüklenirken hata oluştu: $e");
     }
   }
-
-
-  // Kullanıcının rotalarını yüklemek için fonksiyon
-
-
-
-
 
   void _showAvatarSelection() {
     showModalBottomSheet(
