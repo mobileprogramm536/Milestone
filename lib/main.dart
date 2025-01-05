@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:milestone/pages/create_route_page.dart';
 import 'package:milestone/pages/forgot_password.dart';
 import 'package:milestone/pages/codeVerificationScreen.dart';
 import 'package:milestone/pages/register_page.dart';
@@ -29,7 +28,6 @@ void main() async {
     debugShowCheckedModeBanner: false,
     initialRoute: '/signin',
     routes: {
-      '/createRoute': (context) => CreateRoutePage(),
       '/register': (context) => const RegisterPage(),
       '/signin': (context) => const SignInPage(),
       '/forgotPassword': (context) => const forgotPassword(),
