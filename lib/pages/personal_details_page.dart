@@ -43,10 +43,10 @@ class _PersonalDetailsPageState extends State<PersonalDetailsPage> {
     return Scaffold(
       appBar: AppBar(
 
-        backgroundColor: Colors.black,
+        backgroundColor: const Color(0xFF1C1C1E),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      backgroundColor: Colors.black,
+      backgroundColor: const Color(0xFF1C1C1E),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

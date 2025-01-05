@@ -8,10 +8,10 @@ class AboutUsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
 
-        backgroundColor: Colors.black, // AppBar arka planı siyah
+        backgroundColor: const Color(0xFF1C1C1E), // AppBar arka planı siyah
         iconTheme: const IconThemeData(color: Colors.white), // Geri butonu rengi beyaz
       ),
-      backgroundColor: Colors.black, // Arka plan siyah
+      backgroundColor: const Color(0xFF1C1C1E), // Arka plan siyah
       body: const Padding(
         padding: EdgeInsets.all(16.0),
         child: SingleChildScrollView(

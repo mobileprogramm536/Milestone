@@ -13,6 +13,41 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  void _deleteRoute(String routeId) async {
+    // Onay diyaloğu
+    bool? confirmDelete = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Silme İşlemi"),
+        content: const Text("Bu rotayı silmek istediğinizden emin misiniz?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false), // İptal
+            child: const Text("İptal"),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true), // Onay
+            child: const Text("Evet"),
+          ),
+        ],
+      ),
+    );
+
+    // Eğer kullanıcı silmeyi onaylamazsa işlemi iptal et
+    if (confirmDelete != true) return;
+
+    // Firestore’dan silme işlemi
+    try {
+      await _firestore.collection('routes').doc(routeId).delete(); // Firestore’dan belgeyi sil
+      setState(() {
+        userRoutes.removeWhere((route) => route['id'] == routeId); // Listeden de kaldır
+      });
+      _showSuccessMessage("Rota başarıyla silindi!");
+    } catch (e) {
+      _showErrorMessage("Rota silinemedi: $e");
+    }
+  }
+
   static List<String> _generateAvatarList(String gender, int count) {
     return List.generate(count, (index) => 'assets/images/${gender}avatar${index + 1}.png');
   }
@@ -30,6 +65,8 @@ class _ProfilePageState extends State<ProfilePage> {
   String username = "";
   int followers = 0;
   int routes = 0;
+  String badgeAsset = 'assets/rozets/caylak.png'; // Varsayılan rozet
+
 
 
   List<Map<String, dynamic>> userRoutes = []; // Kullanıcının rotaları
@@ -93,12 +130,14 @@ class _ProfilePageState extends State<ProfilePage> {
         userRoutes = querySnapshot.docs.map((doc) {
           return {
             'id': doc.id,
-            'routeName': doc['routeName'] ?? '',
-            'description': doc['description'] ?? '',
-            'place': (doc['locations'] != null && (doc['locations'] as List).isNotEmpty)
+            'routeName': doc['routeName'] ?? '', // Varsayılan olarak boş string
+            'description': doc['description'] ?? '', // Varsayılan olarak boş string
+
+            'place': (doc['locations'] != null && doc['locations'] is List && doc['locations'].isNotEmpty)
                 ? doc['locations'][0]['place'] ?? ''
                 : 'Konum belirtilmemiş',
-            'likes': doc['likecount'] ?? 0, // Beğeni sayısını ekle
+
+            'likes': doc['likeCount'] ?? 0, // Beğeni sayısını ekle
             'destinationCount': doc['locations'] != null && doc['locations'] is List
                 ? (doc['locations'] as List).length
                 : 0, // Lokasyon sayısını kontrol et, null ise 0 yap
@@ -148,20 +187,9 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               const SizedBox(height: 8),
 
-              // Konum Bilgisi
-              Row(
-                children: [
-                  const Icon(Icons.location_on, color: Colors.yellow, size: 16),
-                  const SizedBox(width: 4),
-                  Text(
-                    route['place'], // Konum
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
+
+
+
               const SizedBox(height: 8),
 
               // Detaylar: Destination ve Beğeni Sayısı
@@ -182,10 +210,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ],
                   ),
-
-                  // Beğeni Sayısı
+                  // Beğeni ve Çöp İkonu
                   Row(
                     children: [
+                      // Beğeni
                       const Icon(Icons.favorite, color: Colors.red, size: 16),
                       const SizedBox(width: 4),
                       Text(
@@ -195,10 +223,18 @@ class _ProfilePageState extends State<ProfilePage> {
                           color: Colors.white,
                         ),
                       ),
+                      const SizedBox(width: 16), // Boşluk
+
+                      // Çöp İkonu
+                      IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () => _deleteRoute(route['id']), // Silme fonksiyonunu çağır
+                      ),
                     ],
                   ),
                 ],
-              ),
+              )
+
             ],
           ),
         ),
@@ -208,6 +244,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
 
   Future<void> _loadUserProfile() async {
+    String badgeAsset = 'assets/rozets/default.png'; // Varsayılan rozet
+
     if (user == null) {
       _showErrorMessage("Lütfen giriş yapın!");
       return;
@@ -219,6 +257,24 @@ class _ProfilePageState extends State<ProfilePage> {
       if (doc.exists && doc.data() != null) {
         final data = doc.data()!;
         setState(() {
+          int userLevel = data['userlevel'] ?? 0; // Seviyeyi al
+          if (userLevel >= 6) {
+            badgeAsset = 'assets/rozets/efsanevi.png';
+          } else if (userLevel >= 5) {
+            badgeAsset = 'assets/rozets/kasif.png';
+          }
+
+          else if (userLevel >= 4) {
+            badgeAsset = 'assets/rozets/deneyimli.png';
+          } else if (userLevel >= 3) {
+            badgeAsset = 'assets/rozets/maceracı.png';
+          } else if (userLevel >= 2) {
+            badgeAsset = 'assets/rozets/meraklı.png';
+          }
+          else if (userLevel >= 1) {
+            badgeAsset = 'assets/rozets/caylak.png';
+          }
+
           // Firestore'dan gelen verileri güncelle
           username = data['name'] ?? "Kullanıcı";
           followers = data['followers'] ?? 0;
@@ -361,40 +417,53 @@ class _ProfilePageState extends State<ProfilePage> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween, // Bileşenleri en sola ve en sağa hizala
               children: [
-                GestureDetector(
-                  onTap: _showAvatarSelection, // Avatar seçme işlemi
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: AssetImage(profileImageUrl ?? femaleAvatars[0]),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                // Avatar ve Kullanıcı Bilgileri
+                Row(
                   children: [
-                    Text(
-                      username,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                    GestureDetector(
+                      onTap: _showAvatarSelection,
+                      child: CircleAvatar(
+                        radius: 50,
+                        backgroundImage: AssetImage(profileImageUrl ?? femaleAvatars[0]),
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      "${followers} takipçi",
-                      style: const TextStyle(color: Colors.grey, fontSize: 16),
-                    ),
-                    Text(
-                      "${routes} rota",
-                      style: const TextStyle(color: Colors.grey, fontSize: 16),
+                    const SizedBox(width: 16), // Avatar ve yazılar arasında boşluk
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          username,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "$followers takipçi",
+                          style: const TextStyle(color: Colors.grey, fontSize: 16),
+                        ),
+                        Text(
+                          "$routes rota",
+                          style: const TextStyle(color: Colors.grey, fontSize: 16),
+                        ),
+                      ],
                     ),
                   ],
                 ),
+
+                // Rozet - Satırın sonuna (en sağa) yerleştirildi
+                CircleAvatar(
+                  radius: 30, // Rozet boyutu ayarlanabilir
+                  backgroundImage: AssetImage(badgeAsset), // Rozet resmi
+                ),
               ],
-            ),
+            )
           ),
+
           const SizedBox(height: 3,),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0), // Daha küçük boşluk

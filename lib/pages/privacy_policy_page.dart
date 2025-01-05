@@ -8,10 +8,11 @@ class PrivacyPolicyPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
 
-        backgroundColor: Colors.black,
+        backgroundColor: const Color(0xFF1C1C1E),
         iconTheme: const IconThemeData(color: Colors.white),
+
       ),
-      backgroundColor: Colors.black,
+      backgroundColor: const Color(0xFF1C1C1E),
       body: const Padding(
         padding: EdgeInsets.all(16.0),
         child: SingleChildScrollView(
