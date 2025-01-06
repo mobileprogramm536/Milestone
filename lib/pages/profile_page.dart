@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:milestone/pages/settings_page.dart';
 
+import '../widgets/custom_navbar.dart';
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -67,6 +69,15 @@ class _ProfilePageState extends State<ProfilePage> {
 
   List<Map<String, dynamic>> userRoutes = []; // Kullanıcının rotaları
   bool isLoading = true; // Yüklenme durumu
+
+  int _selectedIndex = 3;
+
+  void _onNavBarItemSelected(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    print('Selected Index: $index');
+  }
 
   @override
   void initState() {
@@ -332,6 +343,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: const Color(0xFF1C1C1E),
       appBar: AppBar(
@@ -450,6 +463,27 @@ class _ProfilePageState extends State<ProfilePage> {
                           )),
               ],
             ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(right: 8.0, left: 8.0, bottom: 10.0),
+        child: Container(
+          height: height * 0.08,
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(16.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 6.0,
+                offset: Offset(0, 6),
+              ),
+            ],
+          ),
+          child: CustomNavBar(
+            onItemSelected: _onNavBarItemSelected,
+            selectedIndex: _selectedIndex,
+          ),
+        ),
+      ),
     );
   }
 }
