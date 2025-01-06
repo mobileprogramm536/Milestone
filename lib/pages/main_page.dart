@@ -381,7 +381,7 @@ class _MainPageState extends State<MainPage> {
 
   Widget _buildStatCard(String value, String label) {
     return Card(
-      color: AppColors.green1,
+      color: AppColors.grey1,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
         child: Column(

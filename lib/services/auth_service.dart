@@ -75,7 +75,7 @@ class AuthService {
       await userDetailsCollection.doc(userCredential.user!.uid).set({
         "followers": [],
         "likedRoutes": [],
-        "savedRoutes": [],
+        "savedRoutes": {},
         "userlevel": 0,
         "userxp": 0,
       });

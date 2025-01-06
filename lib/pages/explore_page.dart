@@ -36,13 +36,13 @@ class _ExplorePageState extends State<ExplorePage> {
   Future<void> _initializeLikedRoutes() async {
     try {
       final routeList = await routes;
-      Map<String, bool> newLikedRoutes = {};  // Create a temporary map
-      
+      Map<String, bool> newLikedRoutes = {}; // Create a temporary map
+
       for (String routeId in routeList) {
         bool isLiked = await RouteService().isRouteLiked(routeId);
         newLikedRoutes[routeId] = isLiked;
       }
-      
+
       // Update state once with all routes
       setState(() {
         likedRoutes = newLikedRoutes;
@@ -58,7 +58,7 @@ class _ExplorePageState extends State<ExplorePage> {
     final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: AppColors.darkgrey1,
+      backgroundColor: AppColors.darkgrey2,
       resizeToAvoidBottomInset: true,
       body: Container(
         decoration: const BoxDecoration(

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class RouteDetail {
   RouteDetail({this.routecard, this.ownerfollowercount, this.locations});
@@ -45,11 +46,13 @@ class RouteService {
       if (!docref1.exists) return null;
 
       RouteCard rc = RouteCard(
-        description: docref1.data()?["description"] ?? "No description available",
+        description:
+            docref1.data()?["description"] ?? "No description available",
         routeOwnerId: docref1.data()?["routeUser"] ?? "Unknown",
         title: docref1.data()?["routeName"] ?? "Untitled",
-        likecount: docref1.data()?["likecount"] ?? 0, // Varsayılan 0
-        destinationcount: (docref1.data()?["locations"] as List<dynamic>?)?.length ?? 0,
+        likecount: docref1.data()?["likecount"] ?? 0, // VarsayÄ±lan 0
+        destinationcount:
+            (docref1.data()?["locations"] as List<dynamic>?)?.length ?? 0,
         category: docref1.data()?["category"] ?? "All",
       );
 
@@ -59,7 +62,9 @@ class RouteService {
         rc.pfpurl = docref2.get('profileImage');
       }
 
-      var querySnapshot = await UserDetailsCollection.where("userId", isEqualTo: rc.routeOwnerId).get();
+      var querySnapshot = await UserDetailsCollection.where("userId",
+              isEqualTo: rc.routeOwnerId)
+          .get();
 
       if (querySnapshot.docs.isNotEmpty) {
         var temp = querySnapshot.docs.first.get("likedRoutes") as List<dynamic>;
@@ -129,16 +134,20 @@ class RouteService {
       if (userID == null) throw Exception("User not logged in.");
 
       var docref1 = await UserDetailsCollection.doc(userID).get();
-      var temp = docref1.get('savedRoutes') as List<dynamic>;
+      Map<String, dynamic> savedRoutes =
+          (docref1.data()?['savedRoutes'] ?? {}) as Map<String, dynamic>;
 
-
-      if (temp.contains(routeId)) {
+      if (savedRoutes.containsKey(routeId)) {
+        // Remove the route from saved routes
         await UserDetailsCollection.doc(userID).update({
-          'savedRoutes': FieldValue.arrayRemove([routeId]),
+          'savedRoutes.$routeId': FieldValue.delete(),
         });
       } else {
+        // Add the route with just the category field
         await UserDetailsCollection.doc(userID).update({
-          'savedRoutes': FieldValue.arrayUnion([routeId]),
+          'savedRoutes.$routeId': {
+            'category': null,
+          },
         });
       }
       print('Route $routeId saved or removed from saved routes.');
@@ -173,14 +182,34 @@ class RouteService {
     return filteredRoutes;
   }
 
-  Future<List<String>> getSavedRoutes() async {
+  Future<List<Map<String, dynamic>>> getSavedRoutes() async {
     try {
       var userID = await AuthService().getUser();
+      if (userID == null) return [];
 
-      var docref1 = await UserDetailsCollection.doc(userID).get();
-      var temp = docref1.get('savedRoutes') as List<dynamic>;
+      // Get user's saved routes from userdetails collection
+      final userDetailsDoc = await UserDetailsCollection.doc(userID).get();
+      Map<String, dynamic> savedRoutes =
+          (userDetailsDoc.data()?['savedRoutes'] ?? {}) as Map<String, dynamic>;
 
-      return List<String>.from(docref1.get('savedRoutes'));
+      // Fetch complete route documents
+      List<Map<String, dynamic>> routes = [];
+      for (String routeId in savedRoutes.keys) {
+        final routeDoc = await RouteCollection.doc(routeId).get();
+
+        if (routeDoc.exists) {
+          Map<String, dynamic> routeData = routeDoc.data() ?? {};
+          routeData['routeId'] = routeId;
+          routeData['category'] =
+              savedRoutes[routeId]['category']; // Include the saved category
+          routeData['pfpurl'] = await UserCollection.doc(routeData['routeUser'])
+              .get()
+              .then((value) => value.get('profileImage'));
+          routes.add(routeData);
+        }
+      }
+
+      return routes;
     } catch (e) {
       print('Error fetching saved routes: $e');
       return [];
@@ -189,11 +218,14 @@ class RouteService {
 
   Future<void> updateRouteCategory(String routeId, String newCategory) async {
     try {
-      // Update the route's category field in Firestore
-      await RouteCollection.doc(routeId).update({
-        'category':
-            newCategory, // Assuming you have a 'category' field in your route document
+      var userID = await AuthService().getUser();
+      if (userID == null) throw Exception("User not logged in.");
+
+      // Update the category in the user's saved routes
+      await UserDetailsCollection.doc(userID).update({
+        'savedRoutes.$routeId.category': newCategory,
       });
+
       print('Route category updated successfully!');
     } catch (e) {
       print('Error updating route category: $e');
@@ -265,27 +297,17 @@ class RouteService {
     var userID = await AuthService().getUser();
     if (userID == null) throw Exception("User not logged in.");
     var docref1 = await UserDetailsCollection.doc(userID).get();
-    var temp = docref1.get('savedRoutes') as List<dynamic>;
+    var savedRoutes = docref1.get('savedRoutes') as Map<String, dynamic>;
 
-    if (temp.contains(routeId)){
-      return true;
-    }
-    else{
-      return false;
-    }
+    return savedRoutes.containsKey(routeId);
   }
+
   Future<bool> isRouteLiked(String routeId) async {
     var userID = await AuthService().getUser();
     if (userID == null) throw Exception("User not logged in.");
     var docref1 = await UserDetailsCollection.doc(userID).get();
     var temp = docref1.get('likedRoutes') as List<dynamic>;
 
-    if (temp.contains(routeId)){
-      return true;
-    }
-    else{
-      return false;
-    }
+    return temp.contains(routeId);
   }
-
 }
