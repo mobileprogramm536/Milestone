@@ -33,7 +33,7 @@ class _ExploreMorePageState extends State<ExploreMorePage> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: AppColors.darkgrey1,
+      backgroundColor: AppColors.darkgrey2,
       resizeToAvoidBottomInset: true,
       body: Container(
         decoration: const BoxDecoration(gradient: appBackground),

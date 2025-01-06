@@ -1,7 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:milestone/pages/settings_page.dart';
+import 'package:milestone/theme/colors.dart';
+
+import '../theme/app_theme.dart';
 import '../widgets/custom_navbar.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -42,7 +46,7 @@ class _ProfilePageState extends State<ProfilePage> {
           .delete(); // Firestore’dan belgeyi sil
       setState(() {
         userRoutes.removeWhere(
-                (route) => route['id'] == routeId); // Listeden de kaldır
+            (route) => route['id'] == routeId); // Listeden de kaldır
       });
       _showSuccessMessage("Rota başarıyla silindi!");
     } catch (e) {
@@ -68,6 +72,13 @@ class _ProfilePageState extends State<ProfilePage> {
   List<Map<String, dynamic>> userRoutes = []; // Kullanıcının rotaları
   bool isLoading = true; // Yüklenme durumu
 
+  @override
+  void initState() {
+    super.initState();
+    _loadUserProfile();
+    _loadUserRoutes(); // Rotaları yükle
+  }
+
   int _selectedIndex = 3;
 
   void _onNavBarItemSelected(int index) {
@@ -77,13 +88,6 @@ class _ProfilePageState extends State<ProfilePage> {
     print('Selected Index: $index');
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _loadUserProfile();
-    _loadUserRoutes(); // Rotaları yükle
-  }
-
   Future<void> _loadUserRoutes() async {
     if (user == null) return;
 
@@ -91,8 +95,8 @@ class _ProfilePageState extends State<ProfilePage> {
       final querySnapshot = await _firestore
           .collection('routes')
           .where('routeUser',
-          isEqualTo:
-          user!.uid) // Burada kontrol 'routeUser' üzerinden yapılır.
+              isEqualTo:
+                  user!.uid) // Burada kontrol 'routeUser' üzerinden yapılır.
           .get();
 
       setState(() {
@@ -101,19 +105,19 @@ class _ProfilePageState extends State<ProfilePage> {
             'id': doc.id,
             'routeName': doc['routeName'] ?? '', // Varsayılan olarak boş string
             'description':
-            doc['description'] ?? '', // Varsayılan olarak boş string
+                doc['description'] ?? '', // Varsayılan olarak boş string
 
             'place': (doc['locations'] != null &&
-                doc['locations'] is List &&
-                doc['locations'].isNotEmpty)
+                    doc['locations'] is List &&
+                    doc['locations'].isNotEmpty)
                 ? doc['locations'][0]['place'] ?? ''
                 : 'Konum belirtilmemiş',
 
-            'likes': doc['likeCount'] ?? 0, // Beğeni sayısını ekle
+            'likes': doc['likecount'] ?? 0, // Beğeni sayısını ekle
             'destinationCount':
-            doc['locations'] != null && doc['locations'] is List
-                ? (doc['locations'] as List).length
-                : 0, // Lokasyon sayısını kontrol et, null ise 0 yap
+                doc['locations'] != null && doc['locations'] is List
+                    ? (doc['locations'] as List).length
+                    : 0, // Lokasyon sayısını kontrol et, null ise 0 yap
           };
         }).toList();
 
@@ -299,13 +303,13 @@ class _ProfilePageState extends State<ProfilePage> {
           children: avatars
               .map(
                 (avatarPath) => GestureDetector(
-              onTap: () => _updateProfileImage(avatarPath),
-              child: CircleAvatar(
-                backgroundImage: AssetImage(avatarPath),
-                radius: 30,
-              ),
-            ),
-          )
+                  onTap: () => _updateProfileImage(avatarPath),
+                  child: CircleAvatar(
+                    backgroundImage: AssetImage(avatarPath),
+                    radius: 30,
+                  ),
+                ),
+              )
               .toList(),
         ),
       ),
@@ -342,24 +346,22 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: const Color(0xFF1C1C1E),
+      backgroundColor: AppColors.darkgrey2,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1C1C1E),
+        backgroundColor: AppColors.darkgrey1,
         elevation: 0,
-        title: const Text("Profile (My Routes)"),
         centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.settings,
-                color: Colors.white), // Ayarlar ikonu
+                color: AppColors.white1), // Ayarlar ikonu
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                    const SettingsPage()), // Ayarlar sayfasına git
+                        const SettingsPage()), // Ayarlar sayfasına git
               );
             },
           ),
@@ -367,100 +369,105 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       body: isLoading
           ? const Center(
-          child: CircularProgressIndicator()) // Yükleniyor göstergesi
-          : Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Avatar ve Kullanıcı Bilgileri
-          Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment
-                    .spaceBetween, // Bileşenleri en sola ve en sağa hizala
+              child: CircularProgressIndicator()) // Yükleniyor göstergesi
+          : Container(
+              decoration: const BoxDecoration(gradient: appBackground),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Avatar ve Kullanıcı Bilgileri
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: _showAvatarSelection,
-                        child: CircleAvatar(
-                          radius: 50,
-                          backgroundImage: AssetImage(
-                              profileImageUrl ?? femaleAvatars[0]),
-                        ),
-                      ),
-                      const SizedBox(
-                          width: 16), // Avatar ve yazılar arasında boşluk
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment
+                            .spaceBetween, // Bileşenleri en sola ve en sağa hizala
                         children: [
-                          Text(
-                            username,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            "$followers takipçi",
-                            style: const TextStyle(
-                                color: Colors.grey, fontSize: 16),
-                          ),
-                          Text(
-                            "$routes rota",
-                            style: const TextStyle(
-                                color: Colors.grey, fontSize: 16),
+                          // Avatar ve Kullanıcı Bilgileri
+                          Row(
+                            children: [
+                              GestureDetector(
+                                onTap: _showAvatarSelection,
+                                child: CircleAvatar(
+                                  radius: 50,
+                                  backgroundImage: AssetImage(
+                                      profileImageUrl ?? femaleAvatars[0]),
+                                ),
+                              ),
+                              const SizedBox(
+                                  width:
+                                      16), // Avatar ve yazılar arasında boşluk
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    username,
+                                    style: const TextStyle(
+                                      color: AppColors.white1,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    "$followers takipçi",
+                                    style: const TextStyle(
+                                        color: AppColors.white1, fontSize: 16),
+                                  ),
+                                  Text(
+                                    "$routes rota",
+                                    style: const TextStyle(
+                                        color: AppColors.white1, fontSize: 16),
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                padding: EdgeInsets.only(right: 10, left: 90),
+                                child: CircleAvatar(
+                                  radius: 25, // Rozet boyutu ayarlanabilir
+                                  backgroundImage:
+                                      AssetImage(badgeAsset), // Rozet resmi
+                                ),
+                              ),
+                            ],
                           ),
                         ],
-                      ),
-                    ],
+                      )),
+
+                  const SizedBox(
+                    height: 3,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0), // Daha küçük boşluk
+                    child: Divider(
+                      color: Colors.white
+                          .withOpacity(0.2), // Hafif daha şeffaf çizgi
+                      thickness: 0.8, // İnceltilmiş çizgi
+                      indent: 20, // Daha dar boşluk
+                      endIndent: 20,
+                    ),
                   ),
 
-                  // Rozet - Satırın sonuna (en sağa) yerleştirildi
-                  CircleAvatar(
-                    radius: 30, // Rozet boyutu ayarlanabilir
-                    backgroundImage:
-                    AssetImage(badgeAsset), // Rozet resmi
-                  ),
+                  // Kullanıcının Rotası
+                  Expanded(
+                      child: userRoutes.isEmpty
+                          ? const Center(
+                              child: Text(
+                                "Henüz rota eklenmedi!",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            )
+                          : ListView.builder(
+                              itemCount: userRoutes.length,
+                              itemBuilder: (context, index) {
+                                final route = userRoutes[index];
+                                return _buildRouteCard(
+                                    route); // Yeni fonksiyonu çağır
+                              },
+                            )),
                 ],
-              )),
-
-          const SizedBox(
-            height: 3,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-                vertical: 8.0), // Daha küçük boşluk
-            child: Divider(
-              color: Colors.white
-                  .withOpacity(0.2), // Hafif daha şeffaf çizgi
-              thickness: 0.8, // İnceltilmiş çizgi
-              indent: 20, // Daha dar boşluk
-              endIndent: 20,
+              ),
             ),
-          ),
-
-          // Kullanıcının Rotası
-          Expanded(
-              child: userRoutes.isEmpty
-                  ? const Center(
-                child: Text(
-                  "Henüz rota eklenmedi!",
-                  style: TextStyle(color: Colors.white),
-                ),
-              )
-                  : ListView.builder(
-                itemCount: userRoutes.length,
-                itemBuilder: (context, index) {
-                  final route = userRoutes[index];
-                  return _buildRouteCard(
-                      route); // Yeni fonksiyonu çağır
-                },
-              )),
-        ],
-      ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(right: 8.0, left: 8.0, bottom: 10.0),
         child: Container(
