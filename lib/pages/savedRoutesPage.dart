@@ -17,6 +17,9 @@ class _SavedRoutesPageState extends State<SavedRoutesPage> {
     "All", // Show all saved routes
     "🇩🇪", "🇹🇷", "🇮🇹", "🏛️"
   ];
+  String selectedCategory = "All";  // Add this to track selected category
+  int _selectedIndex = 2;  // 2 for saved routes tab
+  List<String> routeIds = [];  // Add this line to store route IDs
 
   @override
   void initState() {
@@ -26,7 +29,7 @@ class _SavedRoutesPageState extends State<SavedRoutesPage> {
 
   Future<void> fetchSavedRoutes() async {
     final routeService = RouteService();
-    List<String> routeIds = await routeService.getSavedRoutes();
+    routeIds = await routeService.getSavedRoutes();
 
     for (var routeId in routeIds) {
       RouteCard? route = await routeService.getRouteCard(routeId);
@@ -43,6 +46,7 @@ class _SavedRoutesPageState extends State<SavedRoutesPage> {
 
   void _filterRoutesByCategory(String category) {
     setState(() {
+      selectedCategory = category;  // Update selected category
       if (category == "All") {
         displayedRoutes = List.from(savedRoutes);
       } else {
@@ -52,106 +56,199 @@ class _SavedRoutesPageState extends State<SavedRoutesPage> {
     });
   }
 
-  void _showCategoryChangeDialog(RouteCard route) async {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text("Kategori Seçin"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: collectionIcons.map((icon) {
-              return ListTile(
-                leading: Text(
-                  icon,
-                  style: const TextStyle(fontSize: 24),
-                ),
-                title: Text("Kategori: $icon"),
-                onTap: () async {
-                  final routeService = RouteService();
-                  await routeService.updateRouteCategory(
-                      route.routeOwnerId ?? "", icon);
-
-                  setState(() {
-                    route.category = icon; // Seçilen kategoriyi güncelle
-                  });
-
-                  Navigator.pop(context);
-                  _filterRoutesByCategory(icon); // Filtreleme işlemi
-                },
-              );
-            }).toList(),
-          ),
-        );
-      },
-    );
+  void _onNavBarItemSelected(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    print('Selected Index: $index');
   }
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
+    final height = MediaQuery.of(context).size.height;  // Add this for height calculation
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Kaydedilen Rotalar'),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: collectionIcons.map((icon) {
-                return GestureDetector(
-                  onTap: () => _filterRoutesByCategory(icon),
-                  child: CircleAvatar(
-                    radius: 30,
-                    backgroundColor: AppColors.yellow1,
-                    child: Text(
-                      icon,
-                      style: const TextStyle(fontSize: 24),
-                    ),
+      backgroundColor: AppColors.darkgrey1,
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Collections Section
+            Container(
+              margin: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.darkgrey2,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Koleksiyonlarım',
+                        style: TextStyle(
+                          color: AppColors.white1,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
-                );
-              }).toList(),
+                  const SizedBox(height: 16),
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
+                    children: collectionIcons.map((icon) {
+                      return GestureDetector(
+                        onTap: () => _filterRoutesByCategory(icon),
+                        child: CircleAvatar(
+                          radius: 24,
+                          backgroundColor: Colors.grey[800],
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: icon == selectedCategory
+                                  ? Border.all(color: AppColors.yellow1, width: 2)
+                                  : null,
+                            ),
+                            child: Center(
+                              child: Text(
+                                icon,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: displayedRoutes.isEmpty
-                ? const Center(child: CircularProgressIndicator())
-                : ListView.builder(
-                    itemCount: displayedRoutes.length,
-                    itemBuilder: (context, index) {
-                      final route = displayedRoutes[index];
-                      return Card(
-                        margin: const EdgeInsets.all(8.0),
-                        child: ListTile(
+
+            // Routes List
+            Expanded(
+              child: displayedRoutes.isEmpty
+                  ? Center(
+                child: Text(
+                  'Kaydedilmiş bir rotanız yok',
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 16,
+                  ),
+                ),
+              )
+                  : ListView.builder(
+                itemCount: displayedRoutes.length,
+                itemBuilder: (context, index) {
+                  final route = displayedRoutes[index];
+                  return Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[900],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Stack(
+                      children: [
+                        ListTile(
+                          contentPadding: const EdgeInsets.all(12),
                           leading: CircleAvatar(
-                            backgroundImage: route.pfpurl != null
-                                ? NetworkImage(route.pfpurl!)
+                            radius: 25,
+                            backgroundImage: route.pfpurl!= null
+                                ? AssetImage(route.pfpurl!)
                                 : null,
                             child: route.pfpurl == null
                                 ? const Icon(Icons.person)
                                 : null,
                           ),
-                          title: Text(route.title ?? "Rota Başlığı"),
-                          subtitle: Text(
-                              "${route.description ?? "Açıklama"}\n${route.destinationcount} destinations - ${route.likecount} likes"),
-                          trailing: Icon(
-                            route.liked == true
-                                ? Icons.favorite
-                                : Icons.favorite_border,
-                            color: route.liked == true ? Colors.red : null,
+                          title: Text(
+                            route.title ?? "Rota Başlığı",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                          onTap: () {
-                            _showCategoryChangeDialog(route);
-                          },
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                route.description ?? "Açıklama",
+                                style: TextStyle(color: Colors.grey[400]),
+                              ),
+                              const SizedBox(height: 8),
+                            ],
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                route.likecount.toString(),
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                              const SizedBox(width: 4),
+                              const Icon(
+                                Icons.favorite,
+                                color: Colors.red,
+                              ),
+                            ],
+                          ),
                         ),
-                      );
-                    },
-                  ),
+                        Positioned(
+                          top: 8,
+                          right: 8,
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[800],
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              route.category ?? "All",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(right: 8.0, left: 8.0, bottom: 10.0),
+        child: Container(
+          height: height * 0.08,
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(16.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 6.0,
+                offset: Offset(0, 6),
+              ),
+            ],
           ),
-        ],
+          child: CustomNavBar(
+            onItemSelected: _onNavBarItemSelected,
+            selectedIndex: _selectedIndex,
+          ),
+        ),
       ),
     );
   }

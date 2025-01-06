@@ -23,13 +23,33 @@ class _ExplorePageState extends State<ExplorePage> {
     print('Selected Index: $index');
   }
 
-  late Future<List<String>> routes; // Change routes to Future
+  late Future<List<String>> routes;
+  Map<String, bool> likedRoutes = {};
 
   @override
   void initState() {
     super.initState();
-    // Initialize the routes Future
-    routes = RouteService().getExploreRoutes(); // Directly assign the future
+    routes = RouteService().getExploreRoutes();
+    _initializeLikedRoutes();
+  }
+
+  Future<void> _initializeLikedRoutes() async {
+    try {
+      final routeList = await routes;
+      Map<String, bool> newLikedRoutes = {};  // Create a temporary map
+      
+      for (String routeId in routeList) {
+        bool isLiked = await RouteService().isRouteLiked(routeId);
+        newLikedRoutes[routeId] = isLiked;
+      }
+      
+      // Update state once with all routes
+      setState(() {
+        likedRoutes = newLikedRoutes;
+      });
+    } catch (e) {
+      print('Error initializing liked routes: $e');
+    }
   }
 
   @override

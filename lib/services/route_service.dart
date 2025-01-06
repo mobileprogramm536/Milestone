@@ -45,13 +45,11 @@ class RouteService {
       if (!docref1.exists) return null;
 
       RouteCard rc = RouteCard(
-        description:
-            docref1.data()?["description"] ?? "No description available",
+        description: docref1.data()?["description"] ?? "No description available",
         routeOwnerId: docref1.data()?["routeUser"] ?? "Unknown",
         title: docref1.data()?["routeName"] ?? "Untitled",
-        likecount: docref1.data()?["likeCount"] ?? 0, // Varsayılan 0
-        destinationcount:
-            (docref1.data()?["locations"] as List<dynamic>?)?.length ?? 0,
+        likecount: docref1.data()?["likecount"] ?? 0, // Varsayılan 0
+        destinationcount: (docref1.data()?["locations"] as List<dynamic>?)?.length ?? 0,
         category: docref1.data()?["category"] ?? "All",
       );
 
@@ -61,9 +59,7 @@ class RouteService {
         rc.pfpurl = docref2.get('profileImage');
       }
 
-      var querySnapshot = await UserDetailsCollection.where("userId",
-              isEqualTo: rc.routeOwnerId)
-          .get();
+      var querySnapshot = await UserDetailsCollection.where("userId", isEqualTo: rc.routeOwnerId).get();
 
       if (querySnapshot.docs.isNotEmpty) {
         var temp = querySnapshot.docs.first.get("likedRoutes") as List<dynamic>;
@@ -114,7 +110,7 @@ class RouteService {
   }) async {
     try {
       await RouteCollection.add({
-        'likeCount': likecount,
+        'likecount': likecount,
         'routeUser': routeUser,
         'routeName': routeName,
         'description': routeDescription,
@@ -132,25 +128,16 @@ class RouteService {
       var userID = await AuthService().getUser();
       if (userID == null) throw Exception("User not logged in.");
 
-      var userDetailsID;
-      var querySnapshot =
-          await UserDetailsCollection.where("userId", isEqualTo: userID).get();
-
-      if (querySnapshot.docs.isNotEmpty) {
-        userDetailsID = querySnapshot.docs.first.id;
-      } else {
-        throw Exception("User details not found.");
-      }
-
-      var docref1 = await UserDetailsCollection.doc(userDetailsID).get();
+      var docref1 = await UserDetailsCollection.doc(userID).get();
       var temp = docref1.get('savedRoutes') as List<dynamic>;
 
+
       if (temp.contains(routeId)) {
-        await UserDetailsCollection.doc(userDetailsID).update({
+        await UserDetailsCollection.doc(userID).update({
           'savedRoutes': FieldValue.arrayRemove([routeId]),
         });
       } else {
-        await UserDetailsCollection.doc(userDetailsID).update({
+        await UserDetailsCollection.doc(userID).update({
           'savedRoutes': FieldValue.arrayUnion([routeId]),
         });
       }
@@ -189,13 +176,10 @@ class RouteService {
   Future<List<String>> getSavedRoutes() async {
     try {
       var userID = await AuthService().getUser();
-      var querySnapshot =
-          await UserDetailsCollection.where('userId', isEqualTo: userID).get();
 
-      if (querySnapshot.docs.isEmpty) return [];
+      var docref1 = await UserDetailsCollection.doc(userID).get();
+      var temp = docref1.get('savedRoutes') as List<dynamic>;
 
-      var docid = querySnapshot.docs.first.id;
-      var docref1 = await UserDetailsCollection.doc(docid).get();
       return List<String>.from(docref1.get('savedRoutes'));
     } catch (e) {
       print('Error fetching saved routes: $e');
@@ -248,17 +232,7 @@ class RouteService {
       var userID = await AuthService().getUser();
       if (userID == null) throw Exception("User not logged in.");
 
-      var userDetailsID;
-      var querySnapshot =
-          await UserDetailsCollection.where("userId", isEqualTo: userID).get();
-
-      if (querySnapshot.docs.isNotEmpty) {
-        userDetailsID = querySnapshot.docs.first.id;
-      } else {
-        throw Exception("User details not found.");
-      }
-
-      var docref1 = await UserDetailsCollection.doc(userDetailsID).get();
+      var docref1 = await UserDetailsCollection.doc(userID).get();
       var temp = docref1.get('likedRoutes') as List<dynamic>;
 
       if (temp.contains(routeId)) {
@@ -271,14 +245,14 @@ class RouteService {
         await RouteCollection.doc(routeId).update({
           'likecount': FieldValue.increment(-1),
         });
-        await UserDetailsCollection.doc(userDetailsID).update({
+        await UserDetailsCollection.doc(userID).update({
           'likedRoutes': FieldValue.arrayRemove([routeId]),
         });
       } else {
         await RouteCollection.doc(routeId).update({
           'likecount': FieldValue.increment(1),
         });
-        await UserDetailsCollection.doc(userDetailsID).update({
+        await UserDetailsCollection.doc(userID).update({
           'likedRoutes': FieldValue.arrayUnion([routeId]),
         });
       }
@@ -286,4 +260,32 @@ class RouteService {
       print('Error liking route: $e');
     }
   }
+
+  Future<bool> isRouteSaved(String routeId) async {
+    var userID = await AuthService().getUser();
+    if (userID == null) throw Exception("User not logged in.");
+    var docref1 = await UserDetailsCollection.doc(userID).get();
+    var temp = docref1.get('savedRoutes') as List<dynamic>;
+
+    if (temp.contains(routeId)){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+  Future<bool> isRouteLiked(String routeId) async {
+    var userID = await AuthService().getUser();
+    if (userID == null) throw Exception("User not logged in.");
+    var docref1 = await UserDetailsCollection.doc(userID).get();
+    var temp = docref1.get('likedRoutes') as List<dynamic>;
+
+    if (temp.contains(routeId)){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
 }
