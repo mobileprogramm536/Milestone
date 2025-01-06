@@ -29,13 +29,26 @@ class _ExploremorePageCardState extends State<ExploremorePageCard> {
     super.initState();
     likes = widget.likes;
     isLiked = false;
-    RouteService().getRouteCard(widget.routeId).then((element) => {
-          setState(() {
-            routeC = element;
-            likes = routeC!.likecount!;
-            imageUrl = routeC!.pfpurl!;
-          })
+    
+    // Get route card data
+    RouteService().getRouteCard(widget.routeId).then((element) {
+      if (mounted) {
+        setState(() {
+          routeC = element;
+          likes = routeC!.likecount!;
+          imageUrl = routeC!.pfpurl!;
         });
+      }
+    });
+
+    // Check if route is already liked
+    RouteService().isRouteLiked(widget.routeId).then((liked) {
+      if (mounted) {
+        setState(() {
+          isLiked = liked;
+        });
+      }
+    });
   }
 
   void toggleLike() {
