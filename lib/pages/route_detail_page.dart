@@ -26,6 +26,7 @@ class _RouteDetailPageState extends State<RouteDetailPage> {
   int _selectedIndex = 1;
   RouteCard? routeC = null;
   String imageUrl = '';
+  bool _isSaved = false;
 
   GeolocationCalculator geolocationCalculator = GeolocationCalculator();
 
@@ -37,10 +38,19 @@ class _RouteDetailPageState extends State<RouteDetailPage> {
           setState(() {
             routeC = element;
             likes = routeC!.likecount!;
-            isLiked = routeC!.liked!;
             imageUrl = routeC!.pfpurl!;
           })
         });
+    RouteService().isRouteLiked(widget.routeId).then((liked) {
+      setState(() {
+        isLiked = liked;
+      });
+    });
+    RouteService().isRouteSaved(widget.routeId).then((saved) {
+      setState(() {
+        _isSaved = saved;
+      });
+    });
   }
 
   void _onNavBarItemSelected(int index) {
@@ -146,14 +156,13 @@ class _RouteDetailPageState extends State<RouteDetailPage> {
       if (routeDetail != null) {
         setState(() {
           _routeDetail = routeDetail;
-          isLiked = _routeDetail!.routecard!.liked ?? false;
           likes = _routeDetail!.routecard!.likecount ?? 0;
         });
 
         List<Position> positions = await _convertLocationsToPositions(
-            routeDetail.locations!, 50); // Assuming speed is 50 km/h
+            routeDetail.locations!, 50);
         double travelTime = await geolocationCalculator.toplamGeziSuresi(
-            positions, 50); // Optional if needed
+            positions, 50);
 
         setState(() {
           estimatedTravelTime = travelTime;
@@ -203,15 +212,14 @@ class _RouteDetailPageState extends State<RouteDetailPage> {
                         ),
                       )
                     : Container(
-                        decoration:
-                            const BoxDecoration(gradient: appBackground),
+                        decoration: const BoxDecoration(gradient: appBackground),
                         child: Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   SizedBox(
-                                    height: height * 0.08,
+                                    height: height * 0.06,
                                   ),
                                   //Profile info
                                   Center(
@@ -294,196 +302,206 @@ class _RouteDetailPageState extends State<RouteDetailPage> {
                                   ),
                                   const SizedBox(height: 8),
                                   // Route Title
-                                  Container(
-                                    height: height * 0.6,
-                                    padding: EdgeInsets.only(
-                                        top: 20, right: 25, left: 25),
-                                    margin: EdgeInsets.all(15),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.grey1,
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                _routeDetail!
-                                                        .routecard!.title ??
-                                                    'Route Title',
-                                                style: const TextStyle(
-                                                  fontSize: 24,
-                                                  fontWeight: FontWeight.w700,
-                                                  color: AppColors.white1,
-                                                ),
-                                              ),
-                                            ),
-                                            Row(children: [
-                                              Text(
-                                                '${likes}',
-                                                style: const TextStyle(
-                                                  color: AppColors.white1,
-                                                  fontSize: 12.0,
-                                                ),
-                                              ),
-                                              IconButton(
-                                                onPressed:
-                                                    toggleLike, // Action to toggle like
-                                                icon: Icon(
-                                                  isLiked
-                                                      ? Icons.favorite
-                                                      : Icons.favorite_border,
-                                                  color: isLiked
-                                                      ? AppColors.red1
-                                                      : AppColors.white1,
-                                                  size: 24.0,
-                                                ),
-                                              ),
-                                            ]),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 8),
-
-                                        // Route Description
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                _routeDetail!.routecard!
-                                                        .description ??
-                                                    'Route Description',
-                                                style: const TextStyle(
-                                                  fontSize: 16,
-                                                  color: AppColors.white1,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 16),
-                                        // Destinations and Likes
-                                        Text(
-                                          'Estimated trip time: ${estimatedTravelTime} hours',
-                                          style: const TextStyle(
-                                              fontSize: 12,
-                                              color: AppColors.white1),
-                                        ),
-                                        // Locations Section
-                                        if (_routeDetail!.locations != null &&
-                                            _routeDetail!.locations!.isNotEmpty)
-                                          Expanded(
-                                            child: Container(
-                                              height: height * 0.6,
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Flexible(
-                                                    child: ListView.builder(
-                                                      shrinkWrap: true,
-                                                      itemCount: _routeDetail!
-                                                          .locations!.length,
-                                                      itemBuilder:
-                                                          (context, index) {
-                                                        final location =
-                                                            _routeDetail!
-                                                                    .locations![
-                                                                index];
-                                                        return SingleChildScrollView(
-                                                          child: Container(
-                                                              margin:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      bottom:
-                                                                          8),
-                                                              decoration:
-                                                                  const BoxDecoration(
-                                                                gradient:
-                                                                    LinearGradient(
-                                                                  begin: Alignment
-                                                                      .topLeft,
-                                                                  end: Alignment
-                                                                      .bottomRight,
-                                                                  colors: [
-                                                                    AppColors
-                                                                        .yellow1,
-                                                                    AppColors
-                                                                        .yellow2
-                                                                  ],
-                                                                ),
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .only(
-                                                                  topLeft: Radius
-                                                                      .circular(
-                                                                          80),
-                                                                  topRight: Radius
-                                                                      .circular(
-                                                                          20),
-                                                                  bottomLeft: Radius
-                                                                      .circular(
-                                                                          80),
-                                                                  bottomRight: Radius
-                                                                      .circular(
-                                                                          20),
-                                                                ),
-                                                              ),
-                                                              child: ListTile(
-                                                                leading:
-                                                                    CircleAvatar(
-                                                                  backgroundColor:
-                                                                      AppColors
-                                                                          .grey1,
-                                                                  child: Text(
-                                                                    "${index + 1}",
-                                                                    style: const TextStyle(
-                                                                        color: AppColors
-                                                                            .white1,
-                                                                        fontWeight:
-                                                                            FontWeight.bold),
-                                                                  ),
-                                                                ),
-                                                                title: Text(
-                                                                    location[
-                                                                            'name'] ??
-                                                                        '',
-                                                                    style: TextStyle(
-                                                                        color: AppColors
-                                                                            .grey1,
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .bold,
-                                                                        fontSize:
-                                                                            16)),
-                                                                subtitle: Text(
-                                                                    location[
-                                                                            'note'] ??
-                                                                        '',
-                                                                    style: TextStyle(
-                                                                        color: AppColors
-                                                                            .grey1,
-                                                                        fontSize:
-                                                                            14)),
-                                                              )),
-                                                        );
-                                                      },
-                                                    ),
+                                  Expanded(
+                                    child: Container(
+                                      padding: EdgeInsets.only(
+                                          top: 20, right: 25, left: 25),
+                                      margin: EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.grey1,
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  _routeDetail!
+                                                          .routecard!.title ??
+                                                      'Route Title',
+                                                  style: const TextStyle(
+                                                    fontSize: 24,
+                                                    fontWeight: FontWeight.w700,
+                                                    color: AppColors.white1,
                                                   ),
-                                                ],
+                                                ),
+                                              ),
+                                              Row(children: [
+                                                Text(
+                                                  '${likes}',
+                                                  style: const TextStyle(
+                                                    color: AppColors.white1,
+                                                    fontSize: 12.0,
+                                                  ),
+                                                ),
+                                                IconButton(
+                                                  onPressed:
+                                                      toggleLike, // Action to toggle like
+                                                  icon: Icon(
+                                                    isLiked
+                                                        ? Icons.favorite
+                                                        : Icons.favorite_border,
+                                                    color: isLiked
+                                                        ? AppColors.red1
+                                                        : AppColors.white1,
+                                                    size: 24.0,
+                                                  ),
+                                                ),
+                                              ]),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 8),
+
+                                          // Route Description
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  _routeDetail!.routecard!
+                                                          .description ??
+                                                      'Route Description',
+                                                  style: const TextStyle(
+                                                    fontSize: 16,
+                                                    color: AppColors.white1,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 16),
+                                          // Destinations and Likes
+                                          Text(
+                                            'Estimated trip time: ${estimatedTravelTime} hours',
+                                            style: const TextStyle(
+                                                fontSize: 12,
+                                                color: AppColors.white1),
+                                          ),
+                                          // Locations Section
+                                          if (_routeDetail!.locations != null &&
+                                              _routeDetail!.locations!.isNotEmpty)
+                                            Expanded(
+                                              child: Container(
+                                                height: height * 0.6,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Flexible(
+                                                      child: ListView.builder(
+                                                        shrinkWrap: true,
+                                                        itemCount: _routeDetail!
+                                                            .locations!.length,
+                                                        itemBuilder:
+                                                            (context, index) {
+                                                          final location =
+                                                              _routeDetail!
+                                                                      .locations![
+                                                                  index];
+                                                          return SingleChildScrollView(
+                                                            child: Container(
+                                                                margin:
+                                                                    const EdgeInsets
+                                                                        .only(
+                                                                        bottom:
+                                                                            8),
+                                                                decoration:
+                                                                    const BoxDecoration(
+                                                                  gradient:
+                                                                      LinearGradient(
+                                                                    begin: Alignment
+                                                                        .topLeft,
+                                                                    end: Alignment
+                                                                        .bottomRight,
+                                                                    colors: [
+                                                                      AppColors
+                                                                          .yellow1,
+                                                                      AppColors
+                                                                          .yellow2
+                                                                    ],
+                                                                  ),
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .only(
+                                                                        topLeft: Radius
+                                                                            .circular(
+                                                                                80),
+                                                                        topRight: Radius
+                                                                            .circular(
+                                                                                20),
+                                                                        bottomLeft: Radius
+                                                                            .circular(
+                                                                                80),
+                                                                        bottomRight: Radius
+                                                                            .circular(
+                                                                                20),
+                                                                      ),
+                                                                ),
+                                                                child: ListTile(
+                                                                  leading:
+                                                                      CircleAvatar(
+                                                                    backgroundColor:
+                                                                        AppColors
+                                                                            .grey1,
+                                                                    child: Text(
+                                                                      "${index + 1}",
+                                                                      style: const TextStyle(
+                                                                          color: AppColors
+                                                                              .white1,
+                                                                          fontWeight:
+                                                                              FontWeight.bold),
+                                                                    ),
+                                                                  ),
+                                                                  title: Text(
+                                                                      location[
+                                                                              'name'] ??
+                                                                          '',
+                                                                      style: TextStyle(
+                                                                          color: AppColors
+                                                                              .grey1,
+                                                                          fontWeight:
+                                                                              FontWeight
+                                                                                  .bold,
+                                                                          fontSize:
+                                                                              16)),
+                                                                  subtitle: Text(
+                                                                      location[
+                                                                              'note'] ??
+                                                                          '',
+                                                                      style: TextStyle(
+                                                                          color: AppColors
+                                                                              .grey1,
+                                                                          fontSize:
+                                                                              14)),
+                                                                )),
+                                                          );
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+                                          else
+                                            Expanded(
+                                              child: Center(
+                                                child: Text(
+                                                  'No locations available.',
+                                                  style: TextStyle(
+                                                    color: Colors.grey[600],
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
                                               ),
                                             ),
-                                          )
-                                        else
-                                          const Center(
-                                            child:
-                                                Text('No locations available.'),
-                                          ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
+                                  SizedBox(height: 10),
                                   Center(
                                     child: Row(
                                       mainAxisAlignment:
@@ -535,43 +553,42 @@ class _RouteDetailPageState extends State<RouteDetailPage> {
                                         ),
                                         ElevatedButton(
                                           onPressed: () {
-                                            RouteService()
-                                                .saveRoute(widget.routeId);
+                                            RouteService().saveRoute(widget.routeId).then((_) {
+                                              setState(() {
+                                                _isSaved = !_isSaved;
+                                              });
+                                            });
                                           },
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor: AppColors
-                                                .green1, // Butonun arka plan rengi
+                                            backgroundColor: AppColors.green1,
                                             shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      10), // Kenar yuvarlama
+                                              borderRadius: BorderRadius.circular(10),
                                             ),
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 20,
-                                                vertical:
-                                                    14), // Buton içi boşluk
+                                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                                           ),
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                Icons.bookmark_add_outlined,
+                                          child: _isSaved 
+                                            ? Icon(
+                                                Icons.bookmark,
                                                 color: AppColors.white1,
+                                              )
+                                            : Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.bookmark_add_outlined,
+                                                    color: AppColors.white1,
+                                                  ),
+                                                  SizedBox(width: width * 0.01),
+                                                  Text(
+                                                    'Kaydet',
+                                                    style: TextStyle(fontSize: 15, color: AppColors.white1),
+                                                  ),
+                                                ],
                                               ),
-                                              SizedBox(
-                                                width: width * 0.01,
-                                              ),
-                                              Text(
-                                                'Kaydet',
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    color: AppColors.white1),
-                                              ),
-                                            ],
-                                          ),
                                         ),
                                       ],
                                     ),
-                                  )
+                                  ),
+                                  SizedBox(height: 5),
                                 ])),
                       ),
       ),

@@ -260,4 +260,32 @@ class RouteService {
       print('Error liking route: $e');
     }
   }
+
+  Future<bool> isRouteSaved(String routeId) async {
+    var userID = await AuthService().getUser();
+    if (userID == null) throw Exception("User not logged in.");
+    var docref1 = await UserDetailsCollection.doc(userID).get();
+    var temp = docref1.get('savedRoutes') as List<dynamic>;
+
+    if (temp.contains(routeId)){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+  Future<bool> isRouteLiked(String routeId) async {
+    var userID = await AuthService().getUser();
+    if (userID == null) throw Exception("User not logged in.");
+    var docref1 = await UserDetailsCollection.doc(userID).get();
+    var temp = docref1.get('likedRoutes') as List<dynamic>;
+
+    if (temp.contains(routeId)){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
 }

@@ -28,15 +28,28 @@ class _ExploreCardState extends State<ExploreCard> {
 
   @override
   void initState() {
-    super.initState(); // Initialize likes
-    isLiked = false; // Default state: unliked
-    RouteService().getRouteCard(widget.routeId).then((element) => {
-          setState(() {
-            routeC = element;
-            likes = routeC!.likecount!;
-            imageUrl = routeC!.pfpurl!;
-          })
+    super.initState();
+    isLiked = false;
+    
+    // First get the route card data
+    RouteService().getRouteCard(widget.routeId).then((element) {
+      if (mounted) {
+        setState(() {
+          routeC = element;
+          likes = routeC!.likecount!;
+          imageUrl = routeC!.pfpurl!;
+          
+          // Check if the route is liked using isRouteLiked
+          RouteService().isRouteLiked(widget.routeId).then((liked) {
+            if (mounted) {
+              setState(() {
+                isLiked = liked;
+              });
+            }
+          });
         });
+      }
+    });
   }
 
   void toggleLike() {
@@ -139,7 +152,6 @@ class _ExploreCardState extends State<ExploreCard> {
       },
       child: Container(
         width: width * 0.5,
-        height: height * 0.21,
         child: Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),
@@ -149,6 +161,7 @@ class _ExploreCardState extends State<ExploreCard> {
           child: Padding(
               padding: EdgeInsets.all(height * 0.018),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
