@@ -229,7 +229,7 @@ class _SavedRoutesPageState extends State<SavedRoutesPage> {
                         return GestureDetector(
                           onTap: () => _filterRoutesByCategory(icon),
                           child: CircleAvatar(
-                            radius: 24,
+                            radius: 27,
                             backgroundColor: Colors.grey[800],
                             child: Container(
                               decoration: BoxDecoration(
@@ -332,8 +332,9 @@ class _SavedRoutesPageState extends State<SavedRoutesPage> {
                                     children: [
                                       Text(
                                         route['description'] ?? "Açıklama",
-                                        style:
-                                            TextStyle(color: Colors.grey[400]),
+                                        style: TextStyle(
+                                            color: Colors.grey[400],
+                                            fontSize: 12),
                                       ),
                                       const SizedBox(height: 8),
                                     ],
@@ -355,17 +356,13 @@ class _SavedRoutesPageState extends State<SavedRoutesPage> {
                                   ),
                                 ),
                                 Positioned(
-                                  top: 8,
-                                  right: 8,
+                                  top: 0,
+                                  left: 0,
                                   child: route['category'] != null &&
                                           route['category'] != "All"
-                                      ? Container(
-                                          padding: const EdgeInsets.all(4),
-                                          decoration: BoxDecoration(
-                                            color: Colors.grey[800],
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                          ),
+                                      ? CircleAvatar(
+                                          backgroundColor: AppColors
+                                              .yellow1, // Yellow1 background color
                                           child: Text(
                                             route['category'],
                                             style: const TextStyle(
